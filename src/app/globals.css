@@ -1,26 +1,100 @@
 @import "tailwindcss";
 
+/* Brand theme: biru & putih */
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #000000; /* black for light mode */
 }
 
+/* Tailwind v4 inline theme tokens */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  /* Brand colors */
+  --color-primary: #2563eb; /* blue-600 */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #101622; /* deep navy */
+    --foreground: #000000; /* black for dark mode */
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+html, body {
+  height: 100%;
 }
+
+body {
+  color: var(--foreground);
+  background: radial-gradient(1200px 600px at 80% -100px, color-mix(in oklab, var(--color-primary-300) 20%, transparent), transparent 60%),
+              radial-gradient(1200px 600px at 10% -150px, color-mix(in oklab, var(--color-primary-200) 18%, transparent), transparent 60%),
+              linear-gradient(180deg, #ffffff 0%, #f8fbff 40%, #f3f7ff 100%);
+}
+
+/* Subtle glass effect utility */
+.glass {
+  @apply bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/40 dark:border-white/10 shadow-lg;
+}
+
+/* Fancy gradient text */
+.gradient-text {
+  background: linear-gradient(90deg, var(--color-primary-600), var(--color-primary-400));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Section container */
+.container-section {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Animations & effects */
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-floaty {
+  animation: floaty 6s ease-in-out infinite;
+}
+
+@keyframes pulseSoft {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+.animate-pulse-soft {
+  animation: pulseSoft 3s ease-in-out infinite;
+}
+
+.shadow-glow {
+  box-shadow: 0 16px 40px -16px rgba(37, 99, 235, 0.35);
+}
+
+/* Reveal on scroll */
+.reveal { opacity: 0; transform: translateY(8px); transition: opacity 600ms ease, transform 600ms ease; }
+.reveal.show { opacity: 1; transform: translateY(0); }
+
+/* Print styles */
+@media print {
+  body { background: #ffffff !important; color: #000000 !important; }
+  .print-hidden { display: none !important; }
+  .print-only { display: block !important; }
+  .glass, .shadow-glow { box-shadow: none !important; background: #ffffff !important; }
+}
+
+.print-only { display: none; }

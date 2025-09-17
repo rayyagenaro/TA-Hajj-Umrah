@@ -1,103 +1,165 @@
-import Image from "next/image";
+import Hero from "@/components/Hero";
+import PackageCard from "@/components/PackageCard";
+import Reveal from "@/components/Reveal";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div>
+      <Hero />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      <section id="paket" className="mt-20">
+        <div className="container-section relative">
+          <div className="pointer-events-none absolute -left-10 top-10 h-40 w-40 rounded-full bg-primary-300/30 blur-3xl"></div>
+          <div className="pointer-events-none absolute -right-8 -top-6 h-40 w-40 rounded-full bg-primary-200/30 blur-3xl"></div>
+
+          <div className="mb-6 flex items-end justify-between gap-4">
+            <div>
+              <h2 className="text-2xl font-bold sm:text-3xl">Pilihan Paket Haji</h2>
+              <p className="mt-1 text-black dark:text-black">
+                Tiga kategori utama yang paling sering dipilih jamaah.
+              </p>
+            </div>
+            <Link
+              href="/rekomendasi"
+              className="hidden rounded-xl bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 sm:inline-flex"
+            >
+              Bandingkan & Dapatkan Rekomendasi
+            </Link>
+          </div>
+
+          <Reveal>
+            <div className="grid gap-6 md:grid-cols-3">
+              <PackageCard
+                variant="reguler"
+                title="Haji Reguler"
+                priceRange="Rp35–60 jt"
+                waitTime="Antrean panjang (10–20 th)"
+                highlights={["Biaya terjangkau", "Kuota pemerintah", "Fasilitas standar"]}
+                href="/paket/reguler"
+              />
+              <PackageCard
+                variant="plus"
+                title="Haji Plus"
+                priceRange="Rp150–250 jt"
+                waitTime="Lebih cepat (1–5 th)"
+                highlights={["Layanan premium", "Hotel lebih dekat", "Pendampingan intensif"]}
+                href="/paket/plus"
+              />
+              <PackageCard
+                variant="furoda"
+                title="Haji Furoda"
+                priceRange="> Rp250 jt"
+                waitTime="Tanpa antre (visa mujamalah)"
+                highlights={["Keberangkatan cepat", "Kenyamanan tinggi", "Kuota non-kuota"]}
+                href="/paket/furoda"
+              />
+            </div>
+          </Reveal>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </section>
+
+      <section className="mt-24">
+        <div className="container-section">
+          <Reveal>
+            <div className="grid items-center gap-8 rounded-3xl bg-gradient-to-r from-primary-600 to-primary-400 p-8 text-white md:grid-cols-2">
+              <div>
+                <h3 className="text-2xl font-bold">Tidak yakin pilih yang mana?</h3>
+                <p className="mt-2 text-white/90">
+                  Jawab beberapa pertanyaan sederhana dan dapatkan rekomendasi paket
+                  yang paling sesuai dengan kebutuhan Anda.
+                </p>
+              </div>
+              <div className="flex justify-end">
+                <Link
+                  href="/rekomendasi"
+                  className="inline-flex items-center justify-center rounded-xl bg-white px-5 py-3 text-sm font-semibold text-primary-700 shadow-sm transition hover:scale-[1.02] hover:bg-white/90"
+                >
+                  Dapatkan Rekomendasi
+                </Link>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="mt-24">
+        <div className="container-section">
+          <Reveal>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold sm:text-3xl">Apa kata jamaah?</h2>
+              <p className="mt-1 text-black dark:text-black">Cerita singkat dari mereka yang sudah memilih.</p>
+            </div>
+            <div className="grid gap-6 md:grid-cols-3">
+              {[
+                {
+                  name: "Ahmad",
+                  text: "Saya dapat rekomendasi Reguler sesuai kondisi finansial. Penjelasannya jelas!",
+                },
+                {
+                  name: "Siti",
+                  text: "Pilih Plus karena ingin lebih nyaman. Antrean juga lebih singkat.",
+                },
+                {
+                  name: "Dewi",
+                  text: "Furoda jadi solusi karena butuh keberangkatan cepat tanpa antre.",
+                },
+              ].map((t) => (
+                <div key={t.name} className="rounded-2xl border border-black/5 bg-white p-6 transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-white/5">
+                  <div className="mb-3 flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-600 text-white font-semibold">
+                      {t.name.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="font-semibold">{t.name}</p>
+                      <p className="text-xs text-black dark:text-black">Jamaah</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-black dark:text-black">“{t.text}”</p>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="mt-24">
+        <div className="container-section">
+          <Reveal>
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold sm:text-3xl">Pertanyaan Umum</h2>
+              <p className="mt-1 text-black dark:text-black">Info ringkas seputar paket dan rekomendasi.</p>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              {[
+                [
+                  "Apa itu sistem pakar di sini?",
+                  "Sistem ini membantu memberikan saran paket berdasarkan preferensi Anda (frontend demo).",
+                ],
+                [
+                  "Apakah hasilnya final?",
+                  "Tidak. Anggap sebagai rekomendasi awal. Keputusan akhir menyesuaikan kebijakan resmi.",
+                ],
+                [
+                  "Apakah data saya disimpan?",
+                  "Tidak. Saat ini isian preferensi hanya diproses di sisi frontend.",
+                ],
+                [
+                  "Bisakah saya ganti preferensi?",
+                  "Bisa. Ubah pilihan kapan saja dan lihat perubahan rekomendasi secara langsung.",
+                ],
+              ].map(([q, a]) => (
+                <div key={q as string} className="rounded-2xl border border-black/5 p-5 transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-white/10">
+                  <p className="font-semibold">{q as string}</p>
+                  <p className="mt-1 text-sm text-black dark:text-black">{a as string}</p>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+        </div>
+      </section>
     </div>
   );
 }
