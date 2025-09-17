@@ -1,0 +1,58 @@
+﻿<svg width="380" height="360" viewBox="0 0 380 360" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="mosqueGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e0f2fe" />
+      <stop offset="100%" stop-color="#bfdbfe" />
+    </linearGradient>
+    <linearGradient id="golden" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#facc15" />
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0.5" />
+    </linearGradient>
+    <radialGradient id="mosqueGlow" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#bfdbfe" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#bfdbfe" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="380" height="360" rx="48" fill="url(#mosqueGradient)" opacity="0.82" />
+  <ellipse cx="190" cy="128" rx="140" ry="108" fill="url(#mosqueGlow)" />
+
+  <!-- Base platform -->
+  <rect x="52" y="248" width="276" height="36" rx="18" fill="#cbd5f5" opacity="0.75" />
+
+  <!-- Main dome -->
+  <path d="M190 94c-82 0-132 58-132 132v22h264v-22c0-74-50-132-132-132z" fill="url(#mosqueGradient)" />
+  <path d="M190 54c-32 20-52 52-52 92h104c0-40-20-72-52-92z" fill="url(#golden)" />
+
+  <!-- Crescent decoration -->
+  <path d="M188 32c18 0 32 14 32 32s-14 32-32 32c-4 0-8-1-12-2 12-6 20-18 20-30s-8-24-20-30c4-1 8-2 12-2z" fill="#facc15" opacity="0.85" />
+
+  <!-- Arches -->
+  <g fill="#1e293b" opacity="0.1">
+    <path d="M112 220c0-28 18-52 40-52s40 24 40 52v50h-80v-50z" />
+    <path d="M188 220c0-28 18-52 40-52s40 24 40 52v50h-80v-50z" />
+  </g>
+  <g fill="#ffffff" opacity="0.85">
+    <path d="M116 220c0-26 16-46 36-46s36 20 36 46v46h-72v-46z" />
+    <path d="M192 220c0-26 16-46 36-46s36 20 36 46v46h-72v-46z" />
+  </g>
+
+  <!-- Minarets -->
+  <g fill="url(#mosqueGradient)">
+    <path d="M60 102c-8 0-14 6-14 14v152h28V116c0-8-6-14-14-14z" />
+    <path d="M320 102c8 0 14 6 14 14v152h-28V116c0-8 6-14 14-14z" />
+  </g>
+  <g fill="#facc15" opacity="0.85">
+    <path d="M60 72c-11 0-20 9-20 20v16h40v-16c0-11-9-20-20-20z" />
+    <path d="M320 72c11 0 20 9 20 20v16h-40v-16c0-11 9-20 20-20z" />
+  </g>
+
+  <!-- Windows -->
+  <g fill="#2563eb" opacity="0.2">
+    <rect x="80" y="160" width="28" height="48" rx="14" />
+    <rect x="112" y="160" width="28" height="48" rx="14" />
+    <rect x="188" y="160" width="28" height="48" rx="14" />
+    <rect x="220" y="160" width="28" height="48" rx="14" />
+    <rect x="292" y="160" width="28" height="48" rx="14" />
+  </g>
+</svg>

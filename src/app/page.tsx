@@ -33,16 +33,16 @@ export default function Home() {
               <PackageCard
                 variant="reguler"
                 title="Haji Reguler"
-                priceRange="Rp35–60 jt"
-                waitTime="Antrean panjang (10–20 th)"
+                priceRange="Rp35-60 jt"
+                waitTime="Antrean panjang (10-20 th)"
                 highlights={["Biaya terjangkau", "Kuota pemerintah", "Fasilitas standar"]}
                 href="/paket/reguler"
               />
               <PackageCard
                 variant="plus"
                 title="Haji Plus"
-                priceRange="Rp150–250 jt"
-                waitTime="Lebih cepat (1–5 th)"
+                priceRange="Rp150-250 jt"
+                waitTime="Lebih cepat (1-5 th)"
                 highlights={["Layanan premium", "Hotel lebih dekat", "Pendampingan intensif"]}
                 href="/paket/plus"
               />
@@ -106,7 +106,10 @@ export default function Home() {
                   text: "Furoda jadi solusi karena butuh keberangkatan cepat tanpa antre.",
                 },
               ].map((t) => (
-                <div key={t.name} className="rounded-2xl border border-black/5 bg-white p-6 transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-white/5">
+                <div
+                  key={t.name}
+                  className="rounded-2xl border border-black/5 bg-white p-6 transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-white/5"
+                >
                   <div className="mb-3 flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-600 text-white font-semibold">
                       {t.name.charAt(0)}
@@ -116,7 +119,7 @@ export default function Home() {
                       <p className="text-xs text-black dark:text-black">Jamaah</p>
                     </div>
                   </div>
-                  <p className="text-sm text-black dark:text-black">“{t.text}”</p>
+                  <p className="text-sm text-black dark:text-black">&ldquo;{t.text}&rdquo;</p>
                 </div>
               ))}
             </div>
@@ -151,7 +154,10 @@ export default function Home() {
                   "Bisa. Ubah pilihan kapan saja dan lihat perubahan rekomendasi secara langsung.",
                 ],
               ].map(([q, a]) => (
-                <div key={q as string} className="rounded-2xl border border-black/5 p-5 transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-white/10">
+                <div
+                  key={q as string}
+                  className="rounded-2xl border border-black/5 p-5 transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-white/10"
+                >
                   <p className="font-semibold">{q as string}</p>
                   <p className="mt-1 text-sm text-black dark:text-black">{a as string}</p>
                 </div>

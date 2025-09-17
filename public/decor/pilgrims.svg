@@ -1,0 +1,48 @@
+﻿<svg width="420" height="340" viewBox="0 0 420 340" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#e0f2fe" />
+    </linearGradient>
+    <linearGradient id="robe" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#e2e8f0" />
+    </linearGradient>
+    <linearGradient id="sash" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#3b82f6" />
+    </linearGradient>
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#bfdbfe" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#bfdbfe" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="420" height="340" rx="48" fill="url(#bg)" opacity="0.85" />
+
+  <ellipse cx="120" cy="120" rx="82" ry="70" fill="url(#halo)" />
+  <ellipse cx="300" cy="96" rx="92" ry="76" fill="url(#halo)" />
+
+  <g fill="#1e293b" opacity="0.1">
+    <path d="M60 288c22-14 58-22 108-22s86 8 108 22c9 5 9 14 0 18-22 13-57 20-108 20s-86-7-108-20c-9-4-9-13 0-18z" />
+    <path d="M230 298c18-12 48-18 90-18s72 6 90 18c8 4 8 12 0 16-18 11-47 16-90 16s-72-5-90-16c-8-4-8-12 0-16z" />
+  </g>
+
+  <!-- Left pilgrim -->
+  <g transform="translate(72 60)">
+    <circle cx="62" cy="42" r="34" fill="#0f172a" opacity="0.2" />
+    <circle cx="60" cy="38" r="30" fill="#1f2937" />
+    <path d="M40 124c0-26 16-48 20-48h40c8 0 24 22 24 48l10 78c1 10-6 18-15 18H40c-9 0-16-8-15-18l10-78z" fill="url(#robe)" />
+    <path d="M60 40c-22 0-42 18-42 40 0 10 4 14 12 16l54 10 54-10c8-2 12-6 12-16 0-22-20-40-42-40H60z" fill="#e2e8f0" />
+    <rect x="52" y="118" width="16" height="84" rx="8" fill="url(#sash)" opacity="0.75" />
+  </g>
+
+  <!-- Right pilgrim -->
+  <g transform="translate(220 44)">
+    <circle cx="86" cy="46" r="38" fill="#0f172a" opacity="0.18" />
+    <circle cx="82" cy="42" r="34" fill="#1f2937" />
+    <path d="M44 138c0-30 18-54 26-54h56c10 0 30 24 30 54l12 90c1 12-8 22-20 22H52c-12 0-21-10-20-22l12-90z" fill="url(#robe)" />
+    <path d="M82 42c-26 0-50 22-50 48 0 12 6 18 16 20l62 12 62-12c10-2 16-8 16-20 0-26-24-48-50-48H82z" fill="#e2e8f0" />
+    <path d="M74 140h16c14 0 26 12 26 26v48c0 10-8 18-18 18H66c-10 0-18-8-18-18v-48c0-14 12-26 26-26z" fill="url(#sash)" opacity="0.65" />
+  </g>
+</svg>

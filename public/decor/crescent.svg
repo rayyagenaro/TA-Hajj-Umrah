@@ -1,0 +1,15 @@
+﻿<svg width="180" height="180" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="crescent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fde68a" />
+      <stop offset="100%" stop-color="#f97316" />
+    </linearGradient>
+    <radialGradient id="crescentGlow" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#fde68a" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#fde68a" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <circle cx="90" cy="90" r="74" fill="url(#crescentGlow)" opacity="0.45" />
+  <path d="M118 28c-45 0-82 37-82 82s37 82 82 82c12 0 24-2 34-7-38-14-64-52-64-95 0-30 14-58 36-75-2-0.1-4-0.2-6-0.2z" fill="url(#crescent)" />
+</svg>
