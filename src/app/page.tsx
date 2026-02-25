@@ -1,7 +1,14 @@
-import Hero from "@/components/Hero";
+﻿import Hero from "@/components/Hero";
 import PackageCard from "@/components/PackageCard";
 import Reveal from "@/components/Reveal";
+import { videoResources } from "@/data/videos";
 import Link from "next/link";
+
+const dateFormatter = new Intl.DateTimeFormat("id-ID", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
 
 export default function Home() {
   return (
@@ -15,16 +22,16 @@ export default function Home() {
 
           <div className="mb-6 flex items-end justify-between gap-4">
             <div>
-              <h2 className="text-2xl font-bold sm:text-3xl">Pilihan Paket Haji</h2>
-              <p className="mt-1 text-black dark:text-black">
-                Tiga kategori utama yang paling sering dipilih jamaah.
+              <h2 className="text-2xl font-bold sm:text-3xl">Pilihan Paket Umrah</h2>
+              <p className="mt-1 text-black">
+                Fokus pada varian favorit dengan kombinasi ibadah dan wisata islami.
               </p>
             </div>
             <Link
               href="/rekomendasi"
               className="hidden rounded-xl bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 sm:inline-flex"
             >
-              Bandingkan & Dapatkan Rekomendasi
+              Bandingkan & Cek Rekomendasi
             </Link>
           </div>
 
@@ -32,26 +39,26 @@ export default function Home() {
             <div className="grid gap-6 md:grid-cols-3">
               <PackageCard
                 variant="reguler"
-                title="Haji Reguler"
-                priceRange="Rp35-60 jt"
-                waitTime="Antrean panjang (10-20 th)"
-                highlights={["Biaya terjangkau", "Kuota pemerintah", "Fasilitas standar"]}
+                title="Umrah Reguler"
+                priceRange="Rp25-32 jt"
+                waitTime="Keberangkatan batch 9-12 hari"
+                highlights={["Biaya hemat", "Fokus ibadah", "Hotel setara bintang 3-4"]}
                 href="/paket/reguler"
               />
               <PackageCard
-                variant="plus"
-                title="Haji Plus"
-                priceRange="Rp150-250 jt"
-                waitTime="Lebih cepat (1-5 th)"
-                highlights={["Layanan premium", "Hotel lebih dekat", "Pendampingan intensif"]}
+                variant="turki"
+                title="Umrah Plus Turki"
+                priceRange="Rp34-40 jt"
+                waitTime="Include city tour Istanbul"
+                highlights={["Tur sejarah & reliji", "Maskapai premium", "Hotel bintang 4"]}
                 href="/paket/plus"
               />
               <PackageCard
-                variant="furoda"
-                title="Haji Furoda"
-                priceRange="> Rp250 jt"
-                waitTime="Tanpa antre (visa mujamalah)"
-                highlights={["Keberangkatan cepat", "Kenyamanan tinggi", "Kuota non-kuota"]}
+                variant="dubai"
+                title="Umrah Plus Dubai"
+                priceRange="Rp36-42 jt"
+                waitTime="City tour modern & desert"
+                highlights={["Pengalaman mewah", "Transit nyaman", "Durasi 10-12 hari"]}
                 href="/paket/furoda"
               />
             </div>
@@ -64,10 +71,10 @@ export default function Home() {
           <Reveal>
             <div className="grid items-center gap-8 rounded-3xl bg-gradient-to-r from-primary-600 to-primary-400 p-8 text-white md:grid-cols-2">
               <div>
-                <h3 className="text-2xl font-bold">Tidak yakin pilih yang mana?</h3>
+                <h3 className="text-2xl font-bold">Masih bingung pilih paket Umrah?</h3>
                 <p className="mt-2 text-white/90">
-                  Jawab beberapa pertanyaan sederhana dan dapatkan rekomendasi paket
-                  yang paling sesuai dengan kebutuhan Anda.
+                  Jawab beberapa pertanyaan singkat lalu dapatkan rekomendasi paket yang pas dengan budget,
+                  kebutuhan pendampingan, dan destinasi tambahan pilihan Anda.
                 </p>
               </div>
               <div className="flex justify-end">
@@ -83,47 +90,46 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonials */}
       <section className="mt-24">
         <div className="container-section">
-          <Reveal>
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold sm:text-3xl">Apa kata jamaah?</h2>
-              <p className="mt-1 text-black dark:text-black">Cerita singkat dari mereka yang sudah memilih.</p>
-            </div>
-            <div className="grid gap-6 md:grid-cols-3">
-              {[
-                {
-                  name: "Ahmad",
-                  text: "Saya dapat rekomendasi Reguler sesuai kondisi finansial. Penjelasannya jelas!",
-                },
-                {
-                  name: "Siti",
-                  text: "Pilih Plus karena ingin lebih nyaman. Antrean juga lebih singkat.",
-                },
-                {
-                  name: "Dewi",
-                  text: "Furoda jadi solusi karena butuh keberangkatan cepat tanpa antre.",
-                },
-              ].map((t) => (
-                <div
-                  key={t.name}
-                  className="rounded-2xl border border-black/5 bg-white p-6 transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-white/5"
-                >
-                  <div className="mb-3 flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-600 text-white font-semibold">
-                      {t.name.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="font-semibold">{t.name}</p>
-                      <p className="text-xs text-black dark:text-black">Jamaah</p>
-                    </div>
+          <div className="mb-6 flex items-end justify-between gap-4">
+            <h2 className="text-2xl font-bold sm:text-3xl">Video</h2>
+
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {videoResources.map((video) => (
+              <Reveal key={video.id}>
+                <article className="overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                  <div className="aspect-video w-full bg-black">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${video.youtubeId}`}
+                      title={video.title}
+                      loading="lazy"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="h-full w-full"
+                    />
                   </div>
-                  <p className="text-sm text-black dark:text-black">&ldquo;{t.text}&rdquo;</p>
-                </div>
-              ))}
-            </div>
-          </Reveal>
+                  <div className="space-y-3 p-5">
+                    <h3 className="text-xl font-semibold leading-snug text-slate-900">{video.title}</h3>
+                    <div className="rounded-xl bg-slate-100 px-3 py-2 text-sm text-slate-700">
+                      {dateFormatter.format(new Date(video.publishedAt))}
+                    </div>
+                    <Link
+                      href={video.youtubeUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center justify-center rounded-xl bg-primary-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-700"
+                    >
+                      Tonton di YouTube
+                    </Link>
+                  </div>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+
         </div>
       </section>
 
@@ -133,33 +139,33 @@ export default function Home() {
           <Reveal>
             <div className="mb-6">
               <h2 className="text-2xl font-bold sm:text-3xl">Pertanyaan Umum</h2>
-              <p className="mt-1 text-black dark:text-black">Info ringkas seputar paket dan rekomendasi.</p>
+              <p className="mt-1 text-black">Ringkasan info seputar rekomendasi paket Umrah.</p>
             </div>
             <div className="grid gap-4 md:grid-cols-2">
               {[
                 [
-                  "Apa itu sistem pakar di sini?",
-                  "Sistem ini membantu memberikan saran paket berdasarkan preferensi Anda (frontend demo).",
+                  "Apa itu sistem pakar di UmrahYuk?",
+                  "Mesin inferensi membaca aturan ontologi sederhana untuk mencocokkan budget, hotel, dan destinasi tambahan.",
                 ],
                 [
                   "Apakah hasilnya final?",
-                  "Tidak. Anggap sebagai rekomendasi awal. Keputusan akhir menyesuaikan kebijakan resmi.",
+                  "Belum. Gunakan sebagai referensi awal sebelum memutuskan biro perjalanan favorit Anda.",
                 ],
                 [
                   "Apakah data saya disimpan?",
-                  "Tidak. Saat ini isian preferensi hanya diproses di sisi frontend.",
+                  "Tidak ada penyimpanan. Semua perhitungan berjalan langsung di perangkat Anda.",
                 ],
                 [
                   "Bisakah saya ganti preferensi?",
-                  "Bisa. Ubah pilihan kapan saja dan lihat perubahan rekomendasi secara langsung.",
+                  "Bisa banget. Sesuaikan budget, hotel, atau destinasi tambahan kapan saja untuk melihat alternatif baru.",
                 ],
               ].map(([q, a]) => (
                 <div
                   key={q as string}
-                  className="rounded-2xl border border-black/5 p-5 transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-white/10"
+                  className="rounded-2xl border border-black/5 p-5 transition-all hover:-translate-y-0.5 hover:shadow-md"
                 >
                   <p className="font-semibold">{q as string}</p>
-                  <p className="mt-1 text-sm text-black dark:text-black">{a as string}</p>
+                  <p className="mt-1 text-sm text-black">{a as string}</p>
                 </div>
               ))}
             </div>
@@ -169,3 +175,4 @@ export default function Home() {
     </div>
   );
 }
+

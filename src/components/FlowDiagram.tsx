@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+﻿import { Fragment } from "react";
 
 export default function FlowDiagram() {
   const steps = [
@@ -13,9 +13,9 @@ export default function FlowDiagram() {
       <div className="hidden md:grid grid-cols-7 items-center gap-4">
         {steps.map((s, i) => (
           <Fragment key={s.title}>
-            <div className="col-span-2 rounded-2xl bg-white p-4 ring-1 ring-black/5 dark:bg-white/5 dark:ring-white/10">
+            <div className="col-span-2 rounded-2xl bg-white p-4 ring-1 ring-black/5">
               <p className="text-sm font-semibold">{s.title}</p>
-              <p className="text-xs text-black dark:text-black">{s.desc}</p>
+              <p className="text-xs text-black">{s.desc}</p>
             </div>
             {i < steps.length - 1 && (
               <div className="col-span-1 flex items-center justify-center text-primary-700">
@@ -31,9 +31,9 @@ export default function FlowDiagram() {
       <div className="md:hidden grid gap-3">
         {steps.map((s, i) => (
           <div key={s.title} className="relative">
-            <div className="rounded-2xl bg-white p-4 ring-1 ring-black/5 dark:bg-white/5 dark:ring-white/10">
+            <div className="rounded-2xl bg-white p-4 ring-1 ring-black/5">
               <p className="text-sm font-semibold">{s.title}</p>
-              <p className="text-xs text-black dark:text-black">{s.desc}</p>
+              <p className="text-xs text-black">{s.desc}</p>
             </div>
             {i < steps.length - 1 && (
               <div className="flex justify-center py-1 text-primary-700">
@@ -48,3 +48,4 @@ export default function FlowDiagram() {
     </div>
   );
 }
+

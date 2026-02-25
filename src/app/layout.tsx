@@ -1,24 +1,19 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+﻿import type { Metadata } from "next";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackgroundDecor from "@/components/BackgroundDecor";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const plusJakartaSans = Plus_Jakarta_Sans({
+  variable: "--font-plus-jakarta-sans",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "Sistem Pakar Haji | Rekomendasi Paket",
-  description:
-    "Frontend sistem pakar untuk rekomendasi paket Haji: Reguler, Plus, dan Furoda.",
+  title: "UmrahYuk | Sistem Pakar Rekomendasi Umrah",
+  description: "Demo frontend sistem pakar untuk rekomendasi paket Umrah Reguler, Plus Turki, dan Plus Dubai.",
 };
 
 export default function RootLayout({
@@ -30,7 +25,7 @@ export default function RootLayout({
     <html lang="id" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased bg-white text-black dark:bg-slate-900 dark:text-white`}
+        className={`${plusJakartaSans.variable} min-h-screen antialiased bg-white text-black`}
       >
         <BackgroundDecor />
         <Navbar />
@@ -40,3 +35,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+

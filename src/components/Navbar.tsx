@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -46,9 +46,14 @@ export default function Navbar() {
     return () => window.removeEventListener("hashchange", updateHash);
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    setHash(window.location.hash);
+  }, [pathname]);
+
   const isActive = (href: string) => {
     if (href === "/") {
-      return pathname === "/";
+      return pathname === "/" && hash !== "#paket";
     }
 
     if (href.startsWith("/#")) {
@@ -60,35 +65,35 @@ export default function Navbar() {
 
   const desktopLinkClass = (href: string) =>
     [
-      "rounded-full px-3 py-2 text-sm font-semibold transition-colors",
+      "rounded-full px-3 py-2 text-sm font-semibold transition-all",
       isActive(href)
-        ? "bg-primary-50/80 text-primary-700 shadow-sm dark:bg-white/10 dark:text-white"
-        : "text-slate-600 hover:text-primary-600 dark:text-slate-200/80 dark:hover:text-white",
+        ? "bg-primary-50 text-primary-700 ring-1 ring-primary-200 shadow-sm"
+        : "text-slate-600 hover:bg-slate-100 hover:text-primary-600",
     ].join(" ");
 
   const mobileLinkClass = (href: string) =>
     [
       "rounded-xl px-3 py-2 text-base font-medium transition-colors",
       isActive(href)
-        ? "bg-primary-50/80 text-primary-700 shadow-sm dark:bg-white/10 dark:text-white"
-        : "text-slate-600 hover:bg-slate-100/60 hover:text-primary-600 dark:text-slate-200/80 dark:hover:bg-white/10",
+        ? "bg-primary-50/80 text-primary-700 shadow-sm"
+        : "text-slate-600 hover:bg-slate-100/60 hover:text-primary-600",
     ].join(" ");
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 print-hidden">
       <div
         className={[
-          "border-b border-transparent backdrop-blur-md transition-all duration-300",
+          "border-b backdrop-blur-xl transition-all duration-300",
           scrolled
-            ? "bg-white/80 shadow-[0_18px_48px_-28px_rgba(15,23,42,0.45)] dark:border-white/10 dark:bg-slate-950/75"
-            : "bg-white/60 dark:bg-slate-950/55",
+            ? "border-slate-200/90 bg-white/95 shadow-[0_16px_42px_-24px_rgba(15,23,42,0.45)]"
+            : "border-slate-200/80 bg-white/90 shadow-[0_10px_28px_-22px_rgba(15,23,42,0.4)]",
         ].join(" ")}
       >
         <div className="container-section">
           <div className="flex h-16 items-center justify-between gap-4">
             <Link
               href="/"
-              className="flex items-center gap-2 rounded-full px-2 py-1 transition hover:bg-black/5 dark:hover:bg-white/5"
+              className="flex items-center gap-2 rounded-full px-2 py-1 transition hover:bg-black/5"
             >
               <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-primary-600 text-white shadow-lg shadow-primary-600/25">
                 <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
@@ -96,8 +101,8 @@ export default function Navbar() {
                   <path d="M21 9.75v6.75L12 21l-9-4.5V9.75l9 4.5 9-4.5z" />
                 </svg>
               </span>
-              <span className="text-lg font-semibold tracking-tight text-slate-800 dark:text-slate-100">
-                Haji<span className="gradient-text">Expert</span>
+              <span className="text-lg font-semibold tracking-tight text-slate-800">
+                Umrah<span className="gradient-text">Yuk</span>
               </span>
             </Link>
 
@@ -123,7 +128,7 @@ export default function Navbar() {
                 aria-expanded={open}
                 aria-controls="mobile-navigation"
                 onClick={() => setOpen((prev) => !prev)}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200/70 bg-white/80 text-slate-700 transition hover:border-primary-400 hover:text-primary-600 md:hidden dark:border-white/10 dark:bg-slate-900/70 dark:text-slate-200 dark:hover:border-primary-500 dark:hover:text-white"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200/70 bg-white/80 text-slate-700 transition hover:border-primary-400 hover:text-primary-600 md:hidden"
               >
                 <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden>
                   {open ? (
@@ -146,7 +151,7 @@ export default function Navbar() {
         ].join(" ")}
       >
         <div className="container-section pt-2 pb-4">
-          <div className="rounded-3xl border border-slate-200/70 bg-white/90 p-4 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/90">
+          <div className="rounded-3xl border border-slate-200/70 bg-white/90 p-4 shadow-2xl backdrop-blur-xl">
             <nav aria-label="Navigasi mobile" className="flex flex-col gap-1">
               {links.map((link) => (
                 <Link
@@ -172,3 +177,4 @@ export default function Navbar() {
     </header>
   );
 }
+

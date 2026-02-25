@@ -1,7 +1,7 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { IconWallet, IconDiamond, IconPlane } from "@/components/Icons";
 
-type Variant = "reguler" | "plus" | "furoda";
+type Variant = "reguler" | "turki" | "dubai";
 
 export default function PackageCard({
   title,
@@ -20,25 +20,31 @@ export default function PackageCard({
 }) {
   const badgeColor = {
     reguler: "bg-blue-50 text-blue-700 ring-blue-100",
-    plus: "bg-sky-50 text-sky-700 ring-sky-100",
-    furoda: "bg-indigo-50 text-indigo-700 ring-indigo-100",
+    turki: "bg-emerald-50 text-emerald-700 ring-emerald-100",
+    dubai: "bg-amber-50 text-amber-700 ring-amber-100",
   }[variant];
 
   const intensity = {
     reguler: "from-primary-100 to-white",
-    plus: "from-primary-200 to-white",
-    furoda: "from-primary-300 to-white",
+    turki: "from-emerald-100 to-white",
+    dubai: "from-amber-100 to-white",
+  }[variant];
+
+  const badgeLabel = {
+    reguler: "REGULER",
+    turki: "PLUS TURKI",
+    dubai: "PLUS DUBAI",
   }[variant];
 
   const Icon = {
     reguler: IconWallet,
-    plus: IconDiamond,
-    furoda: IconPlane,
+    turki: IconDiamond,
+    dubai: IconPlane,
   }[variant];
 
   return (
     <div
-      className={`group relative rounded-2xl border border-black/5 bg-gradient-to-b ${intensity} p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg dark:border-white/10`}
+      className={`group relative rounded-2xl border border-black/5 bg-gradient-to-b ${intensity} p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg`}
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -48,13 +54,13 @@ export default function PackageCard({
           <h3 className="text-lg font-semibold">{title}</h3>
         </div>
         <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ring-1 ${badgeColor}`}>
-          {variant.toUpperCase()}
+          {badgeLabel}
         </span>
       </div>
-      <p className="mt-2 text-sm text-black dark:text-black">{waitTime}</p>
+      <p className="mt-2 text-sm text-black">{waitTime}</p>
       <p className="mt-1 text-sm font-semibold text-primary-700">{priceRange}</p>
 
-      <ul className="mt-4 space-y-2 text-sm text-black dark:text-black">
+      <ul className="mt-4 space-y-2 text-sm text-black">
         {highlights.map((h) => (
           <li key={h} className="flex items-start gap-2">
             <svg viewBox="0 0 24 24" className="mt-0.5 h-4 w-4 text-primary-600 transition-colors group-hover:text-primary-700" fill="currentColor">
@@ -79,3 +85,4 @@ export default function PackageCard({
     </div>
   );
 }
+

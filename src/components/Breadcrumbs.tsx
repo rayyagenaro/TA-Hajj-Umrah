@@ -1,10 +1,10 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 
 export type Crumb = { href?: string; label: string };
 
 export default function Breadcrumbs({ items }: { items: Crumb[] }) {
   return (
-    <nav aria-label="Breadcrumb" className="mb-4 text-sm text-black dark:text-black">
+    <nav aria-label="Breadcrumb" className="mb-4 text-sm text-black">
       <ol className="flex flex-wrap items-center gap-1">
         {items.map((it, idx) => (
           <li key={idx} className="flex items-center gap-1">
@@ -18,7 +18,7 @@ export default function Breadcrumbs({ items }: { items: Crumb[] }) {
                 {it.label}
               </Link>
             ) : (
-              <span className="font-medium text-black dark:text-black">{it.label}</span>
+              <span className="font-medium text-black">{it.label}</span>
             )}
           </li>
         ))}
@@ -26,3 +26,4 @@ export default function Breadcrumbs({ items }: { items: Crumb[] }) {
     </nav>
   );
 }
+

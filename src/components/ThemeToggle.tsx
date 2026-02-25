@@ -1,4 +1,4 @@
-// "use client";
+﻿// "use client";
 
 // import { useEffect, useState } from "react";
 
@@ -87,15 +87,16 @@
 //       aria-label="Ganti tema"
 //       aria-live="polite"
 //       onClick={cycle}
-//       className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/75 px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:border-primary-400 hover:text-primary-600 dark:border-white/10 dark:bg-slate-900/60 dark:text-slate-200 dark:hover:border-primary-500 dark:hover:text-white"
+//       className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/75 px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:border-primary-400 hover:text-primary-600"
 //       title={`Mode tampilan: ${currentMode}`}
 //     >
-//       <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors dark:bg-slate-800 dark:text-slate-200">
+//       <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors">
 //         {icon}
 //       </span>
-//       <span className="hidden text-xs uppercase tracking-wide text-slate-500 sm:inline dark:text-slate-400">
+//       <span className="hidden text-xs uppercase tracking-wide text-slate-500 sm:inline">
 //         {currentMode === "system" ? "Sistem" : currentMode === "light" ? "Terang" : "Gelap"}
 //       </span>
 //     </button>
 //   );
 // }
+

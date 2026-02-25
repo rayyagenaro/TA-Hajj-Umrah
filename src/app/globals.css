@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 /* Brand theme palette */
 :root {
@@ -23,35 +23,15 @@
     linear-gradient(180deg, #ffffff 0%, #f5f8ff 45%, #ecf2ff 100%);
 }
 
-.dark {
-  color-scheme: dark;
-  --background: #050c1d;
-  --foreground: #e2e8f0;
-  --muted: #94a3b8;
-  --surface: rgba(15, 23, 42, 0.72);
-  --surface-strong: rgba(10, 16, 32, 0.88);
-  --border-soft: rgba(99, 102, 241, 0.25);
-  --glow: rgba(99, 102, 241, 0.32);
-  --page-gradient: radial-gradient(
-      1000px 520px at 85% -220px,
-      color-mix(in oklab, var(--color-primary-700) 22%, transparent),
-      transparent 60%
-    ),
-    radial-gradient(
-      900px 480px at 12% -180px,
-      color-mix(in oklab, #1e293b 32%, transparent),
-      transparent 55%
-    ),
-    linear-gradient(180deg, #020617 0%, #050b1a 45%, #0b1220 100%);
-}
-
 /* Tailwind inline design tokens */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-plus-jakarta-sans), sans-serif;
+  --font-body: var(--font-plus-jakarta-sans), sans-serif;
+  --font-sans: var(--font-body);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --color-primary: #2563eb;
   --color-primary-50: #eff6ff;
   --color-primary-100: #dbeafe;
@@ -74,8 +54,15 @@ body {
   color: var(--foreground);
   background-color: var(--background);
   background-image: var(--page-gradient);
+  font-family: var(--font-body);
   transition: background-color 250ms ease, color 200ms ease;
   scroll-behavior: smooth;
+}
+
+:is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 ::selection {
@@ -172,3 +159,4 @@ body {
 .print-only {
   display: none;
 }
+

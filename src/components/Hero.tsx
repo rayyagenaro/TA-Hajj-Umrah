@@ -9,11 +9,11 @@ export default function Hero() {
           <div className="text-black">
             <span className="inline-flex items-center gap-2 rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-700 ring-1 ring-primary-100">
               <span className="inline-flex h-2 w-2 rounded-full bg-primary-500" aria-hidden />
-              Sistem Pakar Rekomendasi Haji
+              Sistem Pakar Rekomendasi Umrah
             </span>
 
             <h1 className="mt-4 text-4xl font-bold leading-tight sm:text-5xl text-black">
-              Temukan Paket Haji <span className="gradient-text">Terbaik</span> untuk Anda
+              Temukan Paket Umrah <span className="gradient-text">Terbaik</span> untuk Anda
             </h1>
 
             <p className="mt-3 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.35em] text-black">
@@ -25,8 +25,8 @@ export default function Hero() {
             </p>
 
             <p className="mt-4 text-black">
-              Pilih antara Haji Reguler, Haji Plus, atau Haji Furoda. Sistem kami
-              membantu merekomendasikan paket sesuai kebutuhan, anggaran, dan waktu keberangkatan.
+              Fokus pada varian Umrah populer seperti Reguler, Plus Turki, dan Plus Dubai.
+              Sistem kami membantu menyesuaikan rekomendasi dengan budget, kenyamanan, dan minat tur religi Anda.
             </p>
 
             <div className="mt-6 flex flex-col items-stretch gap-3 sm:flex-row">
@@ -64,17 +64,17 @@ export default function Hero() {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-black">Paket Haji</p>
-                    <p className="text-xs text-black">Reguler | Plus | Furoda</p>
+                    <p className="text-sm font-semibold text-black">Paket Umrah</p>
+                    <p className="text-xs text-black">Reguler | Plus Turki | Plus Dubai</p>
                   </div>
                 </div>
 
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
                   {[
-                    { name: "Reguler", desc: "Efisien & terjangkau" },
-                    { name: "Plus", desc: "Layanan lebih premium" },
-                    { name: "Furoda", desc: "Tanpa antre resmi" },
-                    { name: "Personal", desc: "Sesuai preferensi Anda" },
+                    { name: "Reguler", desc: "Fokus ibadah & hemat" },
+                    { name: "Plus Turki", desc: "Ditambah tur Istanbul" },
+                    { name: "Plus Dubai", desc: "City tour mewah" },
+                    { name: "Private", desc: "Jadwal fleksibel" },
                   ].map((x) => (
                     <div
                       key={x.name}
