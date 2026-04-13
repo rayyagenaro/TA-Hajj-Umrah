@@ -1,0 +1,32 @@
+ ⨯ Error: Cannot find module '../../../chunks/[turbopack]_runtime.js'
+Require stack:
+- D:\Perkuliahan\SEM 8\APLIKASI\Sistem Pakar Haji\haji-expert\.next\server\app\api\rekomendasi\route.js
+- D:\Perkuliahan\SEM 8\APLIKASI\Sistem Pakar Haji\haji-expert\node_modules\next\dist\server\require.js
+- D:\Perkuliahan\SEM 8\APLIKASI\Sistem Pakar Haji\haji-expert\node_modules\next\dist\server\load-components.js
+- D:\Perkuliahan\SEM 8\APLIKASI\Sistem Pakar Haji\haji-expert\node_modules\next\dist\build\utils.js
+- D:\Perkuliahan\SEM 8\APLIKASI\Sistem Pakar Haji\haji-expert\node_modules\next\dist\build\swc\options.js
+- D:\Perkuliahan\SEM 8\APLIKASI\Sistem Pakar Haji\haji-expert\node_modules\next\dist\build\swc\index.js
+- D:\Perkuliahan\SEM 8\APLIKASI\Sistem Pakar Haji\haji-expert\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\Perkuliahan\SEM 8\APLIKASI\Sistem Pakar Haji\haji-expert\node_modules\next\dist\server\config.js
+- D:\Perkuliahan\SEM 8\APLIKASI\Sistem Pakar Haji\haji-expert\node_modules\next\dist\cli\next-test.js
+- D:\Perkuliahan\SEM 8\APLIKASI\Sistem Pakar Haji\haji-expert\node_modules\next\dist\bin\next
+    at Object.<anonymous> (D:\Perkuliahan\SEM 8\APLIKASI\Sistem Pakar Haji\haji-expert\.next\server\app\api\rekomendasi\route.js:1:7) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+ ⨯ Error: Cannot find module '../chunks/ssr/[turbopack]_runtime.js'
+Require stack:
+- D:\Perkuliahan\SEM 8\APLIKASI\Sistem Pakar Haji\haji-expert\.next\server\pages\_document.js
+- D:\Perkuliahan\SEM 8\APLIKASI\Sistem Pakar Haji\haji-expert\node_modules\next\dist\server\require.js
+- D:\Perkuliahan\SEM 8\APLIKASI\Sistem Pakar Haji\haji-expert\node_modules\next\dist\server\load-components.js
+- D:\Perkuliahan\SEM 8\APLIKASI\Sistem Pakar Haji\haji-expert\node_modules\next\dist\build\utils.js
+- D:\Perkuliahan\SEM 8\APLIKASI\Sistem Pakar Haji\haji-expert\node_modules\next\dist\build\swc\options.js
+- D:\Perkuliahan\SEM 8\APLIKASI\Sistem Pakar Haji\haji-expert\node_modules\next\dist\build\swc\index.js
+- D:\Perkuliahan\SEM 8\APLIKASI\Sistem Pakar Haji\haji-expert\node_modules\next\dist\build\next-config-ts\transpile-config.js
+- D:\Perkuliahan\SEM 8\APLIKASI\Sistem Pakar Haji\haji-expert\node_modules\next\dist\server\config.js
+- D:\Perkuliahan\SEM 8\APLIKASI\Sistem Pakar Haji\haji-expert\node_modules\next\dist\cli\next-test.js
+- D:\Perkuliahan\SEM 8\APLIKASI\Sistem Pakar Haji\haji-expert\node_modules\next\dist\bin\next
+    at Object.<anonymous> (D:\Perkuliahan\SEM 8\APLIKASI\Sistem Pakar Haji\haji-expert\.next\server\pages\_document.js:1:7) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}

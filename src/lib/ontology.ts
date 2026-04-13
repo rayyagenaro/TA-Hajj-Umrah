@@ -4,12 +4,23 @@ import { XMLParser } from "fast-xml-parser";
 
 type ContextType = "Umrah";
 
-type NumericProperty = "budget" | "usia";
-type BooleanProperty = "butuh_pendampingan";
-type StringProperty = "preferensi_hotel" | "tipe_transportasi" | "destinasi_tambahan";
+type NumericProperty =
+  | "budget"
+  | "usia"
+  | "durasi_preferensi"
+  | "prefer_jarak_hotel_maks"
+  | "jumlah_jamaah";
+type BooleanProperty = "butuh_pendampingan" | "butuh_private" | "prefer_direct_flight";
+type StringProperty =
+  | "preferensi_hotel"
+  | "tipe_transportasi"
+  | "destinasi_tambahan"
+  | "prefer_destinasi"
+  | "musim_preferensi";
+type CompareOperator = "gt" | "gte" | "lt" | "lte" | "eq";
 
 type Condition =
-  | { kind: "compare"; property: NumericProperty; operator: "gt" | "gte" | "lt" | "lte"; value: number }
+  | { kind: "compare"; property: NumericProperty; operator: CompareOperator; value: number }
   | { kind: "boolean"; property: BooleanProperty; value: boolean }
   | { kind: "string"; property: StringProperty; value: string; caseInsensitive: boolean };
 
@@ -26,7 +37,14 @@ export interface PreferenceInput {
   ibadah: ContextType;
   budget?: number;
   usia?: number;
+  durasiPreferensi?: number;
+  preferJarakHotelMaks?: number;
+  jumlahJamaah?: number;
   butuhPendampingan?: boolean;
+  butuhPrivate?: boolean;
+  preferDirectFlight?: boolean;
+  musimPreferensi?: string;
+  preferDestinasi?: string;
   preferensiHotel?: string;
   tipeTransportasi?: string;
   destinasiTambahan?: string | null;
@@ -53,7 +71,7 @@ const parser = new XMLParser({
 });
 
 const DATA_DIR = path.join(process.cwd(), "public", "data");
-const ONTOLOGY_FILE = "final.owl";
+const ONTOLOGY_FILE = "ontologi.owl";
 
 let cachedRules: Rule[] | null = null;
 let cachedTimestamp: number | null = null;
@@ -98,11 +116,12 @@ function convertRule(rawRule: UnknownObject): Rule | null {
 
   const subjectVariable = getSubjectVariable(body);
 
-  const memilihAtom = objectAtoms.find((atom) => getLocalName(getAttribute(atom, "ObjectProperty", "IRI")) === "memilih_ibadah");
-  if (!memilihAtom) return null;
-
-  const contextIndividual = getAttribute(memilihAtom, "NamedIndividual", "IRI");
-  const context = normalizeContext(getLocalName(contextIndividual));
+  const memilihAtom = objectAtoms.find(
+    (atom) => getLocalName(getAttribute(atom, "ObjectProperty", "IRI")) === "memilih_ibadah",
+  );
+  const context = memilihAtom
+    ? normalizeContext(getLocalName(getAttribute(memilihAtom, "NamedIndividual", "IRI")))
+    : "Umrah";
   if (!context) return null;
 
   const annotations = toArray(rawRule["Annotation"]).filter(isRecord);
@@ -121,7 +140,7 @@ function convertRule(rawRule: UnknownObject): Rule | null {
     if (literalNode !== undefined) {
       const literal = parseLiteral(literalNode);
       if (literal === undefined) continue;
-      if (property === "butuh_pendampingan" && typeof literal === "boolean") {
+      if (isBooleanProperty(property) && typeof literal === "boolean") {
         conditions.push({ kind: "boolean", property, value: literal });
       } else if (isStringProperty(property) && typeof literal === "string") {
         conditions.push({ kind: "string", property, value: literal, caseInsensitive: true });
@@ -154,13 +173,22 @@ function convertRule(rawRule: UnknownObject): Rule | null {
       if (compare) {
         conditions.push({ kind: "compare", property, operator: compare, value: literal });
       }
+    } else if (isBooleanProperty(property) && typeof literal === "boolean" && operator === "equal") {
+      conditions.push({ kind: "boolean", property, value: literal });
     } else if (isStringProperty(property) && typeof literal === "string" && operator === "stringEqualIgnoreCase") {
       conditions.push({ kind: "string", property, value: literal, caseInsensitive: true });
     }
   }
 
   const headAtoms = toArray(head["ObjectPropertyAtom"]).filter(isRecord);
-  const recommendationAtom = headAtoms.find((atom) => getLocalName(getAttribute(atom, "ObjectProperty", "IRI")) === "mendapat_rekomendasi");
+  const recommendationAtom = headAtoms.find((atom) => {
+    const objectProperty = getLocalName(getAttribute(atom, "ObjectProperty", "IRI"));
+    return (
+      objectProperty === "mendapat_rekomendasi" ||
+      objectProperty === "mendapat_rekomendasi_single" ||
+      objectProperty === "mendapat_rekomendasi_multi"
+    );
+  });
   if (!recommendationAtom) return null;
 
   const recommendation = getLocalName(getAttribute(recommendationAtom, "NamedIndividual", "IRI"));
@@ -200,6 +228,14 @@ export function inferRecommendations(input: PreferenceInput, rules: Rule[]): Inf
 
   matches.sort(compareScoredMatches);
 
+  const blockingMatch = matches.find((match) => isBlockingRecommendation(match.detail.paket));
+  if (blockingMatch) {
+    return {
+      paketUtama: blockingMatch.detail,
+      paketAlternatif: [],
+    };
+  }
+
   const unique = new Map<string, (typeof matches)[number]>();
   for (const match of matches) {
     const key = match.detail.paket;
@@ -223,6 +259,10 @@ export function inferRecommendations(input: PreferenceInput, rules: Rule[]): Inf
   };
 }
 
+function isBlockingRecommendation(paket: string): boolean {
+  return paket.startsWith("TidakMendapatRekomendasi") || paket === "UmrahTidakDirekomendasikan";
+}
+
 function scoreRule(rule: Rule): number {
   return rule.conditions.reduce((total, condition) => total + getConditionWeight(condition), 0);
 }
@@ -231,7 +271,7 @@ function getConditionWeight(condition: Condition): number {
   if (condition.kind === "compare") return 2;
   if (condition.kind === "boolean") return 3;
   if (condition.kind === "string") {
-    return condition.property === "destinasi_tambahan" ? 5 : 4;
+    return condition.property === "destinasi_tambahan" || condition.property === "prefer_destinasi" ? 5 : 4;
   }
   return 0;
 }
@@ -263,6 +303,8 @@ function evaluateCondition(condition: Condition, input: PreferenceInput): boolea
           return value < condition.value;
         case "lte":
           return value <= condition.value;
+        case "eq":
+          return value === condition.value;
         default:
           return false;
       }
@@ -285,14 +327,33 @@ function evaluateCondition(condition: Condition, input: PreferenceInput): boolea
 }
 
 function getNumericValue(property: NumericProperty, input: PreferenceInput): number | undefined {
-  if (property === "budget") return input.budget;
-  if (property === "usia") return input.usia;
-  return undefined;
+  switch (property) {
+    case "budget":
+      return input.budget;
+    case "usia":
+      return input.usia;
+    case "durasi_preferensi":
+      return input.durasiPreferensi;
+    case "prefer_jarak_hotel_maks":
+      return input.preferJarakHotelMaks;
+    case "jumlah_jamaah":
+      return input.jumlahJamaah;
+    default:
+      return undefined;
+  }
 }
 
 function getBooleanValue(property: BooleanProperty, input: PreferenceInput): boolean | undefined {
-  if (property === "butuh_pendampingan") return input.butuhPendampingan;
-  return undefined;
+  switch (property) {
+    case "butuh_pendampingan":
+      return input.butuhPendampingan;
+    case "butuh_private":
+      return input.butuhPrivate;
+    case "prefer_direct_flight":
+      return input.preferDirectFlight;
+    default:
+      return undefined;
+  }
 }
 
 function getStringValue(property: StringProperty, input: PreferenceInput): string | undefined {
@@ -303,12 +364,16 @@ function getStringValue(property: StringProperty, input: PreferenceInput): strin
       return input.tipeTransportasi ?? undefined;
     case "destinasi_tambahan":
       return input.destinasiTambahan ?? undefined;
+    case "prefer_destinasi":
+      return input.preferDestinasi ?? input.destinasiTambahan ?? undefined;
+    case "musim_preferensi":
+      return input.musimPreferensi ?? undefined;
     default:
       return undefined;
   }
 }
 
-function mapOperator(operator: string): Condition["operator"] | null {
+function mapOperator(operator: string): CompareOperator | null {
   switch (operator) {
     case "greaterThan":
       return "gt";
@@ -318,6 +383,8 @@ function mapOperator(operator: string): Condition["operator"] | null {
       return "lt";
     case "lessThanOrEqual":
       return "lte";
+    case "equal":
+      return "eq";
     default:
       return null;
   }
@@ -327,15 +394,26 @@ function mapDataProperty(localName: string): StringProperty | NumericProperty | 
   switch (localName) {
     case "budget":
     case "usia":
+    case "durasi_preferensi":
+    case "prefer_jarak_hotel_maks":
+    case "jumlah_jamaah":
       return localName;
     case "butuh_pendampingan":
       return "butuh_pendampingan";
+    case "butuh_private":
+      return "butuh_private";
+    case "prefer_direct_flight":
+      return "prefer_direct_flight";
     case "preferensi_hotel":
       return "preferensi_hotel";
     case "tipe_transportasi":
       return "tipe_transportasi";
     case "destinasi_tambahan":
       return "destinasi_tambahan";
+    case "prefer_destinasi":
+      return "prefer_destinasi";
+    case "musim_preferensi":
+      return "musim_preferensi";
     default:
       return null;
   }
@@ -433,11 +511,27 @@ function isRecord(value: unknown): value is UnknownObject {
 }
 
 function isNumericProperty(property: unknown): property is NumericProperty {
-  return property === "budget" || property === "usia";
+  return (
+    property === "budget" ||
+    property === "usia" ||
+    property === "durasi_preferensi" ||
+    property === "prefer_jarak_hotel_maks" ||
+    property === "jumlah_jamaah"
+  );
+}
+
+function isBooleanProperty(property: unknown): property is BooleanProperty {
+  return property === "butuh_pendampingan" || property === "butuh_private" || property === "prefer_direct_flight";
 }
 
 function isStringProperty(property: unknown): property is StringProperty {
-  return property === "preferensi_hotel" || property === "tipe_transportasi" || property === "destinasi_tambahan";
+  return (
+    property === "preferensi_hotel" ||
+    property === "tipe_transportasi" ||
+    property === "destinasi_tambahan" ||
+    property === "prefer_destinasi" ||
+    property === "musim_preferensi"
+  );
 }
 
 function extractVariableNames(node: unknown): string[] {

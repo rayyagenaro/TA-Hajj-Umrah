@@ -1,0 +1,417 @@
+﻿<?xml version="1.0"?>
+<Ontology xmlns="http://www.w3.org/2002/07/owl#"
+     xml:base="http://www.semanticweb.org/hp/ontologies/2026/3/ontologi-umrah"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     ontologyIRI="http://www.semanticweb.org/hp/ontologies/2026/3/ontologi-umrah">
+    <Prefix name="" IRI="http://www.w3.org/2002/07/owl#"/>
+    <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
+    <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+    <Prefix name="xml" IRI="http://www.w3.org/XML/1998/namespace"/>
+    <Prefix name="xsd" IRI="http://www.w3.org/2001/XMLSchema#"/>
+    <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
+    <Prefix name="onto" IRI="http://www.semanticweb.org/hp/ontologies/2026/3/ontologi-umrah#"/>
+
+    <Declaration><Class IRI="#Jamaah"/></Declaration>
+    <Declaration><Class IRI="#PreferensiPengguna"/></Declaration>
+    <Declaration><Class IRI="#PaketUmrah"/></Declaration>
+    <Declaration><Class IRI="#Akomodasi"/></Declaration>
+    <Declaration><Class IRI="#Penerbangan"/></Declaration>
+    <Declaration><Class IRI="#DurasiPerjalanan"/></Declaration>
+    <Declaration><Class IRI="#DestinasiTambahan"/></Declaration>
+    <Declaration><Class IRI="#MusimKeberangkatan"/></Declaration>
+    <Declaration><Class IRI="#LayananJamaah"/></Declaration>
+
+    <Declaration><Class IRI="#UmrahHemat"/></Declaration>
+    <Declaration><Class IRI="#UmrahReguler"/></Declaration>
+    <Declaration><Class IRI="#UmrahVIPGold"/></Declaration>
+    <Declaration><Class IRI="#UmrahPrivate"/></Declaration>
+    <Declaration><Class IRI="#UmrahPlusTurki"/></Declaration>
+    <Declaration><Class IRI="#UmrahPlusDubai"/></Declaration>
+    <Declaration><Class IRI="#UmrahPlusMesir"/></Declaration>
+    <Declaration><Class IRI="#UmrahTidakDirekomendasikan"/></Declaration>
+
+    <Declaration><Class IRI="#PendampingLansia"/></Declaration>
+    <Declaration><Class IRI="#PendampingIbadah"/></Declaration>
+    <Declaration><Class IRI="#GuideKhususPrivate"/></Declaration>
+
+    <Declaration><ObjectProperty IRI="#memiliki_preferensi"/></Declaration>
+    <Declaration><ObjectProperty IRI="#mendapat_rekomendasi_single"/></Declaration>
+    <Declaration><ObjectProperty IRI="#mendapat_rekomendasi_multi"/></Declaration>
+    <Declaration><ObjectProperty IRI="#memiliki_akomodasi"/></Declaration>
+    <Declaration><ObjectProperty IRI="#memiliki_penerbangan"/></Declaration>
+    <Declaration><ObjectProperty IRI="#memiliki_durasi"/></Declaration>
+    <Declaration><ObjectProperty IRI="#memiliki_destinasi_tambahan"/></Declaration>
+    <Declaration><ObjectProperty IRI="#berlaku_pada_musim"/></Declaration>
+    <Declaration><ObjectProperty IRI="#memiliki_layanan"/></Declaration>
+    <Declaration><ObjectProperty IRI="#membutuhkan_layanan"/></Declaration>
+
+    <Declaration><DataProperty IRI="#nama_jamaah"/></Declaration>
+    <Declaration><DataProperty IRI="#usia"/></Declaration>
+    <Declaration><DataProperty IRI="#budget"/></Declaration>
+    <Declaration><DataProperty IRI="#durasi_preferensi"/></Declaration>
+    <Declaration><DataProperty IRI="#prefer_direct_flight"/></Declaration>
+    <Declaration><DataProperty IRI="#prefer_jarak_hotel_maks"/></Declaration>
+    <Declaration><DataProperty IRI="#prefer_destinasi"/></Declaration>
+    <Declaration><DataProperty IRI="#butuh_private"/></Declaration>
+    <Declaration><DataProperty IRI="#butuh_pendampingan"/></Declaration>
+    <Declaration><DataProperty IRI="#jumlah_jamaah"/></Declaration>
+    <Declaration><DataProperty IRI="#musim_preferensi"/></Declaration>
+    <Declaration><DataProperty IRI="#nama_paket"/></Declaration>
+    <Declaration><DataProperty IRI="#harga_min"/></Declaration>
+    <Declaration><DataProperty IRI="#harga_max"/></Declaration>
+
+    <Declaration><NamedIndividual IRI="#UmrahHemat"/></Declaration>
+    <Declaration><NamedIndividual IRI="#UmrahReguler"/></Declaration>
+    <Declaration><NamedIndividual IRI="#UmrahVIPGold"/></Declaration>
+    <Declaration><NamedIndividual IRI="#UmrahPrivate"/></Declaration>
+    <Declaration><NamedIndividual IRI="#UmrahPlusTurki"/></Declaration>
+    <Declaration><NamedIndividual IRI="#UmrahPlusDubai"/></Declaration>
+    <Declaration><NamedIndividual IRI="#UmrahPlusMesir"/></Declaration>
+    <Declaration><NamedIndividual IRI="#UmrahTidakDirekomendasikan"/></Declaration>
+    <Declaration><NamedIndividual IRI="#PendampingLansia"/></Declaration>
+    <Declaration><NamedIndividual IRI="#PendampingIbadah"/></Declaration>
+    <Declaration><NamedIndividual IRI="#GuideKhususPrivate"/></Declaration>
+
+    <SubClassOf><Class IRI="#UmrahHemat"/><Class IRI="#PaketUmrah"/></SubClassOf>
+    <SubClassOf><Class IRI="#UmrahReguler"/><Class IRI="#PaketUmrah"/></SubClassOf>
+    <SubClassOf><Class IRI="#UmrahVIPGold"/><Class IRI="#PaketUmrah"/></SubClassOf>
+    <SubClassOf><Class IRI="#UmrahPrivate"/><Class IRI="#PaketUmrah"/></SubClassOf>
+    <SubClassOf><Class IRI="#UmrahPlusTurki"/><Class IRI="#PaketUmrah"/></SubClassOf>
+    <SubClassOf><Class IRI="#UmrahPlusDubai"/><Class IRI="#PaketUmrah"/></SubClassOf>
+    <SubClassOf><Class IRI="#UmrahPlusMesir"/><Class IRI="#PaketUmrah"/></SubClassOf>
+    <SubClassOf><Class IRI="#UmrahTidakDirekomendasikan"/><Class IRI="#PaketUmrah"/></SubClassOf>
+
+    <SubClassOf><Class IRI="#PendampingLansia"/><Class IRI="#LayananJamaah"/></SubClassOf>
+    <SubClassOf><Class IRI="#PendampingIbadah"/><Class IRI="#LayananJamaah"/></SubClassOf>
+    <SubClassOf><Class IRI="#GuideKhususPrivate"/><Class IRI="#LayananJamaah"/></SubClassOf>
+
+    <ClassAssertion><Class IRI="#PaketUmrah"/><NamedIndividual IRI="#UmrahHemat"/></ClassAssertion>
+    <ClassAssertion><Class IRI="#PaketUmrah"/><NamedIndividual IRI="#UmrahReguler"/></ClassAssertion>
+    <ClassAssertion><Class IRI="#PaketUmrah"/><NamedIndividual IRI="#UmrahVIPGold"/></ClassAssertion>
+    <ClassAssertion><Class IRI="#PaketUmrah"/><NamedIndividual IRI="#UmrahPrivate"/></ClassAssertion>
+    <ClassAssertion><Class IRI="#PaketUmrah"/><NamedIndividual IRI="#UmrahPlusTurki"/></ClassAssertion>
+    <ClassAssertion><Class IRI="#PaketUmrah"/><NamedIndividual IRI="#UmrahPlusDubai"/></ClassAssertion>
+    <ClassAssertion><Class IRI="#PaketUmrah"/><NamedIndividual IRI="#UmrahPlusMesir"/></ClassAssertion>
+    <ClassAssertion><Class IRI="#PaketUmrah"/><NamedIndividual IRI="#UmrahTidakDirekomendasikan"/></ClassAssertion>
+    <ClassAssertion><Class IRI="#LayananJamaah"/><NamedIndividual IRI="#PendampingLansia"/></ClassAssertion>
+    <ClassAssertion><Class IRI="#LayananJamaah"/><NamedIndividual IRI="#PendampingIbadah"/></ClassAssertion>
+    <ClassAssertion><Class IRI="#LayananJamaah"/><NamedIndividual IRI="#GuideKhususPrivate"/></ClassAssertion>
+
+    <DataPropertyAssertion><DataProperty IRI="#nama_paket"/><NamedIndividual IRI="#UmrahHemat"/><Literal>Umrah Hemat</Literal></DataPropertyAssertion>
+    <DataPropertyAssertion><DataProperty IRI="#harga_min"/><NamedIndividual IRI="#UmrahHemat"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">25000000</Literal></DataPropertyAssertion>
+    <DataPropertyAssertion><DataProperty IRI="#harga_max"/><NamedIndividual IRI="#UmrahHemat"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">29999999</Literal></DataPropertyAssertion>
+
+    <DataPropertyAssertion><DataProperty IRI="#nama_paket"/><NamedIndividual IRI="#UmrahReguler"/><Literal>Umrah Reguler</Literal></DataPropertyAssertion>
+    <DataPropertyAssertion><DataProperty IRI="#harga_min"/><NamedIndividual IRI="#UmrahReguler"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">30000000</Literal></DataPropertyAssertion>
+    <DataPropertyAssertion><DataProperty IRI="#harga_max"/><NamedIndividual IRI="#UmrahReguler"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">34999999</Literal></DataPropertyAssertion>
+
+    <DataPropertyAssertion><DataProperty IRI="#nama_paket"/><NamedIndividual IRI="#UmrahVIPGold"/><Literal>Umrah VIP Gold</Literal></DataPropertyAssertion>
+    <DataPropertyAssertion><DataProperty IRI="#harga_min"/><NamedIndividual IRI="#UmrahVIPGold"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">35000000</Literal></DataPropertyAssertion>
+    <DataPropertyAssertion><DataProperty IRI="#harga_max"/><NamedIndividual IRI="#UmrahVIPGold"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">50000000</Literal></DataPropertyAssertion>
+
+    <DataPropertyAssertion><DataProperty IRI="#nama_paket"/><NamedIndividual IRI="#UmrahPrivate"/><Literal>Umrah Private</Literal></DataPropertyAssertion>
+    <DataPropertyAssertion><DataProperty IRI="#harga_min"/><NamedIndividual IRI="#UmrahPrivate"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">45000000</Literal></DataPropertyAssertion>
+    <DataPropertyAssertion><DataProperty IRI="#harga_max"/><NamedIndividual IRI="#UmrahPrivate"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">90000000</Literal></DataPropertyAssertion>
+
+    <ObjectPropertyDomain><ObjectProperty IRI="#memiliki_preferensi"/><Class IRI="#Jamaah"/></ObjectPropertyDomain>
+    <ObjectPropertyRange><ObjectProperty IRI="#memiliki_preferensi"/><Class IRI="#PreferensiPengguna"/></ObjectPropertyRange>
+    <ObjectPropertyDomain><ObjectProperty IRI="#mendapat_rekomendasi_single"/><Class IRI="#PreferensiPengguna"/></ObjectPropertyDomain>
+    <ObjectPropertyRange><ObjectProperty IRI="#mendapat_rekomendasi_single"/><Class IRI="#PaketUmrah"/></ObjectPropertyRange>
+    <ObjectPropertyDomain><ObjectProperty IRI="#mendapat_rekomendasi_multi"/><Class IRI="#PreferensiPengguna"/></ObjectPropertyDomain>
+    <ObjectPropertyRange><ObjectProperty IRI="#mendapat_rekomendasi_multi"/><Class IRI="#PaketUmrah"/></ObjectPropertyRange>
+    <ObjectPropertyDomain><ObjectProperty IRI="#memiliki_akomodasi"/><Class IRI="#PaketUmrah"/></ObjectPropertyDomain>
+    <ObjectPropertyRange><ObjectProperty IRI="#memiliki_akomodasi"/><Class IRI="#Akomodasi"/></ObjectPropertyRange>
+    <ObjectPropertyDomain><ObjectProperty IRI="#memiliki_penerbangan"/><Class IRI="#PaketUmrah"/></ObjectPropertyDomain>
+    <ObjectPropertyRange><ObjectProperty IRI="#memiliki_penerbangan"/><Class IRI="#Penerbangan"/></ObjectPropertyRange>
+    <ObjectPropertyDomain><ObjectProperty IRI="#memiliki_durasi"/><Class IRI="#PaketUmrah"/></ObjectPropertyDomain>
+    <ObjectPropertyRange><ObjectProperty IRI="#memiliki_durasi"/><Class IRI="#DurasiPerjalanan"/></ObjectPropertyRange>
+    <ObjectPropertyDomain><ObjectProperty IRI="#memiliki_destinasi_tambahan"/><Class IRI="#PaketUmrah"/></ObjectPropertyDomain>
+    <ObjectPropertyRange><ObjectProperty IRI="#memiliki_destinasi_tambahan"/><Class IRI="#DestinasiTambahan"/></ObjectPropertyRange>
+    <ObjectPropertyDomain><ObjectProperty IRI="#berlaku_pada_musim"/><Class IRI="#PaketUmrah"/></ObjectPropertyDomain>
+    <ObjectPropertyRange><ObjectProperty IRI="#berlaku_pada_musim"/><Class IRI="#MusimKeberangkatan"/></ObjectPropertyRange>
+    <ObjectPropertyDomain><ObjectProperty IRI="#memiliki_layanan"/><Class IRI="#PaketUmrah"/></ObjectPropertyDomain>
+    <ObjectPropertyRange><ObjectProperty IRI="#memiliki_layanan"/><Class IRI="#LayananJamaah"/></ObjectPropertyRange>
+    <ObjectPropertyDomain><ObjectProperty IRI="#membutuhkan_layanan"/><Class IRI="#PreferensiPengguna"/></ObjectPropertyDomain>
+    <ObjectPropertyRange><ObjectProperty IRI="#membutuhkan_layanan"/><Class IRI="#LayananJamaah"/></ObjectPropertyRange>
+
+    <DataPropertyDomain><DataProperty IRI="#nama_jamaah"/><Class IRI="#Jamaah"/></DataPropertyDomain>
+    <DataPropertyRange><DataProperty IRI="#nama_jamaah"/><Datatype abbreviatedIRI="xsd:string"/></DataPropertyRange>
+    <DataPropertyDomain><DataProperty IRI="#usia"/><Class IRI="#PreferensiPengguna"/></DataPropertyDomain>
+    <DataPropertyRange><DataProperty IRI="#usia"/><Datatype abbreviatedIRI="xsd:integer"/></DataPropertyRange>
+    <DataPropertyDomain><DataProperty IRI="#budget"/><Class IRI="#PreferensiPengguna"/></DataPropertyDomain>
+    <DataPropertyRange><DataProperty IRI="#budget"/><Datatype abbreviatedIRI="xsd:integer"/></DataPropertyRange>
+    <DataPropertyDomain><DataProperty IRI="#durasi_preferensi"/><Class IRI="#PreferensiPengguna"/></DataPropertyDomain>
+    <DataPropertyRange><DataProperty IRI="#durasi_preferensi"/><Datatype abbreviatedIRI="xsd:integer"/></DataPropertyRange>
+    <DataPropertyDomain><DataProperty IRI="#prefer_direct_flight"/><Class IRI="#PreferensiPengguna"/></DataPropertyDomain>
+    <DataPropertyRange><DataProperty IRI="#prefer_direct_flight"/><Datatype abbreviatedIRI="xsd:boolean"/></DataPropertyRange>
+    <DataPropertyDomain><DataProperty IRI="#prefer_jarak_hotel_maks"/><Class IRI="#PreferensiPengguna"/></DataPropertyDomain>
+    <DataPropertyRange><DataProperty IRI="#prefer_jarak_hotel_maks"/><Datatype abbreviatedIRI="xsd:integer"/></DataPropertyRange>
+    <DataPropertyDomain><DataProperty IRI="#prefer_destinasi"/><Class IRI="#PreferensiPengguna"/></DataPropertyDomain>
+    <DataPropertyRange><DataProperty IRI="#prefer_destinasi"/><Datatype abbreviatedIRI="xsd:string"/></DataPropertyRange>
+    <DataPropertyDomain><DataProperty IRI="#butuh_private"/><Class IRI="#PreferensiPengguna"/></DataPropertyDomain>
+    <DataPropertyRange><DataProperty IRI="#butuh_private"/><Datatype abbreviatedIRI="xsd:boolean"/></DataPropertyRange>
+    <DataPropertyDomain><DataProperty IRI="#butuh_pendampingan"/><Class IRI="#PreferensiPengguna"/></DataPropertyDomain>
+    <DataPropertyRange><DataProperty IRI="#butuh_pendampingan"/><Datatype abbreviatedIRI="xsd:boolean"/></DataPropertyRange>
+    <DataPropertyDomain><DataProperty IRI="#jumlah_jamaah"/><Class IRI="#PreferensiPengguna"/></DataPropertyDomain>
+    <DataPropertyRange><DataProperty IRI="#jumlah_jamaah"/><Datatype abbreviatedIRI="xsd:integer"/></DataPropertyRange>
+    <DataPropertyDomain><DataProperty IRI="#musim_preferensi"/><Class IRI="#PreferensiPengguna"/></DataPropertyDomain>
+    <DataPropertyRange><DataProperty IRI="#musim_preferensi"/><Datatype abbreviatedIRI="xsd:string"/></DataPropertyRange>
+    <DataPropertyDomain><DataProperty IRI="#nama_paket"/><Class IRI="#PaketUmrah"/></DataPropertyDomain>
+    <DataPropertyRange><DataProperty IRI="#nama_paket"/><Datatype abbreviatedIRI="xsd:string"/></DataPropertyRange>
+    <DataPropertyDomain><DataProperty IRI="#harga_min"/><Class IRI="#PaketUmrah"/></DataPropertyDomain>
+    <DataPropertyRange><DataProperty IRI="#harga_min"/><Datatype abbreviatedIRI="xsd:integer"/></DataPropertyRange>
+    <DataPropertyDomain><DataProperty IRI="#harga_max"/><Class IRI="#PaketUmrah"/></DataPropertyDomain>
+    <DataPropertyRange><DataProperty IRI="#harga_max"/><Datatype abbreviatedIRI="xsd:integer"/></DataPropertyRange>
+
+    <DLSafeRule>
+        <Annotation><AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal></Annotation>
+        <Annotation><AnnotationProperty abbreviatedIRI="rdfs:label"/><Literal>S1 Budget kurang dari 30 juta ke Hemat</Literal></Annotation>
+        <Body>
+            <ClassAtom><Class IRI="#PreferensiPengguna"/><Variable abbreviatedIRI="owl:p"/></ClassAtom>
+            <DataPropertyAtom><DataProperty IRI="#budget"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:b"/></DataPropertyAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#lessThan"><Variable abbreviatedIRI="owl:b"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">30000000</Literal></BuiltInAtom>
+        </Body>
+        <Head><ObjectPropertyAtom><ObjectProperty IRI="#mendapat_rekomendasi_single"/><Variable abbreviatedIRI="owl:p"/><NamedIndividual IRI="#UmrahHemat"/></ObjectPropertyAtom></Head>
+    </DLSafeRule>
+
+    <DLSafeRule>
+        <Annotation><AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal></Annotation>
+        <Annotation><AnnotationProperty abbreviatedIRI="rdfs:label"/><Literal>S2 Budget 30-35 juta ke Reguler</Literal></Annotation>
+        <Body>
+            <ClassAtom><Class IRI="#PreferensiPengguna"/><Variable abbreviatedIRI="owl:p"/></ClassAtom>
+            <DataPropertyAtom><DataProperty IRI="#budget"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:b"/></DataPropertyAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#greaterThanOrEqual"><Variable abbreviatedIRI="owl:b"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">30000000</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#lessThan"><Variable abbreviatedIRI="owl:b"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">35000000</Literal></BuiltInAtom>
+        </Body>
+        <Head><ObjectPropertyAtom><ObjectProperty IRI="#mendapat_rekomendasi_single"/><Variable abbreviatedIRI="owl:p"/><NamedIndividual IRI="#UmrahReguler"/></ObjectPropertyAtom></Head>
+    </DLSafeRule>
+
+    <DLSafeRule>
+        <Annotation><AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal></Annotation>
+        <Annotation><AnnotationProperty abbreviatedIRI="rdfs:label"/><Literal>S3 Budget 35-50 juta ke VIP Gold</Literal></Annotation>
+        <Body>
+            <ClassAtom><Class IRI="#PreferensiPengguna"/><Variable abbreviatedIRI="owl:p"/></ClassAtom>
+            <DataPropertyAtom><DataProperty IRI="#budget"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:b"/></DataPropertyAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#greaterThanOrEqual"><Variable abbreviatedIRI="owl:b"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">35000000</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#lessThanOrEqual"><Variable abbreviatedIRI="owl:b"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">50000000</Literal></BuiltInAtom>
+        </Body>
+        <Head><ObjectPropertyAtom><ObjectProperty IRI="#mendapat_rekomendasi_single"/><Variable abbreviatedIRI="owl:p"/><NamedIndividual IRI="#UmrahVIPGold"/></ObjectPropertyAtom></Head>
+    </DLSafeRule>
+
+    <DLSafeRule>
+        <Annotation><AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal></Annotation>
+        <Annotation><AnnotationProperty abbreviatedIRI="rdfs:label"/><Literal>S4 Butuh private dan budget cukup ke Umrah Private</Literal></Annotation>
+        <Body>
+            <ClassAtom><Class IRI="#PreferensiPengguna"/><Variable abbreviatedIRI="owl:p"/></ClassAtom>
+            <DataPropertyAtom><DataProperty IRI="#butuh_private"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:priv"/></DataPropertyAtom>
+            <DataPropertyAtom><DataProperty IRI="#budget"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:b"/></DataPropertyAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#equal"><Variable abbreviatedIRI="owl:priv"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#greaterThanOrEqual"><Variable abbreviatedIRI="owl:b"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">45000000</Literal></BuiltInAtom>
+        </Body>
+        <Head><ObjectPropertyAtom><ObjectProperty IRI="#mendapat_rekomendasi_single"/><Variable abbreviatedIRI="owl:p"/><NamedIndividual IRI="#UmrahPrivate"/></ObjectPropertyAtom></Head>
+    </DLSafeRule>
+
+    <DLSafeRule>
+        <Annotation><AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal></Annotation>
+        <Annotation><AnnotationProperty abbreviatedIRI="rdfs:label"/><Literal>S5 Destinasi Turki ke Plus Turki</Literal></Annotation>
+        <Body>
+            <ClassAtom><Class IRI="#PreferensiPengguna"/><Variable abbreviatedIRI="owl:p"/></ClassAtom>
+            <DataPropertyAtom><DataProperty IRI="#prefer_destinasi"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:d"/></DataPropertyAtom>
+            <DataPropertyAtom><DataProperty IRI="#budget"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:b"/></DataPropertyAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#stringEqualIgnoreCase"><Variable abbreviatedIRI="owl:d"/><Literal>Turki</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#greaterThanOrEqual"><Variable abbreviatedIRI="owl:b"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">35000000</Literal></BuiltInAtom>
+        </Body>
+        <Head><ObjectPropertyAtom><ObjectProperty IRI="#mendapat_rekomendasi_single"/><Variable abbreviatedIRI="owl:p"/><NamedIndividual IRI="#UmrahPlusTurki"/></ObjectPropertyAtom></Head>
+    </DLSafeRule>
+
+    <DLSafeRule>
+        <Annotation><AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal></Annotation>
+        <Annotation><AnnotationProperty abbreviatedIRI="rdfs:label"/><Literal>S6 Destinasi Dubai ke Plus Dubai</Literal></Annotation>
+        <Body>
+            <ClassAtom><Class IRI="#PreferensiPengguna"/><Variable abbreviatedIRI="owl:p"/></ClassAtom>
+            <DataPropertyAtom><DataProperty IRI="#prefer_destinasi"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:d"/></DataPropertyAtom>
+            <DataPropertyAtom><DataProperty IRI="#budget"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:b"/></DataPropertyAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#stringEqualIgnoreCase"><Variable abbreviatedIRI="owl:d"/><Literal>Dubai</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#greaterThanOrEqual"><Variable abbreviatedIRI="owl:b"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">35000000</Literal></BuiltInAtom>
+        </Body>
+        <Head><ObjectPropertyAtom><ObjectProperty IRI="#mendapat_rekomendasi_single"/><Variable abbreviatedIRI="owl:p"/><NamedIndividual IRI="#UmrahPlusDubai"/></ObjectPropertyAtom></Head>
+    </DLSafeRule>
+
+    <DLSafeRule>
+        <Annotation><AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal></Annotation>
+        <Annotation><AnnotationProperty abbreviatedIRI="rdfs:label"/><Literal>S7 Destinasi Mesir ke Plus Mesir</Literal></Annotation>
+        <Body>
+            <ClassAtom><Class IRI="#PreferensiPengguna"/><Variable abbreviatedIRI="owl:p"/></ClassAtom>
+            <DataPropertyAtom><DataProperty IRI="#prefer_destinasi"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:d"/></DataPropertyAtom>
+            <DataPropertyAtom><DataProperty IRI="#budget"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:b"/></DataPropertyAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#stringEqualIgnoreCase"><Variable abbreviatedIRI="owl:d"/><Literal>Mesir</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#greaterThanOrEqual"><Variable abbreviatedIRI="owl:b"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">35000000</Literal></BuiltInAtom>
+        </Body>
+        <Head><ObjectPropertyAtom><ObjectProperty IRI="#mendapat_rekomendasi_single"/><Variable abbreviatedIRI="owl:p"/><NamedIndividual IRI="#UmrahPlusMesir"/></ObjectPropertyAtom></Head>
+    </DLSafeRule>
+
+    <DLSafeRule>
+        <Annotation><AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal></Annotation>
+        <Annotation><AnnotationProperty abbreviatedIRI="rdfs:label"/><Literal>S8 Budget di bawah 25 juta tidak direkomendasikan</Literal></Annotation>
+        <Body>
+            <ClassAtom><Class IRI="#PreferensiPengguna"/><Variable abbreviatedIRI="owl:p"/></ClassAtom>
+            <DataPropertyAtom><DataProperty IRI="#budget"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:b"/></DataPropertyAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#lessThan"><Variable abbreviatedIRI="owl:b"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">25000000</Literal></BuiltInAtom>
+        </Body>
+        <Head><ObjectPropertyAtom><ObjectProperty IRI="#mendapat_rekomendasi_single"/><Variable abbreviatedIRI="owl:p"/><NamedIndividual IRI="#UmrahTidakDirekomendasikan"/></ObjectPropertyAtom></Head>
+    </DLSafeRule>
+
+    <DLSafeRule>
+        <Annotation><AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal></Annotation>
+        <Annotation><AnnotationProperty abbreviatedIRI="rdfs:label"/><Literal>M1 Multi hemat budget rendah durasi pendek tidak direct</Literal></Annotation>
+        <Body>
+            <ClassAtom><Class IRI="#PreferensiPengguna"/><Variable abbreviatedIRI="owl:p"/></ClassAtom>
+            <DataPropertyAtom><DataProperty IRI="#budget"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:b"/></DataPropertyAtom>
+            <DataPropertyAtom><DataProperty IRI="#durasi_preferensi"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:d"/></DataPropertyAtom>
+            <DataPropertyAtom><DataProperty IRI="#prefer_direct_flight"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:f"/></DataPropertyAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#lessThan"><Variable abbreviatedIRI="owl:b"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">30000000</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#lessThanOrEqual"><Variable abbreviatedIRI="owl:d"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">9</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#equal"><Variable abbreviatedIRI="owl:f"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">false</Literal></BuiltInAtom>
+        </Body>
+        <Head><ObjectPropertyAtom><ObjectProperty IRI="#mendapat_rekomendasi_multi"/><Variable abbreviatedIRI="owl:p"/><NamedIndividual IRI="#UmrahHemat"/></ObjectPropertyAtom></Head>
+    </DLSafeRule>
+
+    <DLSafeRule>
+        <Annotation><AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal></Annotation>
+        <Annotation><AnnotationProperty abbreviatedIRI="rdfs:label"/><Literal>M2 Multi reguler budget menengah durasi 12 hotel menengah</Literal></Annotation>
+        <Body>
+            <ClassAtom><Class IRI="#PreferensiPengguna"/><Variable abbreviatedIRI="owl:p"/></ClassAtom>
+            <DataPropertyAtom><DataProperty IRI="#budget"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:b"/></DataPropertyAtom>
+            <DataPropertyAtom><DataProperty IRI="#durasi_preferensi"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:d"/></DataPropertyAtom>
+            <DataPropertyAtom><DataProperty IRI="#prefer_jarak_hotel_maks"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:j"/></DataPropertyAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#greaterThanOrEqual"><Variable abbreviatedIRI="owl:b"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">30000000</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#lessThan"><Variable abbreviatedIRI="owl:b"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">35000000</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#equal"><Variable abbreviatedIRI="owl:d"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">12</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#lessThanOrEqual"><Variable abbreviatedIRI="owl:j"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">500</Literal></BuiltInAtom>
+        </Body>
+        <Head><ObjectPropertyAtom><ObjectProperty IRI="#mendapat_rekomendasi_multi"/><Variable abbreviatedIRI="owl:p"/><NamedIndividual IRI="#UmrahReguler"/></ObjectPropertyAtom></Head>
+    </DLSafeRule>
+
+    <DLSafeRule>
+        <Annotation><AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal></Annotation>
+        <Annotation><AnnotationProperty abbreviatedIRI="rdfs:label"/><Literal>M3 Multi VIP budget cukup durasi 12 direct hotel dekat</Literal></Annotation>
+        <Body>
+            <ClassAtom><Class IRI="#PreferensiPengguna"/><Variable abbreviatedIRI="owl:p"/></ClassAtom>
+            <DataPropertyAtom><DataProperty IRI="#budget"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:b"/></DataPropertyAtom>
+            <DataPropertyAtom><DataProperty IRI="#durasi_preferensi"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:d"/></DataPropertyAtom>
+            <DataPropertyAtom><DataProperty IRI="#prefer_direct_flight"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:f"/></DataPropertyAtom>
+            <DataPropertyAtom><DataProperty IRI="#prefer_jarak_hotel_maks"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:j"/></DataPropertyAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#greaterThanOrEqual"><Variable abbreviatedIRI="owl:b"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">35000000</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#equal"><Variable abbreviatedIRI="owl:d"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">12</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#equal"><Variable abbreviatedIRI="owl:f"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#lessThanOrEqual"><Variable abbreviatedIRI="owl:j"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">300</Literal></BuiltInAtom>
+        </Body>
+        <Head><ObjectPropertyAtom><ObjectProperty IRI="#mendapat_rekomendasi_multi"/><Variable abbreviatedIRI="owl:p"/><NamedIndividual IRI="#UmrahVIPGold"/></ObjectPropertyAtom></Head>
+    </DLSafeRule>
+
+    <DLSafeRule>
+        <Annotation><AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal></Annotation>
+        <Annotation><AnnotationProperty abbreviatedIRI="rdfs:label"/><Literal>M4 Multi private butuh private budget cukup jamaah kecil</Literal></Annotation>
+        <Body>
+            <ClassAtom><Class IRI="#PreferensiPengguna"/><Variable abbreviatedIRI="owl:p"/></ClassAtom>
+            <DataPropertyAtom><DataProperty IRI="#butuh_private"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:priv"/></DataPropertyAtom>
+            <DataPropertyAtom><DataProperty IRI="#budget"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:b"/></DataPropertyAtom>
+            <DataPropertyAtom><DataProperty IRI="#jumlah_jamaah"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:j"/></DataPropertyAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#equal"><Variable abbreviatedIRI="owl:priv"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#greaterThanOrEqual"><Variable abbreviatedIRI="owl:b"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">45000000</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#lessThanOrEqual"><Variable abbreviatedIRI="owl:j"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">6</Literal></BuiltInAtom>
+        </Body>
+        <Head><ObjectPropertyAtom><ObjectProperty IRI="#mendapat_rekomendasi_multi"/><Variable abbreviatedIRI="owl:p"/><NamedIndividual IRI="#UmrahPrivate"/></ObjectPropertyAtom></Head>
+    </DLSafeRule>
+
+    <DLSafeRule>
+        <Annotation><AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal></Annotation>
+        <Annotation><AnnotationProperty abbreviatedIRI="rdfs:label"/><Literal>M5 Multi plus Turki</Literal></Annotation>
+        <Body>
+            <ClassAtom><Class IRI="#PreferensiPengguna"/><Variable abbreviatedIRI="owl:p"/></ClassAtom>
+            <DataPropertyAtom><DataProperty IRI="#prefer_destinasi"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:d"/></DataPropertyAtom>
+            <DataPropertyAtom><DataProperty IRI="#budget"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:b"/></DataPropertyAtom>
+            <DataPropertyAtom><DataProperty IRI="#durasi_preferensi"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:t"/></DataPropertyAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#stringEqualIgnoreCase"><Variable abbreviatedIRI="owl:d"/><Literal>Turki</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#greaterThanOrEqual"><Variable abbreviatedIRI="owl:b"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">35000000</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#greaterThanOrEqual"><Variable abbreviatedIRI="owl:t"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">12</Literal></BuiltInAtom>
+        </Body>
+        <Head><ObjectPropertyAtom><ObjectProperty IRI="#mendapat_rekomendasi_multi"/><Variable abbreviatedIRI="owl:p"/><NamedIndividual IRI="#UmrahPlusTurki"/></ObjectPropertyAtom></Head>
+    </DLSafeRule>
+
+    <DLSafeRule>
+        <Annotation><AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal></Annotation>
+        <Annotation><AnnotationProperty abbreviatedIRI="rdfs:label"/><Literal>M6 Multi plus Dubai</Literal></Annotation>
+        <Body>
+            <ClassAtom><Class IRI="#PreferensiPengguna"/><Variable abbreviatedIRI="owl:p"/></ClassAtom>
+            <DataPropertyAtom><DataProperty IRI="#prefer_destinasi"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:d"/></DataPropertyAtom>
+            <DataPropertyAtom><DataProperty IRI="#budget"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:b"/></DataPropertyAtom>
+            <DataPropertyAtom><DataProperty IRI="#durasi_preferensi"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:t"/></DataPropertyAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#stringEqualIgnoreCase"><Variable abbreviatedIRI="owl:d"/><Literal>Dubai</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#greaterThanOrEqual"><Variable abbreviatedIRI="owl:b"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">35000000</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#greaterThanOrEqual"><Variable abbreviatedIRI="owl:t"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">12</Literal></BuiltInAtom>
+        </Body>
+        <Head><ObjectPropertyAtom><ObjectProperty IRI="#mendapat_rekomendasi_multi"/><Variable abbreviatedIRI="owl:p"/><NamedIndividual IRI="#UmrahPlusDubai"/></ObjectPropertyAtom></Head>
+    </DLSafeRule>
+
+    <DLSafeRule>
+        <Annotation><AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal></Annotation>
+        <Annotation><AnnotationProperty abbreviatedIRI="rdfs:label"/><Literal>M7 Multi plus Mesir</Literal></Annotation>
+        <Body>
+            <ClassAtom><Class IRI="#PreferensiPengguna"/><Variable abbreviatedIRI="owl:p"/></ClassAtom>
+            <DataPropertyAtom><DataProperty IRI="#prefer_destinasi"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:d"/></DataPropertyAtom>
+            <DataPropertyAtom><DataProperty IRI="#budget"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:b"/></DataPropertyAtom>
+            <DataPropertyAtom><DataProperty IRI="#durasi_preferensi"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:t"/></DataPropertyAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#stringEqualIgnoreCase"><Variable abbreviatedIRI="owl:d"/><Literal>Mesir</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#greaterThanOrEqual"><Variable abbreviatedIRI="owl:b"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">35000000</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#greaterThanOrEqual"><Variable abbreviatedIRI="owl:t"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">12</Literal></BuiltInAtom>
+        </Body>
+        <Head><ObjectPropertyAtom><ObjectProperty IRI="#mendapat_rekomendasi_multi"/><Variable abbreviatedIRI="owl:p"/><NamedIndividual IRI="#UmrahPlusMesir"/></ObjectPropertyAtom></Head>
+    </DLSafeRule>
+
+    <DLSafeRule>
+        <Annotation><AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal></Annotation>
+        <Annotation><AnnotationProperty abbreviatedIRI="rdfs:label"/><Literal>M8 HighSeason dan budget mepet turun ke Hemat</Literal></Annotation>
+        <Body>
+            <ClassAtom><Class IRI="#PreferensiPengguna"/><Variable abbreviatedIRI="owl:p"/></ClassAtom>
+            <DataPropertyAtom><DataProperty IRI="#musim_preferensi"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:s"/></DataPropertyAtom>
+            <DataPropertyAtom><DataProperty IRI="#budget"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:b"/></DataPropertyAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#stringEqualIgnoreCase"><Variable abbreviatedIRI="owl:s"/><Literal>HighSeason</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#greaterThanOrEqual"><Variable abbreviatedIRI="owl:b"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">30000000</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#lessThan"><Variable abbreviatedIRI="owl:b"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">35000000</Literal></BuiltInAtom>
+        </Body>
+        <Head><ObjectPropertyAtom><ObjectProperty IRI="#mendapat_rekomendasi_multi"/><Variable abbreviatedIRI="owl:p"/><NamedIndividual IRI="#UmrahHemat"/></ObjectPropertyAtom></Head>
+    </DLSafeRule>
+
+    <DLSafeRule>
+        <Annotation><AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal></Annotation>
+        <Annotation><AnnotationProperty abbreviatedIRI="rdfs:label"/><Literal>M9 Direct flight dan hotel sangat dekat ke VIP Gold</Literal></Annotation>
+        <Body>
+            <ClassAtom><Class IRI="#PreferensiPengguna"/><Variable abbreviatedIRI="owl:p"/></ClassAtom>
+            <DataPropertyAtom><DataProperty IRI="#prefer_direct_flight"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:f"/></DataPropertyAtom>
+            <DataPropertyAtom><DataProperty IRI="#prefer_jarak_hotel_maks"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:j"/></DataPropertyAtom>
+            <DataPropertyAtom><DataProperty IRI="#budget"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:b"/></DataPropertyAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#equal"><Variable abbreviatedIRI="owl:f"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#lessThanOrEqual"><Variable abbreviatedIRI="owl:j"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">250</Literal></BuiltInAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#greaterThanOrEqual"><Variable abbreviatedIRI="owl:b"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">40000000</Literal></BuiltInAtom>
+        </Body>
+        <Head><ObjectPropertyAtom><ObjectProperty IRI="#mendapat_rekomendasi_multi"/><Variable abbreviatedIRI="owl:p"/><NamedIndividual IRI="#UmrahVIPGold"/></ObjectPropertyAtom></Head>
+    </DLSafeRule>
+
+    <DLSafeRule>
+        <Annotation><AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#boolean">true</Literal></Annotation>
+        <Annotation><AnnotationProperty abbreviatedIRI="rdfs:label"/><Literal>M10 Budget di bawah 25 juta tidak direkomendasikan</Literal></Annotation>
+        <Body>
+            <ClassAtom><Class IRI="#PreferensiPengguna"/><Variable abbreviatedIRI="owl:p"/></ClassAtom>
+            <DataPropertyAtom><DataProperty IRI="#budget"/><Variable abbreviatedIRI="owl:p"/><Variable abbreviatedIRI="owl:b"/></DataPropertyAtom>
+            <BuiltInAtom IRI="http://www.w3.org/2003/11/swrlb#lessThan"><Variable abbreviatedIRI="owl:b"/><Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#integer">25000000</Literal></BuiltInAtom>
+        </Body>
+        <Head><ObjectPropertyAtom><ObjectProperty IRI="#mendapat_rekomendasi_multi"/><Variable abbreviatedIRI="owl:p"/><NamedIndividual IRI="#UmrahTidakDirekomendasikan"/></ObjectPropertyAtom></Head>
+    </DLSafeRule>
+
+    <AnnotationAssertion><AnnotationProperty abbreviatedIRI="rdfs:comment"/><IRI>#mendapat_rekomendasi_single</IRI><Literal>Hasil rekomendasi berdasarkan single-rule.</Literal></AnnotationAssertion>
+    <AnnotationAssertion><AnnotationProperty abbreviatedIRI="rdfs:comment"/><IRI>#mendapat_rekomendasi_multi</IRI><Literal>Hasil rekomendasi berdasarkan multi-rule kombinasi.</Literal></AnnotationAssertion>
+</Ontology>

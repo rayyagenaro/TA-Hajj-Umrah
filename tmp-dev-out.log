@@ -1,0 +1,32 @@
+
+> umrahyuk@0.1.0 dev
+> next dev --turbopack --port 3011
+
+   ▲ Next.js 15.5.2 (Turbopack)
+   - Local:        http://localhost:3011
+   - Network:      http://192.168.56.1:3011
+   - Environments: .env.local
+
+ ✓ Starting...
+Creating turbopack project {
+  dir: 'D:\\Perkuliahan\\SEM 8\\APLIKASI\\Sistem Pakar Haji\\haji-expert',
+  testMode: true
+}
+ ✓ Ready in 2.2s
+ ○ Compiling /api/rekomendasi ...
+ ✓ Compiled /api/rekomendasi in 2.5s
+ POST /api/rekomendasi 200 in 3066ms
+ ✓ Compiled in 60ms
+ ○ Compiling middleware ...
+ ✓ Compiled middleware in 1341ms
+   Reload env: .env.local
+   Reload env: .env.local
+   Reload env: .env.local
+ ✓ Compiled middleware in 38ms
+ ✓ Compiled in 5ms
+ ✓ Compiled middleware in 3ms
+ ✓ Compiled middleware in 2ms
+ ✓ Compiled middleware in 3ms
+ ✓ Compiled middleware in 14ms
+ ✓ Compiled in 47ms
+ ✓ Compiled middleware in 29ms

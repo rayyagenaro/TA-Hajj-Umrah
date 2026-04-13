@@ -4,10 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 // import ThemeToggle from "@/components/ThemeToggle";
 import { useEffect, useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 
 const links = [
   { href: "/", label: "Beranda" },
-  { href: "/#paket", label: "Paket" },
+  { href: "/paket", label: "Paket" },
   { href: "/rekomendasi", label: "Rekomendasi" },
   { href: "/tentang", label: "Tentang" },
 ];
@@ -118,6 +119,7 @@ export default function Navbar() {
               {/* <ThemeToggle /> */}
               <Link
                 href="/rekomendasi"
+                onClick={() => trackEvent("cta_click", { location: "navbar-desktop", target: "/rekomendasi" })}
                 className="hidden items-center gap-2 rounded-full bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-primary-600/25 transition hover:bg-primary-700 md:inline-flex"
               >
                 Mulai Rekomendasi
@@ -166,7 +168,10 @@ export default function Navbar() {
               <Link
                 href="/rekomendasi"
                 className="mt-2 inline-flex items-center justify-center gap-2 rounded-2xl bg-primary-600 px-4 py-3 text-base font-semibold text-white shadow-lg shadow-primary-600/25 transition hover:bg-primary-700"
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  trackEvent("cta_click", { location: "navbar-mobile", target: "/rekomendasi" });
+                  setOpen(false);
+                }}
               >
                 Mulai Rekomendasi
               </Link>
@@ -177,4 +182,3 @@ export default function Navbar() {
     </header>
   );
 }
-

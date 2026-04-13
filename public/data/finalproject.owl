@@ -1,0 +1,410 @@
+<?xml version="1.0"?>
+<Ontology xmlns="http://www.w3.org/2002/07/owl#"
+     xml:base="http://www.semanticweb.org/hp/ontologies/2026/3/untitled-ontology-49"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     ontologyIRI="http://www.semanticweb.org/hp/ontologies/2026/3/untitled-ontology-49">
+    <Prefix name="" IRI="http://www.semanticweb.org/hp/ontologies/2026/3/untitled-ontology-49/"/>
+    <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
+    <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+    <Prefix name="xml" IRI="http://www.w3.org/XML/1998/namespace"/>
+    <Prefix name="xsd" IRI="http://www.w3.org/2001/XMLSchema#"/>
+    <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
+    <Declaration>
+        <Class IRI="#Akomodasi"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#DestinasiTambahan"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#DurasiPerjalanan"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#GuideIbadahPrivate"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Jamaah"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#MusimKeberangkatan"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#PaketUmrah"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#PendampingIbadah"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#PendampingJamaahLansia"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Penerbangan"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#PreferensiPengguna"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#UmrahHemat"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#UmrahPlusDubai"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#UmrahPlusMesir"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#UmrahPlusTurki"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#UmrahReguler"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#UmrahVIPGold"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#berlaku_pada_musim"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#membutuhkan_layanan"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#memiliki_akomodasi"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#memiliki_destinasi_tambahan"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#memiliki_durasi"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#memiliki_penerbangan"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#memiliki_preferensi"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#mendapat_rekomendasi"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#akomodasi_jarak_hotel"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#akomodasi_kategori_hotel"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#destinasitambahan_nama_destinasi"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#durasiperjalanan_jumlah_hari"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#layananjamaah_tipe_layanan"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#musimkeberangkatan_kategori_musim"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#nama_jamaah"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#paketumrah_harga_maksimum"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#paketumrah_harga_minimum"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#paketumrah_nama_paket"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#penerbangan_maskapai"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#penerbangan_tipe_penerbangan"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#preferensi_budget"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#preferensi_destinasi_tambahan"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#preferensi_durasi"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#preferensi_ibadah_private"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#preferensi_jarak_hotel"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#preferensi_tipe_pesawat"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#preferensi_tipe_pesawat_direct"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#preferensi_tipe_pesawat_transit"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#usia_jamaah"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#UmrahHemat"/>
+        <Class IRI="#PaketUmrah"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#UmrahPlusDubai"/>
+        <Class IRI="#PaketUmrah"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#UmrahPlusMesir"/>
+        <Class IRI="#PaketUmrah"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#UmrahPlusTurki"/>
+        <Class IRI="#PaketUmrah"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#UmrahReguler"/>
+        <Class IRI="#PaketUmrah"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#UmrahVIPGold"/>
+        <Class IRI="#PaketUmrah"/>
+    </SubClassOf>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#berlaku_pada_musim"/>
+        <Class IRI="#PaketUmrah"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#membutuhkan_layanan"/>
+        <Class IRI="#PreferensiPengguna"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#memiliki_akomodasi"/>
+        <Class IRI="#PaketUmrah"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#memiliki_destinasi_tambahan"/>
+        <Class IRI="#PaketUmrah"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#memiliki_durasi"/>
+        <Class IRI="#PaketUmrah"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#memiliki_penerbangan"/>
+        <Class IRI="#PaketUmrah"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#memiliki_preferensi"/>
+        <Class IRI="#Jamaah"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#mendapat_rekomendasi"/>
+        <Class IRI="#PreferensiPengguna"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#berlaku_pada_musim"/>
+        <Class IRI="#MusimKeberangkatan"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#memiliki_akomodasi"/>
+        <Class IRI="#Akomodasi"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#memiliki_destinasi_tambahan"/>
+        <Class IRI="#DestinasiTambahan"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#memiliki_durasi"/>
+        <Class IRI="#DurasiPerjalanan"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#memiliki_penerbangan"/>
+        <Class IRI="#Penerbangan"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#memiliki_preferensi"/>
+        <Class IRI="#PreferensiPengguna"/>
+    </ObjectPropertyRange>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#mendapat_rekomendasi"/>
+        <Class IRI="#PaketUmrah"/>
+    </ObjectPropertyRange>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#preferensi_tipe_pesawat_direct"/>
+        <DataProperty IRI="#preferensi_tipe_pesawat"/>
+    </SubDataPropertyOf>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#preferensi_tipe_pesawat_transit"/>
+        <DataProperty IRI="#preferensi_tipe_pesawat"/>
+    </SubDataPropertyOf>
+    <DataPropertyDomain>
+        <DataProperty IRI="#akomodasi_jarak_hotel"/>
+        <Class IRI="#Akomodasi"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#akomodasi_kategori_hotel"/>
+        <Class IRI="#Akomodasi"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#destinasitambahan_nama_destinasi"/>
+        <Class IRI="#DestinasiTambahan"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#durasiperjalanan_jumlah_hari"/>
+        <Class IRI="#DurasiPerjalanan"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#musimkeberangkatan_kategori_musim"/>
+        <Class IRI="#MusimKeberangkatan"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#nama_jamaah"/>
+        <Class IRI="#Jamaah"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#paketumrah_harga_maksimum"/>
+        <Class IRI="#PaketUmrah"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#paketumrah_harga_minimum"/>
+        <Class IRI="#PaketUmrah"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#paketumrah_nama_paket"/>
+        <Class IRI="#PaketUmrah"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#penerbangan_maskapai"/>
+        <Class IRI="#Penerbangan"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#penerbangan_tipe_penerbangan"/>
+        <Class IRI="#Penerbangan"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#preferensi_budget"/>
+        <Class IRI="#PreferensiPengguna"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#preferensi_destinasi_tambahan"/>
+        <Class IRI="#PreferensiPengguna"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#preferensi_durasi"/>
+        <Class IRI="#DurasiPerjalanan"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#preferensi_ibadah_private"/>
+        <Class IRI="#PreferensiPengguna"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#preferensi_jarak_hotel"/>
+        <Class IRI="#PreferensiPengguna"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#preferensi_tipe_pesawat"/>
+        <Class IRI="#PreferensiPengguna"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#preferensi_tipe_pesawat_direct"/>
+        <Class IRI="#PreferensiPengguna"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#preferensi_tipe_pesawat_transit"/>
+        <Class IRI="#PreferensiPengguna"/>
+    </DataPropertyDomain>
+    <DataPropertyDomain>
+        <DataProperty IRI="#usia_jamaah"/>
+        <Class IRI="#Jamaah"/>
+    </DataPropertyDomain>
+    <DataPropertyRange>
+        <DataProperty IRI="#akomodasi_jarak_hotel"/>
+        <Datatype abbreviatedIRI="xsd:integer"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#akomodasi_kategori_hotel"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#destinasitambahan_nama_destinasi"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#durasiperjalanan_jumlah_hari"/>
+        <Datatype abbreviatedIRI="xsd:integer"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#layananjamaah_tipe_layanan"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#musimkeberangkatan_kategori_musim"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#nama_jamaah"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#paketumrah_harga_maksimum"/>
+        <Datatype abbreviatedIRI="xsd:integer"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#paketumrah_harga_minimum"/>
+        <Datatype abbreviatedIRI="xsd:integer"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#paketumrah_nama_paket"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#penerbangan_maskapai"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#penerbangan_tipe_penerbangan"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#preferensi_budget"/>
+        <Datatype abbreviatedIRI="xsd:integer"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#preferensi_destinasi_tambahan"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#preferensi_durasi"/>
+        <Datatype abbreviatedIRI="xsd:integer"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#preferensi_ibadah_private"/>
+        <Datatype abbreviatedIRI="xsd:boolean"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#preferensi_jarak_hotel"/>
+        <Datatype abbreviatedIRI="xsd:integer"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#preferensi_tipe_pesawat_direct"/>
+        <Datatype abbreviatedIRI="xsd:boolean"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#preferensi_tipe_pesawat_transit"/>
+        <Datatype abbreviatedIRI="xsd:boolean"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#usia_jamaah"/>
+        <Datatype abbreviatedIRI="xsd:integer"/>
+    </DataPropertyRange>
+</Ontology>
+
+
+
+<!-- Generated by the OWL API (version 4.5.29.2024-05-13T12:11:03Z) https://github.com/owlcs/owlapi -->
+

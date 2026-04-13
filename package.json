@@ -4,18 +4,25 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check": "npm run lint && npm run test && npm run build",
+    "test": "node --test --import tsx tests/ontology.test.ts tests/rekomendasi-validation.test.ts tests/rekomendasi-route.test.ts tests/videos-data.test.ts tests/rekomendasi-flow.test.ts",
+    "test:e2e": "playwright test",
+    "test:inference": "tsx scripts/test-inference.ts",
+    "test:inference:json": "tsx scripts/test-inference.ts --json"
   },
   "dependencies": {
     "fast-xml-parser": "^5.2.5",
+    "mysql2": "^3.20.0",
     "next": "15.5.2",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

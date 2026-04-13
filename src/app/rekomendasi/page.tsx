@@ -1,38 +1,37 @@
 "use client";
 
 import type { FormEvent } from "react";
-import { useMemo, useState } from "react";
-import Link from "next/link";
-import PrintButton from "@/components/PrintButton";
-import type { PaketKey, TravelPackage } from "@/data/travelPackages";
+import { useEffect, useMemo, useRef, useState } from "react";
+import FlowDiagram from "@/components/FlowDiagram";
+import type { PaketKey } from "@/data/travelPackages";
 import { travelPackagesByType } from "@/data/travelPackages";
+import { trackEvent } from "@/lib/analytics";
+import RecommendationFormSection from "./components/RecommendationFormSection";
+import PackageRecommendationModal from "./components/PackageRecommendationModal";
+import RecommendationResultSection from "./components/RecommendationResultSection";
+import { FIELD_ORDER, validateClientForm } from "./validation";
+import type { ApiRecommendation, ApiResponse, EnrichedRecommendation, FieldErrors, FormState, MainTravel } from "./types";
 
-/* ---------- Types ---------- */
-type FormState = {
-  budget: number;
-  usia: number;
-  butuhPendampingan: "ya" | "tidak";
-  preferensiHotel: "Standard" | "Mewah" | "Premium";
-  tipeTransportasi: "Ekonomi" | "Bisnis" | "Premium";
-  destinasiTambahan: "none" | "Turki" | "Dubai";
-  nama: string;
-};
-
-type ApiRecommendation = { paket: string; label?: string; comment?: string };
-type ApiResponse = { paketUtama: ApiRecommendation | null; paketAlternatif: ApiRecommendation[] };
-
-type EnrichedRecommendation = ApiRecommendation & {
-  displayName: string;
-  deskripsi: string;
-  href?: string;
-};
-
-/* ---------- Metadata ---------- */
 const paketMetadata: Record<string, { label: string; deskripsi: string; href?: string }> = {
+  UmrahHemat: {
+    label: "Umrah Hemat",
+    deskripsi: "Paket ekonomis dengan prioritas budget terjangkau dan kebutuhan dasar ibadah.",
+    href: "/paket/reguler",
+  },
   UmrahReguler: {
     label: "Umrah Reguler",
     deskripsi: "Pilihan dasar dengan fokus ibadah 9-12 hari dan fasilitas hotel bintang 3-4.",
     href: "/paket/reguler",
+  },
+  UmrahVIPGold: {
+    label: "Umrah VIP Gold",
+    deskripsi: "Kenyamanan lebih tinggi dengan hotel lebih dekat dan dukungan penerbangan lebih nyaman.",
+    href: "/paket/plus",
+  },
+  UmrahPrivate: {
+    label: "Umrah Private",
+    deskripsi: "Paket privat untuk keluarga atau kebutuhan layanan khusus dengan pendampingan eksklusif.",
+    href: "/paket/plus",
   },
   UmrahPlusTurki: {
     label: "Umrah Plus Turki",
@@ -44,13 +43,21 @@ const paketMetadata: Record<string, { label: string; deskripsi: string; href?: s
     deskripsi: "Pengalaman city tour modern, desert safari, dan hotel bintang 5 setelah Umrah.",
     href: "/paket/furoda",
   },
+  UmrahPlusMesir: {
+    label: "Umrah Plus Mesir",
+    deskripsi: "Paket umrah dengan destinasi tambahan Mesir untuk pengalaman religi dan sejarah Islam.",
+    href: "/paket/plus",
+  },
+  UmrahTidakDirekomendasikan: {
+    label: "Belum Ada Rekomendasi Umrah",
+    deskripsi: "Input saat ini belum memenuhi syarat minimal paket Umrah. Silakan sesuaikan preferensi.",
+  },
   TidakMendapatRekomendasiUmrah: {
     label: "Belum Ada Rekomendasi Umrah",
     deskripsi: "Input saat ini belum memenuhi syarat minimal paket Umrah. Silakan sesuaikan preferensi.",
   },
 };
 
-/* ---------- Page ---------- */
 export default function RekomendasiPage() {
   const [form, setForm] = useState<FormState>({
     budget: 32_000_000,
@@ -63,8 +70,18 @@ export default function RekomendasiPage() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [rateLimitRetrySec, setRateLimitRetrySec] = useState(0);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [result, setResult] = useState<ApiResponse | null>(null);
   const [generatedAt, setGeneratedAt] = useState<string | null>(null);
+  const [showPackageModal, setShowPackageModal] = useState(false);
+  const namaRef = useRef<HTMLInputElement>(null);
+  const budgetRef = useRef<HTMLInputElement>(null);
+  const usiaRef = useRef<HTMLInputElement>(null);
+  const pendampinganRef = useRef<HTMLInputElement>(null);
+  const hotelRef = useRef<HTMLInputElement>(null);
+  const transportRef = useRef<HTMLInputElement>(null);
+  const destinasiRef = useRef<HTMLInputElement>(null);
 
   const paketList = useMemo(() => {
     if (!result) return [] as ApiRecommendation[];
@@ -78,6 +95,9 @@ export default function RekomendasiPage() {
   const alternatifInfo = (result?.paketAlternatif ?? [])
     .map((item) => enrich(item))
     .filter((x): x is EnrichedRecommendation => x !== null);
+  const isNoRecommendation =
+    result?.paketUtama?.paket === "TidakMendapatRekomendasiUmrah" ||
+    result?.paketUtama?.paket === "UmrahTidakDirekomendasikan";
 
   const utamaTravel = useMemo(() => {
     const utama = result?.paketUtama;
@@ -87,13 +107,65 @@ export default function RekomendasiPage() {
     const packages = travelPackagesByType[key]?.slice(0, 4) ?? [];
     if (packages.length === 0) return null;
     const meta = paketMetadata[key] ?? { label: formatPaket(key), deskripsi: "" };
-    return { paket: key, label: meta.label, packages } as { paket: PaketKey; label: string; packages: TravelPackage[] };
+    return { paket: key, label: meta.label, packages } as MainTravel;
   }, [result?.paketUtama]);
+
+  const daftarPaketHref = utamaTravel ? `/paket?focus=${utamaTravel.paket}` : (utamaInfo?.href ?? "/paket");
+
+  const preferenceSummary = useMemo(
+    () => [
+      { label: "Budget", value: formatRupiah(form.budget) },
+      { label: "Usia", value: `${form.usia} tahun` },
+      { label: "Pendampingan", value: form.butuhPendampingan === "ya" ? "Butuh" : "Tidak butuh" },
+      { label: "Hotel", value: form.preferensiHotel },
+      { label: "Transportasi", value: form.tipeTransportasi },
+      { label: "Destinasi", value: form.destinasiTambahan === "none" ? "Tanpa tambahan" : form.destinasiTambahan },
+    ],
+    [form],
+  );
+
+  const formProgress = useMemo(() => {
+    const checks = [
+      form.budget > 0,
+      form.usia > 0,
+      form.butuhPendampingan === "ya" || form.butuhPendampingan === "tidak",
+      Boolean(form.preferensiHotel),
+      Boolean(form.tipeTransportasi),
+      Boolean(form.destinasiTambahan),
+    ];
+    const filled = checks.filter(Boolean).length;
+    const total = checks.length;
+    const percent = Math.round((filled / total) * 100);
+    return { filled, total, percent };
+  }, [form]);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (rateLimitRetrySec > 0) {
+      setError(`Terlalu banyak permintaan. Coba lagi dalam ${rateLimitRetrySec} detik.`);
+      return;
+    }
+
+    const localErrors = validateClientForm(form);
+    if (Object.keys(localErrors).length > 0) {
+      setFieldErrors(localErrors);
+      setError("Periksa kembali field yang ditandai merah.");
+      focusFirstFieldError(localErrors);
+      return;
+    }
+
     setLoading(true);
     setError(null);
+    setFieldErrors({});
+    trackEvent("rekomendasi_submit", {
+      hasName: Boolean(form.nama),
+      budget: form.budget,
+      usia: form.usia,
+      pendampingan: form.butuhPendampingan,
+      hotel: form.preferensiHotel,
+      transport: form.tipeTransportasi,
+      destinasi: form.destinasiTambahan,
+    });
     try {
       const res = await fetch("/api/rekomendasi", {
         method: "POST",
@@ -109,328 +181,274 @@ export default function RekomendasiPage() {
           nama: form.nama,
         }),
       });
-      if (!res.ok) throw new Error("Gagal mengambil rekomendasi dari server");
+      if (!res.ok) {
+        const body = (await res.json().catch(() => null)) as
+          | { message?: string; errors?: string[]; fieldErrors?: FieldErrors }
+          | null;
+        const nextFieldErrors = body?.fieldErrors && typeof body.fieldErrors === "object" ? body.fieldErrors : {};
+        setFieldErrors(nextFieldErrors);
+        const firstMessage = Array.isArray(body?.errors) && body?.errors.length > 0 ? body.errors[0] : null;
+        const fallbackMessage = body?.message ?? "Gagal mengambil rekomendasi dari server";
+        const retryAfterSec = parseRetryAfterSeconds(res.headers.get("Retry-After"));
+        if (res.status === 429 && retryAfterSec > 0) {
+          setRateLimitRetrySec(retryAfterSec);
+        }
+        const finalMessage = res.status === 429 && retryAfterSec > 0
+          ? `Terlalu banyak permintaan. Coba lagi dalam ${retryAfterSec} detik.`
+          : (firstMessage ?? fallbackMessage);
+        setError(finalMessage);
+        setResult(null);
+        setShowPackageModal(false);
+        focusFirstFieldError(nextFieldErrors);
+        trackEvent("rekomendasi_error", {
+          status: res.status,
+          message: finalMessage,
+          validation: res.status === 400,
+        });
+        return;
+      }
       const data = await res.json();
+      setRateLimitRetrySec(0);
       setResult({
         paketUtama: data?.paketUtama ?? null,
         paketAlternatif: Array.isArray(data?.paketAlternatif) ? data.paketAlternatif : [],
+      });
+      setShowPackageModal(isPaketKey(data?.paketUtama?.paket ?? ""));
+      trackEvent("rekomendasi_success", {
+        paketUtama: data?.paketUtama?.paket ?? null,
+        alternatifCount: Array.isArray(data?.paketAlternatif) ? data.paketAlternatif.length : 0,
       });
       if (data?.input?.nama) setForm((p) => ({ ...p, nama: data.input.nama }));
       setGeneratedAt(new Date().toLocaleString());
     } catch (err) {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan tak terduga");
+      setFieldErrors({});
       setResult(null);
+      setShowPackageModal(false);
+      trackEvent("rekomendasi_error", {
+        message: err instanceof Error ? err.message : "unknown_error",
+      });
     } finally {
       setLoading(false);
     }
   }
 
+  useEffect(() => {
+    if (!result?.paketUtama?.paket) return;
+    trackEvent("rekomendasi_result_shown", {
+      paketUtama: result.paketUtama.paket,
+      alternatifCount: result.paketAlternatif.length,
+    });
+  }, [result?.paketUtama?.paket, result?.paketAlternatif.length]);
+
+  useEffect(() => {
+    if (rateLimitRetrySec <= 0) return;
+    const timer = window.setInterval(() => {
+      setRateLimitRetrySec((prev) => Math.max(0, prev - 1));
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, [rateLimitRetrySec]);
+
+  useEffect(() => {
+    if (!showPackageModal) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setShowPackageModal(false);
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [showPackageModal]);
+
   function updateForm<K extends keyof FormState>(k: K, v: FormState[K]) {
+    if (fieldErrors[k]) {
+      setFieldErrors((prev) => {
+        const next = { ...prev };
+        delete next[k];
+        return next;
+      });
+    }
     setForm((p) => ({ ...p, [k]: v }));
+  }
+
+  function focusFirstFieldError(errors: FieldErrors) {
+    const firstKey = FIELD_ORDER.find((key) => Boolean(errors[key]));
+    if (!firstKey) return;
+    switch (firstKey) {
+      case "nama":
+        namaRef.current?.focus();
+        break;
+      case "budget":
+        budgetRef.current?.focus();
+        break;
+      case "usia":
+        usiaRef.current?.focus();
+        break;
+      case "butuhPendampingan":
+        pendampinganRef.current?.focus();
+        break;
+      case "preferensiHotel":
+        hotelRef.current?.focus();
+        break;
+      case "tipeTransportasi":
+        transportRef.current?.focus();
+        break;
+      case "destinasiTambahan":
+        destinasiRef.current?.focus();
+        break;
+      default:
+        break;
+    }
   }
 
   return (
     <div className="container-section">
-      <div className="mx-auto max-w-6xl">
-        {/* Header */}
-        <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold">Rekomendasi Paket Umrah</h1>
-            <p className="mt-1 max-w-3xl text-black">
-              Isi preferensi berdasarkan kebutuhan jamaah Umrah. Sistem membaca aturan SWRL langsung dari ontologi untuk menentukan paket Reguler, Plus Turki, atau Plus Dubai yang paling sesuai.
+      <div className="mx-auto max-w-6xl space-y-8">
+        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary-700 via-primary-600 to-primary-400 p-7 text-white shadow-lg shadow-primary-600/20 sm:p-8">
+          <div className="pointer-events-none absolute -top-10 -left-8 h-36 w-36 rounded-full bg-white/10 blur-2xl" />
+          <div className="pointer-events-none absolute -right-8 -bottom-10 h-40 w-40 rounded-full bg-cyan-200/20 blur-2xl" />
+          <div className="max-w-4xl">
+            <span className="inline-flex rounded-full bg-white/15 px-3 py-1 text-xs font-semibold ring-1 ring-white/30">
+              Sistem Pakar Umrah
+            </span>
+            <h1 className="mt-3 text-3xl font-bold sm:text-4xl">Rekomendasi Paket Umrah Personal</h1>
+            <p className="mt-2 text-sm text-white/90 sm:text-base">
+              Isi preferensi jamaah, lalu sistem membaca aturan ontologi untuk memilih paket paling sesuai dengan
+              budget, kebutuhan pendampingan, dan destinasi tambahan.
             </p>
-          </div>
-          <div className="w-full sm:w-auto">
-            <label className="block text-xs font-semibold uppercase text-slate-500">Nama Jamaah</label>
-            <input
-              type="text"
-              value={form.nama}
-              onChange={(e) => updateForm("nama", e.target.value)}
-              placeholder="Tuliskan nama lengkap"
-              className="mt-1 w-full min-w-[240px] rounded-xl border border-black/10 px-3 py-2 text-sm outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
-            />
-          </div>
-        </div>
-
-        {/* ====== FORM DI ATAS (1 kartu) ====== */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="rounded-2xl border border-black/5 bg-white p-5">
-            <div className="grid gap-4 md:grid-cols-2">
-              {/* Budget */}
-              <fieldset className="rounded-xl border border-black/10 p-4">
-                <legend className="px-1 text-sm font-semibold">Budget Umrah (IDR)</legend>
-                <input
-                  type="number"
-                  min={0}
-                  step={500_000}
-                  value={form.budget}
-                  onChange={(e) => updateForm("budget", Number(e.target.value))}
-                  className="mt-2 w-full rounded-xl border border-black/10 px-3 py-2 text-sm outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
-                />
-                <p className="mt-2 text-xs text-slate-500">Contoh: 32000000 untuk 32 juta rupiah.</p>
-              </fieldset>
-
-              {/* Usia */}
-              <fieldset className="rounded-xl border border-black/10 p-4">
-                <legend className="px-1 text-sm font-semibold">Usia Jamaah</legend>
-                <input
-                  type="number"
-                  min={0}
-                  value={form.usia}
-                  onChange={(e) => updateForm("usia", Number(e.target.value))}
-                  className="mt-2 w-full rounded-xl border border-black/10 px-3 py-2 text-sm outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
-                />
-              </fieldset>
-
-              {/* Pendampingan */}
-              <fieldset className="rounded-xl border border-black/10 p-4 md:col-span-2">
-                <legend className="px-1 text-sm font-semibold">Pendampingan Khusus</legend>
-                <div className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-6">
-                  {([["ya", "Butuh pendampingan"], ["tidak", "Tidak perlu"]] as const).map(([val, label]) => (
-                    <label key={val} className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-1 text-sm">
-                      <input
-                        type="radio"
-                        name="pendampingan"
-                        className="h-4 w-4 accent-primary-600"
-                        checked={form.butuhPendampingan === val}
-                        onChange={() => updateForm("butuhPendampingan", val)}
-                      />
-                      <span>{label}</span>
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
-
-              {/* Hotel */}
-              <fieldset className="rounded-xl border border-black/10 p-4">
-                <legend className="px-1 text-sm font-semibold">Preferensi Akomodasi</legend>
-                <div className="mt-3 grid grid-cols-1 gap-2">
-                  {([["Standard", "Hotel Standard"], ["Mewah", "Hotel Mewah"], ["Premium", "Hotel Premium"]] as const).map(([val, label]) => (
-                    <label key={val} className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-1 text-sm">
-                      <input
-                        type="radio"
-                        name="hotel"
-                        className="h-4 w-4 accent-primary-600"
-                        checked={form.preferensiHotel === val}
-                        onChange={() => updateForm("preferensiHotel", val)}
-                      />
-                      <span>{label}</span>
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
-
-              {/* Transport */}
-              <fieldset className="rounded-xl border border-black/10 p-4">
-                <legend className="px-1 text-sm font-semibold">Preferensi Transportasi</legend>
-                <div className="mt-3 grid grid-cols-1 gap-2">
-                  {([["Ekonomi", "Kelas Ekonomi"], ["Bisnis", "Kelas Bisnis"], ["Premium", "Kelas Premium"]] as const).map(([val, label]) => (
-                    <label key={val} className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-1 text-sm">
-                      <input
-                        type="radio"
-                        name="transportasi"
-                        className="h-4 w-4 accent-primary-600"
-                        checked={form.tipeTransportasi === val}
-                        onChange={() => updateForm("tipeTransportasi", val)}
-                      />
-                      <span>{label}</span>
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
-
-              {/* Destinasi tambahan */}
-              <fieldset className="rounded-xl border border-black/10 p-4 md:col-span-2">
-                <legend className="px-1 text-sm font-semibold">Destinasi Tambahan</legend>
-                <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
-                  {([["none", "Tanpa destinasi tambahan"], ["Turki", "Turki"], ["Dubai", "Dubai"]] as const).map(([val, label]) => (
-                    <label key={val} className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-1 text-sm">
-                      <input
-                        type="radio"
-                        name="destinasi"
-                        className="h-4 w-4 accent-primary-600"
-                        checked={form.destinasiTambahan === val}
-                        onChange={() => updateForm("destinasiTambahan", val)}
-                      />
-                      <span>{label}</span>
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
-            </div>
-
-            <div className="mt-4">
-              <button
-                type="submit"
-                className="w-full rounded-xl bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-60"
-                disabled={loading}
-              >
-                {loading ? "Menghitung rekomendasi..." : "Hitung Rekomendasi"}
-              </button>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {["1. Isi preferensi", "2. Hitung otomatis", "3. Lihat rekomendasi"].map((step) => (
+                <span key={step} className="rounded-full bg-white/15 px-3 py-1 text-xs font-semibold ring-1 ring-white/30">
+                  {step}
+                </span>
+              ))}
             </div>
           </div>
+        </section>
 
-          {/* ====== HASIL: 2 kolom di bawah form ====== */}
-          <div className="lg:flex lg:items-start lg:gap-4 space-y-4 lg:space-y-0">
-            {/* Card kiri (fix tinggi konten) */}
-            <div className="glass rounded-2xl p-5 shadow-glow lg:w-[380px] shrink-0 self-start">
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-sm font-semibold text-black">Hasil Rekomendasi</p>
-                {form.nama && (
-                  <span className="rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-700">
-                    untuk {form.nama}
-                  </span>
-                )}
-              </div>
+        <form onSubmit={handleSubmit} className="space-y-8">
+          <RecommendationFormSection
+            form={form}
+            loading={loading}
+            cooldownSeconds={rateLimitRetrySec}
+            fieldErrors={fieldErrors}
+            formProgress={formProgress}
+            preferenceSummary={preferenceSummary}
+            refs={{ namaRef, budgetRef, usiaRef, pendampinganRef, hotelRef, transportRef, destinasiRef }}
+            onUpdateForm={(key, value) => updateForm(key, value)}
+          />
 
-              {error && (
-                <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</div>
-              )}
+          <RecommendationResultSection
+            nama={form.nama}
+            error={error}
+            loading={loading}
+            result={result}
+            utamaInfo={utamaInfo}
+            alternatifInfo={alternatifInfo}
+            isNoRecommendation={isNoRecommendation}
+            generatedAt={generatedAt}
+            utamaTravel={utamaTravel}
+            form={form}
+            daftarPaketHref={daftarPaketHref}
+            onOpenPackageModal={() => setShowPackageModal(true)}
+          />
 
-              {!error && loading && <p className="mt-4 text-sm text-slate-600">Mengambil rekomendasi dari ontologi...</p>}
+          <PackageRecommendationModal
+            open={showPackageModal}
+            utamaTravel={utamaTravel}
+            form={form}
+            daftarPaketHref={daftarPaketHref}
+            onClose={() => setShowPackageModal(false)}
+          />
 
-              {!error && !loading && utamaInfo && (
-                <>
-                  <h2 className="mt-2 text-2xl font-bold text-black">{utamaInfo.displayName}</h2>
-                  <p className="mt-2 text-black">{utamaInfo.deskripsi}</p>
-
-                  {result?.paketUtama?.label && (
-                    <p className="mt-3 rounded-lg bg-black/5 px-3 py-2 text-xs text-black">Aturan: {result.paketUtama.label}</p>
-                  )}
-                  {result?.paketUtama?.comment && <p className="mt-2 text-xs text-slate-600">{result.paketUtama.comment}</p>}
-
-                  {alternatifInfo.length > 0 && (
-                    <div className="mt-4 text-sm">
-                      <p className="font-semibold text-black">Alternatif lain:</p>
-                      <ul className="mt-1 list-disc space-y-1 pl-5 text-black">
-                        {alternatifInfo.map((info) => (
-                          <li key={info.paket}>{info.displayName}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  <p className="print-only mt-3 text-xs text-slate-500">Dicetak: {generatedAt ?? "-"}</p>
-
-                  <div className="mt-4 flex flex-wrap gap-3">
-                    {utamaInfo.href && (
-                      <Link href={utamaInfo.href} className="inline-flex items-center rounded-xl bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700">
-                        Lihat Detail Paket
-                      </Link>
-                    )}
-                    <Link href="#logika" className="text-sm font-medium text-primary-700 underline-offset-4 hover:underline">
-                      Lihat logika
-                    </Link>
-                    <PrintButton />
-                  </div>
-                </>
-              )}
-
-              {!error && !loading && !utamaInfo && (
-                <p className="mt-4 text-sm text-slate-600">Masukkan data dan klik &quot;Hitung Rekomendasi&quot; untuk melihat hasil.</p>
-              )}
-            </div>
-
-            {/* Card kanan (SELALU tampil) */}
-            <div className="glass rounded-2xl p-5 shadow-glow flex-1">
-              {utamaTravel ? (
-                <>
-                  <p className="text-sm font-semibold text-black">Rekomendasi Travel {utamaTravel.label}</p>
-                  <p className="mt-1 text-xs text-black/70">Paket referensi publik yang sejenis dengan hasil utama.</p>
-
-                  <div className="mt-4 grid gap-3">
-                    {utamaTravel.packages.map((pkg) => (
-                      <a
-                        key={`${utamaTravel.paket}-${pkg.provider}-${pkg.name}`}
-                        href={pkg.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block rounded-xl border border-black/10 bg-white/90 px-4 py-3 transition hover:-translate-y-0.5 hover:border-primary-300 hover:bg-white"
-                      >
-                        <div className="flex items-start justify-between gap-2 text-sm">
-                          <span className="font-semibold text-black">{pkg.provider}</span>
-                          <span className="font-semibold text-black">{pkg.price}</span>
-                        </div>
-
-                        <p className="mt-1 text-xs font-medium text-black">{pkg.name}</p>
-
-                        <dl className="mt-3 grid grid-cols-[auto,1fr] gap-x-2 gap-y-1 text-[11px] text-black">
-                          {pkg.duration && (<><dt className="font-semibold">Durasi</dt><dd>{pkg.duration}</dd></>)}
-                          {pkg.transport && (<><dt className="font-semibold">Maskapai</dt><dd>{pkg.transport}</dd></>)}
-                          {pkg.accommodation && (<><dt className="font-semibold">Hotel</dt><dd>{pkg.accommodation}</dd></>)}
-                        </dl>
-
-                        <span className="mt-3 inline-flex items-center gap-1 text-[11px] font-semibold text-black">
-                          Kunjungi situs <span aria-hidden>→</span>
-                        </span>
-
-                        {pkg.source && (
-                          <p className="mt-2 text-[10px] uppercase tracking-wide text-black/60">
-                            {pkg.source}
-                          </p>
-                        )}
-                      </a>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <div className="flex h-full flex-col justify-center text-sm text-black/60">
-                  <p className="font-semibold">
-                    {utamaInfo ? `Belum ada data travel yang dipetakan untuk ${utamaInfo.displayName}.` : "Jalankan rekomendasi terlebih dahulu untuk melihat paket travel terkait."}
-                  </p>
-                  <p className="mt-2 text-xs">Anda dapat menambahkan data travel baru di sumber data atau memilih biro perjalanan favorit secara manual.</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* LOGIKA */}
-          <div id="logika" className="rounded-2xl border border-black/5 p-5 text-sm lg:col-span-2">
-            <p className="font-semibold">Logika berbasis aturan ontologi</p>
-            <p className="mt-2 text-xs text-slate-600">Sistem membaca aturan SWRL dari file ontologi RDF/XML kemudian mencocokkannya dengan input di atas.</p>
+          <section id="logika" className="rounded-2xl border border-black/5 bg-white p-5 text-sm shadow-sm sm:p-6">
+            <p className="font-semibold text-black">Logika Berbasis Aturan Ontologi</p>
+            <p className="mt-2 text-xs text-slate-600">
+              Sistem membaca aturan SWRL dari file ontologi RDF/XML, lalu mencocokkan dengan preferensi pengguna.
+            </p>
             <div className="mt-4 overflow-x-auto">
-              <table className="min-w-[360px] text-left text-xs">
-                <thead className="text-black">
+              <table className="min-w-[380px] text-left text-xs">
+                <thead className="bg-slate-50 text-black">
                   <tr>
-                    <th className="py-1 pr-4">Paket</th>
-                    <th className="py-1 pr-4">Label Aturan</th>
-                    <th className="py-1">Keterangan</th>
+                    <th className="py-2 pr-4 pl-2">Paket</th>
+                    <th className="py-2 pr-4">Label Aturan</th>
+                    <th className="py-2 pr-2">Keterangan</th>
                   </tr>
                 </thead>
                 <tbody>
                   {paketList.length === 0 && (
                     <tr>
-                      <td colSpan={3} className="py-3 text-center text-slate-500">Belum ada aturan yang terpenuhi.</td>
+                      <td colSpan={3} className="py-3 text-center text-slate-500">
+                        Belum ada aturan yang terpenuhi.
+                      </td>
                     </tr>
                   )}
                   {paketList.map((item) => {
                     const info = enrich(item);
                     if (!info) return null;
                     return (
-                      <tr key={item.paket}>
-                        <td className="py-1 pr-4">{info.displayName}</td>
-                        <td className="py-1 pr-4">{item.label ?? "-"}</td>
-                        <td className="py-1">{item.comment ?? info.deskripsi}</td>
+                      <tr key={item.paket} className="border-t border-black/5 even:bg-slate-50/50">
+                        <td className="py-2 pr-4 pl-2">{info.displayName}</td>
+                        <td className="py-2 pr-4">{item.label ?? "-"}</td>
+                        <td className="py-2 pr-2">{item.comment ?? info.deskripsi}</td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
             </div>
-          </div>
+          </section>
+
+          <section className="rounded-2xl border border-black/5 bg-white p-5 shadow-sm sm:p-6">
+            <h3 className="text-lg font-bold">Alur Perhitungan</h3>
+            <p className="mt-1 text-xs text-slate-600">Cara sistem memetakan input ke rekomendasi paket.</p>
+            <div className="mt-4">
+              <FlowDiagram />
+            </div>
+          </section>
         </form>
       </div>
     </div>
   );
 }
 
-/* ---------- Helpers ---------- */
 function enrich(rec: ApiRecommendation | null): EnrichedRecommendation | null {
   if (!rec) return null;
-  const meta = paketMetadata[rec.paket] ?? { label: formatPaket(rec.paket), deskripsi: "Belum ada deskripsi khusus untuk paket ini." };
+  const meta = paketMetadata[rec.paket] ?? {
+    label: formatPaket(rec.paket),
+    deskripsi: "Belum ada deskripsi khusus untuk paket ini.",
+  };
   return { ...rec, displayName: meta.label, deskripsi: meta.deskripsi, href: meta.href };
 }
-function formatPaket(value: string) { return value.replace(/([a-z])([A-Z])/g, "$1 $2"); }
+
+function formatPaket(value: string) {
+  return value.replace(/([a-z])([A-Z])/g, "$1 $2");
+}
+
 function isPaketKey(value: string): value is PaketKey {
   return Object.prototype.hasOwnProperty.call(travelPackagesByType, value);
 }
+
+function formatRupiah(value: number) {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0,
+  }).format(value);
+}
+
+function parseRetryAfterSeconds(value: string | null): number {
+  if (!value) return 0;
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) return 0;
+  return parsed;
+}
+
+

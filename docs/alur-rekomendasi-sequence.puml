@@ -1,0 +1,45 @@
+@startuml
+title Sequence - Rekomendasi Umrah Berbasis Ontologi
+
+actor User
+participant "Rekomendasi Page\n(Frontend)" as FE
+participant "/api/rekomendasi" as API
+participant "Ontology Engine\n(src/lib/ontology.ts)" as ONT
+database "public/data/final.owl" as OWL
+
+User -> FE: Isi form + klik Hitung Rekomendasi
+FE -> API: POST preferensi (JSON)
+API -> API: normalizePayload()
+
+API -> ONT: loadOntologyRules()
+ONT -> OWL: baca file OWL
+OWL --> ONT: RDF/XML
+ONT -> ONT: parse + extract DLSafeRule
+ONT --> API: Rule[]
+
+API -> ONT: inferRecommendations(input, Rule[])
+ONT -> ONT: filter context Umrah
+ONT -> ONT: evaluate ruleMatches
+ONT -> ONT: scoring + sorting
+
+alt ada rule "TidakMendapatRekomendasi*"
+  ONT -> ONT: jadikan hard-blocker
+  ONT --> API: paketUtama=TidakMendapat..., alternatif=[]
+else tidak ada blocker
+  ONT -> ONT: dedup per paket
+  ONT --> API: paketUtama + paketAlternatif
+end
+
+API --> FE: JSON hasil rekomendasi
+FE -> FE: render hasil + logika
+
+alt paket utama valid
+  FE -> FE: tampilkan popup daftar paket cocok
+  User -> FE: klik "Lihat Selengkapnya"
+  FE -> User: redirect /paket?focus=<paket>
+else tidak valid
+  FE -> User: tampilkan state "Belum Ada Rekomendasi"
+end
+
+@enduml
+

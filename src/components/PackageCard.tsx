@@ -44,7 +44,7 @@ export default function PackageCard({
 
   return (
     <div
-      className={`group relative rounded-2xl border border-black/5 bg-gradient-to-b ${intensity} p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg`}
+      className={`group relative flex h-full flex-col rounded-2xl border border-black/5 bg-gradient-to-b ${intensity} p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg`}
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -53,14 +53,16 @@ export default function PackageCard({
           </span>
           <h3 className="text-lg font-semibold">{title}</h3>
         </div>
-        <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ring-1 ${badgeColor}`}>
+        <span
+          className={`inline-flex items-center rounded-full px-3.5 py-1.5 text-[11px] font-semibold tracking-wide ring-1 ${badgeColor}`}
+        >
           {badgeLabel}
         </span>
       </div>
       <p className="mt-2 text-sm text-black">{waitTime}</p>
       <p className="mt-1 text-sm font-semibold text-primary-700">{priceRange}</p>
 
-      <ul className="mt-4 space-y-2 text-sm text-black">
+      <ul className="mt-4 flex-1 space-y-2 text-sm text-black">
         {highlights.map((h) => (
           <li key={h} className="flex items-start gap-2">
             <svg viewBox="0 0 24 24" className="mt-0.5 h-4 w-4 text-primary-600 transition-colors group-hover:text-primary-700" fill="currentColor">

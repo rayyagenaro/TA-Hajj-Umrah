@@ -1,14 +1,15 @@
 ﻿import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackgroundDecor from "@/components/BackgroundDecor";
 
-const plusJakartaSans = Plus_Jakarta_Sans({
-  variable: "--font-plus-jakarta-sans",
+const poppins = Poppins({
+  display: "swap",
+  variable: "--font-poppins",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -25,15 +26,15 @@ export default function RootLayout({
     <html lang="id" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${plusJakartaSans.variable} min-h-screen antialiased bg-white text-black`}
+        className={`${poppins.className} ${poppins.variable} min-h-screen antialiased bg-white text-black`}
       >
         <BackgroundDecor />
-        <Navbar />
-        <main className="pb-20 pt-24">{children}</main>
-        <Footer />
+        <div className="relative z-10">
+          <Navbar />
+          <main className="pb-20 pt-24">{children}</main>
+          <Footer />
+        </div>
       </body>
     </html>
   );
 }
-
-

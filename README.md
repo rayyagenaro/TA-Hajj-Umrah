@@ -1,5 +1,47 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## MySQL Logging (Recommendation Recap)
+
+This project supports direct MySQL logging for recommendation attempts.
+
+### 1) Create table
+
+Run SQL in [`docs/sql/recommendation_logs.sql`](docs/sql/recommendation_logs.sql).
+
+### 2) Set environment variables
+
+Use either `MYSQL_URL` or discrete fields below.
+
+```env
+# Option A
+MYSQL_URL=mysql://user:password@127.0.0.1:3306/umrahyuk
+
+# Option B
+MYSQL_HOST=127.0.0.1
+MYSQL_PORT=3306
+MYSQL_USER=root
+MYSQL_PASSWORD=secret
+MYSQL_DATABASE=umrahyuk
+```
+
+If MySQL env vars are not set, app still works and skips DB logging.
+
+## Admin Logs Protection
+
+`/admin/logs` is protected by middleware token.
+
+Set token in `.env.local`:
+
+```env
+ADMIN_TOKEN=your-strong-admin-token
+```
+
+First access:
+
+- Open `/admin/logs?token=your-strong-admin-token`
+- Middleware validates token and stores an HttpOnly cookie for `/admin`
+- Next visits to `/admin/logs` won't need query token during cookie lifetime
+
 ## Getting Started
 
 First, run the development server:

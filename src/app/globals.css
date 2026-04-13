@@ -3,6 +3,7 @@
 /* Brand theme palette */
 :root {
   color-scheme: light;
+  --font-poppins: "Segoe UI", "Poppins", Tahoma, Geneva, Verdana, sans-serif;
   --background: #f5f8ff;
   --foreground: #0f172a;
   --muted: #475569;
@@ -28,8 +29,8 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
-  --font-heading: var(--font-plus-jakarta-sans), sans-serif;
-  --font-body: var(--font-plus-jakarta-sans), sans-serif;
+  --font-heading: var(--font-poppins), sans-serif;
+  --font-body: var(--font-poppins), sans-serif;
   --font-sans: var(--font-body);
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --color-primary: #2563eb;
@@ -54,14 +55,14 @@ body {
   color: var(--foreground);
   background-color: var(--background);
   background-image: var(--page-gradient);
-  font-family: var(--font-body);
+  font-family: var(--font-poppins), sans-serif;
   transition: background-color 250ms ease, color 200ms ease;
   scroll-behavior: smooth;
 }
 
 :is(h1, h2, h3, h4, h5, h6) {
-  font-family: var(--font-heading);
-  font-weight: 600;
+  font-family: var(--font-poppins), sans-serif;
+  font-weight: 700;
   letter-spacing: -0.01em;
 }
 
@@ -159,4 +160,11 @@ body {
 .print-only {
   display: none;
 }
+
+
+
+
+
+
+
 

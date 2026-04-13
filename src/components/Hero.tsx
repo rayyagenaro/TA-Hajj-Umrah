@@ -1,18 +1,17 @@
-﻿import Link from "next/link";
+import TrackedLink from "@/components/TrackedLink";
 
 export default function Hero() {
   return (
     <section className="relative">
       <div className="container-section pt-10 sm:pt-16">
         <div className="grid items-center gap-10 md:grid-cols-2">
-          {/* Kiri */}
           <div className="text-black">
             <span className="inline-flex items-center gap-2 rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-700 ring-1 ring-primary-100">
               <span className="inline-flex h-2 w-2 rounded-full bg-primary-500" aria-hidden />
               Sistem Pakar Rekomendasi Umrah
             </span>
 
-            <h1 className="mt-4 text-4xl font-bold leading-tight sm:text-5xl text-black">
+            <h1 className="mt-4 text-4xl font-bold leading-tight text-black sm:text-5xl">
               Temukan Paket Umrah <span className="gradient-text">Terbaik</span> untuk Anda
             </h1>
 
@@ -25,17 +24,18 @@ export default function Hero() {
             </p>
 
             <p className="mt-4 text-black">
-              Fokus pada varian Umrah populer seperti Reguler, Plus Turki, dan Plus Dubai.
-              Sistem kami membantu menyesuaikan rekomendasi dengan budget, kenyamanan, dan minat tur religi Anda.
+              Dapatkan rekomendasi paket berdasarkan budget, preferensi kenyamanan hotel, dan minat tur religi Anda.
             </p>
 
             <div className="mt-6 flex flex-col items-stretch gap-3 sm:flex-row">
-              <Link
+              <TrackedLink
                 href="/rekomendasi"
-                className="inline-flex items-center justify-center rounded-xl bg-primary-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700"
+                eventName="cta_click"
+                eventPayload={{ location: "hero-primary", target: "/rekomendasi" }}
+                className="inline-flex items-center justify-center rounded-xl bg-amber-400 px-5 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-amber-300/40 transition hover:-translate-y-0.5 hover:bg-amber-300"
               >
                 Mulai Rekomendasi
-              </Link>
+              </TrackedLink>
               <a
                 href="#paket"
                 className="inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-semibold text-primary-700 ring-1 ring-primary-200 hover:bg-primary-50"
@@ -45,18 +45,16 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Kanan */}
           <div className="relative">
             <div className="relative mx-auto w-full max-w-md">
-              {/* dekor */}
-              <div className="absolute -left-6 -top-6 h-24 w-24 rounded-3xl bg-primary-200/40 blur-2xl animate-floaty" />
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-primary-700">Kategori Populer</p>
+              <div className="absolute -left-6 -top-6 h-24 w-24 animate-floaty rounded-3xl bg-primary-200/40 blur-2xl" />
               <div
-                className="absolute -right-8 -bottom-8 h-28 w-28 rounded-full bg-primary-300/40 blur-2xl animate-floaty"
+                className="absolute -right-8 -bottom-8 h-28 w-28 animate-floaty rounded-full bg-primary-300/40 blur-2xl"
                 style={{ animationDelay: "1.2s" }}
               />
 
-              {/* Card utama */}
-              <div className="glass rounded-2xl p-5 shadow-glow text-black">
+              <div className="glass rounded-2xl p-5 text-black shadow-glow">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-600 text-white">
                     <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
@@ -78,7 +76,7 @@ export default function Hero() {
                   ].map((x) => (
                     <div
                       key={x.name}
-                      className="rounded-xl border border-black/5 p-3 transition-all hover:-translate-y-0.5 hover:shadow-md text-black"
+                      className="rounded-xl border border-black/5 p-3 text-black transition-all hover:-translate-y-0.5 hover:shadow-md"
                     >
                       <p className="text-sm font-semibold text-black">{x.name}</p>
                       <p className="text-xs text-black">{x.desc}</p>
@@ -86,10 +84,8 @@ export default function Hero() {
                   ))}
                 </div>
               </div>
-              {/* /Card */}
             </div>
           </div>
-          {/* /Kanan */}
         </div>
       </div>
     </section>

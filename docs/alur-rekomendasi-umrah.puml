@@ -1,0 +1,44 @@
+@startuml
+title Alur Sistem Rekomendasi Umrah (Ontologi SWRL)
+
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam defaultFontName Arial
+
+start
+
+:User isi form preferensi\n(budget, usia, pendampingan,\nhotel, transportasi, destinasi tambahan);
+:Klik "Hitung Rekomendasi";
+
+:Frontend POST /api/rekomendasi;
+:Normalisasi payload input;
+
+:loadOntologyRules()\n- baca public/data/final.owl\n- parse RDF/XML -> Rule[];
+
+:inferRecommendations(input, rules);
+:Filter rule konteks Umrah;
+:Cek rule yang match (ruleMatches);
+:Hitung skor rule\n(compare=2, boolean=3,\nstring=4, destinasi=5);
+:Urutkan skor desc + spesifisitas;
+
+if (Ada rule blocking?\nTidakMendapatRekomendasi*) then (Ya)
+  :paketUtama = rule blocking;
+  :paketAlternatif = kosong;
+else (Tidak)
+  :Dedup per paket;\nambil paketUtama + alternatif;
+endif
+
+:API kirim JSON hasil rekomendasi;
+:Frontend render card hasil;
+
+if (paketUtama valid\n(UmrahReguler/PlusTurki/PlusDubai)?) then (Ya)
+  :Tampilkan tombol "Lihat Paket Cocok";
+  :Buka popup daftar paket;
+  :Tombol "Lihat Selengkapnya"\n-> /paket?focus=<paketUtama>;
+else (Tidak)
+  :Tampilkan state\n"Belum Ada Rekomendasi Umrah";
+endif
+
+stop
+@enduml
+
