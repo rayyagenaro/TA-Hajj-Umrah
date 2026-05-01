@@ -2,11 +2,12 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { NextRequest } from "next/server";
 import { validateClientForm } from "../src/app/rekomendasi/validation";
-import { __resetRateLimitForTests, POST } from "../src/app/api/rekomendasi/route";
+import { POST } from "../src/app/api/rekomendasi/route";
+import { resetRecommendationRateLimitForTests } from "../src/lib/rateLimit";
 import type { FormState } from "../src/app/rekomendasi/types";
 
 test.beforeEach(() => {
-  __resetRateLimitForTests();
+  resetRecommendationRateLimitForTests();
 });
 
 const baseForm: FormState = {

@@ -1,10 +1,11 @@
 ﻿import test from "node:test";
 import assert from "node:assert/strict";
 import { NextRequest } from "next/server";
-import { __resetRateLimitForTests, POST } from "../src/app/api/rekomendasi/route";
+import { POST } from "../src/app/api/rekomendasi/route";
+import { resetRecommendationRateLimitForTests } from "../src/lib/rateLimit";
 
 test.beforeEach(() => {
-  __resetRateLimitForTests();
+  resetRecommendationRateLimitForTests();
 });
 
 test("returns 400 for invalid payload and exposes fieldErrors", async () => {
