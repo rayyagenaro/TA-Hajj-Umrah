@@ -3,6 +3,9 @@ import type { PaketKey, TravelPackage } from "@/data/travelPackages";
 export type FormState = {
   budget: number;
   usia: number;
+  durasiPreferensi: number;
+  preferJarakHotelMaks: number;
+  tipePenerbangan: "direct" | "transit";
   butuhPendampingan: "ya" | "tidak";
   preferensiHotel: "Standard" | "Mewah" | "Premium";
   tipeTransportasi: "Ekonomi" | "Bisnis" | "Premium";
@@ -25,5 +28,6 @@ export type EnrichedRecommendation = ApiRecommendation & {
 export type MainTravel = {
   paket: PaketKey;
   label: string;
-  packages: TravelPackage[];
+  packagesByRule: TravelPackage[];
+  packagesForMatching: TravelPackage[];
 };

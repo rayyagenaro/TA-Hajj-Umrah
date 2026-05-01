@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "check": "npm run lint && npm run test && npm run build",
-    "test": "node --test --import tsx tests/ontology.test.ts tests/rekomendasi-validation.test.ts tests/rekomendasi-route.test.ts tests/videos-data.test.ts tests/rekomendasi-flow.test.ts",
+    "test": "node --test --import tsx tests/ontology.test.ts tests/rekomendasi-validation.test.ts tests/rekomendasi-route.test.ts tests/rekomendasi-flow.test.ts tests/rekomendasi-profile-matching.test.ts tests/videos-data.test.ts",
     "test:e2e": "playwright test",
     "test:inference": "tsx scripts/test-inference.ts",
     "test:inference:json": "tsx scripts/test-inference.ts --json"

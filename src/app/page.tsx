@@ -1,7 +1,8 @@
 ﻿import Hero from "@/components/Hero";
-import PackageCard from "@/components/PackageCard";
+import PackageCard, { type PackageCardVariant } from "@/components/PackageCard";
 import Reveal from "@/components/Reveal";
 import TrackedLink from "@/components/TrackedLink";
+import { type PaketKey, travelPackagesByType } from "@/data/travelPackages";
 import { umrahPilgrimsPerYear, umrahStatsMeta } from "@/data/umrahStats";
 import { videoResources } from "@/data/videos";
 import Link from "next/link";
@@ -14,8 +15,8 @@ const dateFormatter = new Intl.DateTimeFormat("id-ID", {
 
 const trustSignals = [
   "Rekomendasi berbasis aturan ontologi",
-  "Input diproses langsung tanpa simpan data pribadi",
-  "Referensi paket diambil dari sumber publik travel",
+  "Input rekomendasi disimpan sebagai log internal untuk monitoring sistem",
+  "Referensi paket diambil dari sumber publik travel di internet dan hasil kerjasama dengan salah satu travel agent",
 ];
 
 const howItWorks = [
@@ -24,10 +25,105 @@ const howItWorks = [
   { title: "Dapatkan Rekomendasi", desc: "Lihat paket utama, alternatif, dan referensi travel sejenis." },
 ];
 
+const featuredPackageOrder: PaketKey[] = [
+  "UmrahHemat",
+  "UmrahReguler",
+  "UmrahVIPGold",
+  "UmrahPlusTurki",
+  "UmrahPlusDubai",
+  "UmrahPlusMesir",
+];
+
+const featuredPackageMeta: Record<
+  PaketKey,
+  {
+    variant: PackageCardVariant;
+    title: string;
+    subtitle: string;
+    highlights: [string, string];
+  }
+> = {
+  UmrahHemat: {
+    variant: "hemat",
+    title: "Umrah Hemat",
+    subtitle: "Fokus biaya ekonomis untuk jamaah",
+    highlights: ["Budget ramah", "Ibadah tetap terarah"],
+  },
+  UmrahReguler: {
+    variant: "reguler",
+    title: "Umrah Reguler",
+    subtitle: "Pilihan paling seimbang untuk mayoritas jamaah",
+    highlights: ["Fasilitas proporsional", "Jadwal keberangkatan rutin"],
+  },
+  UmrahVIPGold: {
+    variant: "vip",
+    title: "Umrah VIP Gold",
+    subtitle: "Fokus kenyamanan premium selama perjalanan",
+    highlights: ["Hotel lebih dekat/unggul", "Prioritas layanan jamaah"],
+  },
+  UmrahPlusTurki: {
+    variant: "turki",
+    title: "Umrah Plus Turki",
+    subtitle: "Umrah + wisata sejarah Islam Turki",
+    highlights: ["City tour Istanbul", "Cocok untuk paket plus"],
+  },
+  UmrahPlusDubai: {
+    variant: "dubai",
+    title: "Umrah Plus Dubai",
+    subtitle: "Umrah + city tour modern di Dubai",
+    highlights: ["Rute plus populer", "Pilihan transit nyaman"],
+  },
+  UmrahPlusMesir: {
+    variant: "mesir",
+    title: "Umrah Plus Mesir",
+    subtitle: "Umrah + wisata religi dan sejarah Mesir",
+    highlights: ["Nuansa sejarah Islam", "Pilihan paket extended tour"],
+  },
+};
+
+const parsePriceValue = (value: string) => Number(value.replace(/[^\d]/g, ""));
+
+const formatJt = (value: number) => {
+  const inMillion = Math.round((value / 1_000_000) * 10) / 10;
+  return Number.isInteger(inMillion) ? `${inMillion}` : `${inMillion.toFixed(1).replace(".", ",")}`;
+};
+
+const summarizePriceRange = (key: PaketKey) => {
+  const prices = travelPackagesByType[key].map((item) => parsePriceValue(item.price)).filter(Boolean);
+  if (prices.length === 0) return "Harga menyesuaikan";
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+  if (min === max) return `Rp${formatJt(min)} jt`;
+  return `Rp${formatJt(min)}-${formatJt(max)} jt`;
+};
+
+const summarizeDuration = (key: PaketKey) => {
+  const values = travelPackagesByType[key]
+    .flatMap((item) => item.duration?.match(/\d+/g) ?? [])
+    .map((value) => Number(value))
+    .filter((value) => Number.isFinite(value));
+
+  if (values.length === 0) return "Durasi sesuai program";
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  return min === max ? `Durasi ${min} hari` : `Durasi ${min}-${max} hari`;
+};
+
 export default function Home() {
   const maxTrend = Math.max(...umrahPilgrimsPerYear.map((item) => item.pilgrims));
   const minTrend = Math.min(...umrahPilgrimsPerYear.map((item) => item.pilgrims));
   const trendRange = Math.max(1, maxTrend - minTrend);
+  const featuredPackages = featuredPackageOrder.map((key) => {
+    const meta = featuredPackageMeta[key];
+    return {
+      key,
+      ...meta,
+      href: `/paket?focus=${key}`,
+      priceRange: summarizePriceRange(key),
+      highlights: [...meta.highlights, `${travelPackagesByType[key].length} paket tersedia`] as string[],
+      waitTime: `${meta.subtitle} - ${summarizeDuration(key)}`,
+    };
+  });
 
   const chartWidth = 760;
   const chartHeight = 280;
@@ -168,19 +264,9 @@ export default function Home() {
         <div className="container-section">
           <Reveal>
             <div className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-8">
-              <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-                <div>
-                  <h2 className="text-2xl font-bold sm:text-3xl">Cara Kerja UmrahYuk</h2>
-                  <p className="mt-1 text-sm text-black">Tiga langkah cepat dari input hingga rekomendasi paket.</p>
-                </div>
-                <TrackedLink
-                  href="/rekomendasi"
-                  eventName="cta_click"
-                  eventPayload={{ location: "home-how-it-works", target: "/rekomendasi" }}
-                  className="rounded-xl border border-primary-200 px-4 py-2 text-sm font-semibold text-primary-700 transition hover:bg-primary-50"
-                >
-                  Coba Sekarang
-                </TrackedLink>
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold sm:text-3xl">Cara Kerja UmrahYuk</h2>
+                <p className="mt-1 text-sm text-black">Tiga langkah cepat dari input hingga rekomendasi paket.</p>
               </div>
               <div className="grid gap-4 md:grid-cols-3">
                 {howItWorks.map((item, index) => (
@@ -210,71 +296,24 @@ export default function Home() {
             <div>
               <h2 className="text-2xl font-bold sm:text-3xl">Pilihan Paket Umrah</h2>
               <p className="mt-1 text-black">
-                Fokus pada varian favorit dengan kombinasi ibadah dan wisata islami.
+                Menampilkan 6 jenis paket utama berdasarkan data katalog terbaru.
               </p>
             </div>
-            <TrackedLink
-              href="/rekomendasi"
-              eventName="cta_click"
-              eventPayload={{ location: "home-package-header", target: "/rekomendasi" }}
-              className="hidden rounded-xl bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 sm:inline-flex"
-            >
-              Bandingkan & Cek Rekomendasi
-            </TrackedLink>
           </div>
 
           <Reveal>
-            <div className="grid gap-6 md:grid-cols-3">
-              <PackageCard
-                variant="reguler"
-                title="Umrah Reguler"
-                priceRange="Rp25-32 jt"
-                waitTime="Keberangkatan batch 9-12 hari"
-                highlights={["Biaya hemat", "Fokus ibadah", "Hotel setara bintang 3-4"]}
-                href="/paket/reguler"
-              />
-              <PackageCard
-                variant="turki"
-                title="Umrah Plus Turki"
-                priceRange="Rp34-40 jt"
-                waitTime="Include city tour Istanbul"
-                highlights={["Tur sejarah & reliji", "Maskapai premium", "Hotel bintang 4"]}
-                href="/paket/plus"
-              />
-              <PackageCard
-                variant="dubai"
-                title="Umrah Plus Dubai"
-                priceRange="Rp36-42 jt"
-                waitTime="City tour modern & desert"
-                highlights={["Pengalaman mewah", "Transit nyaman", "Durasi 10-12 hari"]}
-                href="/paket/furoda"
-              />
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      <section className="mt-24">
-        <div className="container-section">
-          <Reveal>
-            <div className="grid items-center gap-8 rounded-3xl bg-gradient-to-r from-primary-600 to-primary-400 p-8 text-white md:grid-cols-2">
-              <div>
-                <h3 className="text-2xl font-bold">Masih bingung pilih paket Umrah?</h3>
-                <p className="mt-2 text-white/90">
-                  Jawab beberapa pertanyaan singkat lalu dapatkan rekomendasi paket yang pas dengan budget,
-                  kebutuhan pendampingan, dan destinasi tambahan pilihan Anda.
-                </p>
-              </div>
-              <div className="flex justify-end">
-                <TrackedLink
-                  href="/rekomendasi"
-                  eventName="cta_click"
-                  eventPayload={{ location: "home-main-banner", target: "/rekomendasi" }}
-                  className="inline-flex items-center justify-center rounded-xl bg-amber-400 px-5 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-amber-300/40 transition hover:-translate-y-0.5 hover:bg-amber-300"
-                >
-                  Dapatkan Rekomendasi
-                </TrackedLink>
-              </div>
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {featuredPackages.map((item) => (
+                <PackageCard
+                  key={item.key}
+                  variant={item.variant}
+                  title={item.title}
+                  priceRange={item.priceRange}
+                  waitTime={item.waitTime}
+                  highlights={item.highlights}
+                  href={item.href}
+                />
+              ))}
             </div>
           </Reveal>
         </div>
@@ -343,11 +382,11 @@ export default function Home() {
                   ],
                   [
                     "Apakah hasilnya final?",
-                    "Belum. Gunakan sebagai referensi awal sebelum memutuskan biro perjalanan favorit Anda.",
-                  ],
+                    "Belum. Gunakan sebagai referensi awal sebelum memutuskan biro perjalanan yang paling sesuai dengan Anda.",
+                  ],  
                   [
                     "Apakah data saya disimpan?",
-                    "Tidak ada penyimpanan. Semua perhitungan berjalan langsung di perangkat Anda.",
+                    "Ya. Sistem menyimpan log rekomendasi (misalnya nama, preferensi input, hasil paket, dan waktu) untuk monitoring dan evaluasi. Data dokumen sensitif seperti paspor atau berkas pribadi tidak diminta di aplikasi ini.",
                   ],
                   [
                     "Bisakah saya ganti preferensi?",

@@ -122,6 +122,79 @@ body {
   animation: pulseSoft 3s ease-in-out infinite;
 }
 
+@keyframes backdropFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popupRise {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes softSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmerSweep {
+  from {
+    transform: translateX(-120%) skewX(-12deg);
+  }
+  to {
+    transform: translateX(220%) skewX(-12deg);
+  }
+}
+
+.animate-backdrop-fade {
+  animation: backdropFade 220ms ease-out both;
+}
+
+.animate-popup-rise {
+  animation: popupRise 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-soft-slide-up {
+  animation: softSlideUp 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-shimmer-sweep::after {
+  content: "";
+  position: absolute;
+  inset: -40% auto -40% 0;
+  width: 36%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  animation: shimmerSweep 1.15s ease-out 220ms both;
+}
+
+.stagger-1 {
+  animation-delay: 80ms;
+}
+
+.stagger-2 {
+  animation-delay: 150ms;
+}
+
+.stagger-3 {
+  animation-delay: 220ms;
+}
+
 .shadow-glow {
   box-shadow: 0 16px 40px -18px var(--glow);
 }
@@ -161,10 +234,13 @@ body {
   display: none;
 }
 
-
-
-
-
-
-
-
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+}

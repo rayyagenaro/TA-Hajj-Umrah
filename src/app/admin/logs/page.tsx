@@ -1,6 +1,8 @@
 import Breadcrumbs from "@/components/Breadcrumbs";
+import ConfirmSubmitButton from "@/components/ConfirmSubmitButton";
 import { isMySqlConfigured } from "@/lib/mysql";
 import { getRecentRecommendationLogs } from "@/lib/recommendationLogRepository";
+import { clearAllLogsAction, deleteSingleLogAction } from "./actions";
 
 export const metadata = {
   title: "Admin Logs Rekomendasi",
@@ -30,7 +32,7 @@ export default async function AdminLogsPage() {
 
   return (
     <div className="container-section">
-      <div className="mx-auto max-w-6xl space-y-6">
+      <div className="mx-auto max-w-[92rem] space-y-6">
         <div>
           <Breadcrumbs
             items={[
@@ -70,24 +72,33 @@ export default async function AdminLogsPage() {
 
             <section className="overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm">
               <div className="border-b border-black/5 bg-slate-50 px-4 py-3">
-                <h2 className="text-lg font-bold">Log Terbaru</h2>
-                <p className="mt-1 text-xs text-slate-600">Urutan terbaru di atas. Menampilkan maksimal 100 data.</p>
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <h2 className="text-lg font-bold">Log Terbaru</h2>
+                    <p className="mt-1 text-xs text-slate-600">Urutan terbaru di atas. Menampilkan maksimal 100 data.</p>
+                  </div>
+                  <form action={clearAllLogsAction}>
+                    <ConfirmSubmitButton
+                      label="Clear All Logs"
+                      confirmText="Yakin ingin menghapus semua logs? Aksi ini tidak bisa dibatalkan."
+                      className="rounded-lg border border-red-300 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 transition hover:bg-red-100"
+                    />
+                  </form>
+                </div>
               </div>
-              <div className="overflow-x-auto">
-                <table className="min-w-[980px] w-full text-sm">
+              <div className="overflow-x-auto lg:overflow-visible">
+                <table className="w-full table-auto text-sm">
                   <thead className="bg-slate-50 text-left text-slate-700">
                     <tr>
                       <th className="px-3 py-2 font-semibold">Waktu</th>
                       <th className="px-3 py-2 font-semibold">Nama</th>
                       <th className="px-3 py-2 font-semibold">Budget</th>
                       <th className="px-3 py-2 font-semibold">Usia</th>
-                      <th className="px-3 py-2 font-semibold">Hotel</th>
-                      <th className="px-3 py-2 font-semibold">Transport</th>
                       <th className="px-3 py-2 font-semibold">Destinasi</th>
                       <th className="px-3 py-2 font-semibold">Paket Utama</th>
                       <th className="px-3 py-2 font-semibold">Alternatif</th>
                       <th className="px-3 py-2 font-semibold">Status</th>
-                      <th className="px-3 py-2 font-semibold">Client IP</th>
+                      <th className="px-3 py-2 font-semibold text-center">Aksi</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -101,14 +112,12 @@ export default async function AdminLogsPage() {
                     {logs.map((log) => (
                       <tr key={log.id} className="border-t border-black/5 even:bg-slate-50/50">
                         <td className="px-3 py-2 whitespace-nowrap">{formatDateTime(log.created_at)}</td>
-                        <td className="px-3 py-2">{log.nama ?? "-"}</td>
-                        <td className="px-3 py-2">{formatCurrency(log.budget)}</td>
-                        <td className="px-3 py-2">{log.usia ?? "-"}</td>
-                        <td className="px-3 py-2">{log.preferensi_hotel ?? "-"}</td>
-                        <td className="px-3 py-2">{log.tipe_transportasi ?? "-"}</td>
-                        <td className="px-3 py-2">{log.destinasi_tambahan ?? "-"}</td>
-                        <td className="px-3 py-2">{log.paket_utama ?? "-"}</td>
-                        <td className="px-3 py-2">{log.alternatif_count}</td>
+                        <td className="px-3 py-2 whitespace-nowrap">{log.nama ?? "-"}</td>
+                        <td className="px-3 py-2 whitespace-nowrap">{formatCurrency(log.budget)}</td>
+                        <td className="px-3 py-2 whitespace-nowrap">{log.usia ?? "-"}</td>
+                        <td className="px-3 py-2 whitespace-nowrap">{log.destinasi_tambahan ?? "-"}</td>
+                        <td className="max-w-[14rem] px-3 py-2 break-words">{log.paket_utama ?? "-"}</td>
+                        <td className="px-3 py-2 whitespace-nowrap">{log.alternatif_count}</td>
                         <td className="px-3 py-2">
                           <span
                             className={[
@@ -119,7 +128,16 @@ export default async function AdminLogsPage() {
                             {log.status}
                           </span>
                         </td>
-                        <td className="px-3 py-2">{log.client_ip ?? "-"}</td>
+                        <td className="px-3 py-2 text-center">
+                          <form action={deleteSingleLogAction}>
+                            <input type="hidden" name="id" value={log.id} />
+                            <ConfirmSubmitButton
+                              label="Hapus"
+                              confirmText="Hapus log ini? Aksi ini tidak bisa dibatalkan."
+                              className="rounded-md border border-red-300 bg-red-50 px-2 py-1 text-xs font-semibold text-red-700 transition hover:bg-red-100"
+                            />
+                          </form>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -134,10 +152,19 @@ export default async function AdminLogsPage() {
 }
 
 function StatsCard({ label, value }: { label: string; value: string }) {
+  const isLongValue = value.length > 18;
   return (
     <article className="rounded-2xl border border-black/5 bg-white p-4 shadow-sm">
       <p className="text-xs text-slate-600">{label}</p>
-      <p className="mt-2 text-2xl font-bold text-slate-900">{value}</p>
+      <p
+        className={[
+          "mt-2 font-bold leading-tight text-slate-900",
+          isLongValue ? "break-all text-lg" : "text-2xl",
+        ].join(" ")}
+        title={value}
+      >
+        {value}
+      </p>
     </article>
   );
 }

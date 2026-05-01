@@ -1,7 +1,10 @@
-﻿import Link from "next/link";
-import { IconWallet, IconDiamond, IconPlane } from "@/components/Icons";
+import Link from "next/link";
+import type { SVGProps } from "react";
+import { IconWallet, IconDiamond, IconPlane, IconKaaba } from "@/components/Icons";
 
-type Variant = "reguler" | "turki" | "dubai";
+export type PackageCardVariant = "hemat" | "reguler" | "vip" | "turki" | "dubai" | "mesir";
+
+type PackageIcon = (props: SVGProps<SVGSVGElement>) => React.ReactElement;
 
 export default function PackageCard({
   title,
@@ -16,35 +19,48 @@ export default function PackageCard({
   waitTime: string;
   highlights: string[];
   href: string;
-  variant: Variant;
+  variant: PackageCardVariant;
 }) {
   const badgeColor = {
+    hemat: "bg-sky-50 text-sky-700 ring-sky-100",
     reguler: "bg-blue-50 text-blue-700 ring-blue-100",
+    vip: "bg-rose-50 text-rose-700 ring-rose-100",
     turki: "bg-emerald-50 text-emerald-700 ring-emerald-100",
     dubai: "bg-amber-50 text-amber-700 ring-amber-100",
-  }[variant];
+    mesir: "bg-cyan-50 text-cyan-700 ring-cyan-100",
+  } satisfies Record<PackageCardVariant, string>;
 
   const intensity = {
+    hemat: "from-sky-100 to-white",
     reguler: "from-primary-100 to-white",
+    vip: "from-rose-100 to-white",
     turki: "from-emerald-100 to-white",
     dubai: "from-amber-100 to-white",
-  }[variant];
+    mesir: "from-cyan-100 to-white",
+  } satisfies Record<PackageCardVariant, string>;
 
   const badgeLabel = {
+    hemat: "HEMAT",
     reguler: "REGULER",
+    vip: "VIP GOLD",
     turki: "PLUS TURKI",
     dubai: "PLUS DUBAI",
-  }[variant];
+    mesir: "PLUS MESIR",
+  } satisfies Record<PackageCardVariant, string>;
 
-  const Icon = {
+  const icons = {
+    hemat: IconWallet,
     reguler: IconWallet,
+    vip: IconKaaba,
     turki: IconDiamond,
     dubai: IconPlane,
-  }[variant];
+    mesir: IconPlane,
+  } satisfies Record<PackageCardVariant, PackageIcon>;
+  const Icon = icons[variant];
 
   return (
     <div
-      className={`group relative flex h-full flex-col rounded-2xl border border-black/5 bg-gradient-to-b ${intensity} p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg`}
+      className={`group relative flex h-full flex-col rounded-2xl border border-black/5 bg-gradient-to-b ${intensity[variant]} p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg`}
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -54,9 +70,9 @@ export default function PackageCard({
           <h3 className="text-lg font-semibold">{title}</h3>
         </div>
         <span
-          className={`inline-flex items-center rounded-full px-3.5 py-1.5 text-[11px] font-semibold tracking-wide ring-1 ${badgeColor}`}
+          className={`inline-flex items-center rounded-full px-3.5 py-1.5 text-[11px] font-semibold tracking-wide ring-1 ${badgeColor[variant]}`}
         >
-          {badgeLabel}
+          {badgeLabel[variant]}
         </span>
       </div>
       <p className="mt-2 text-sm text-black">{waitTime}</p>
@@ -73,18 +89,14 @@ export default function PackageCard({
         ))}
       </ul>
 
-      <div className="mt-6 flex items-center justify-between">
+      <div className="mt-6">
         <Link
           href={href}
-          className="inline-flex items-center rounded-xl bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:scale-[1.02] hover:bg-primary-700"
+          className="inline-flex w-full items-center justify-center rounded-xl bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:scale-[1.02] hover:bg-primary-700"
         >
-          Lihat Detail
-        </Link>
-        <Link href="/rekomendasi" className="text-sm font-medium text-primary-700 underline-offset-4 hover:underline">
-          Bandingkan
+          Lihat Detail Paket
         </Link>
       </div>
     </div>
   );
 }
-

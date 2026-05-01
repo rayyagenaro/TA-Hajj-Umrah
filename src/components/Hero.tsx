@@ -1,5 +1,14 @@
 import TrackedLink from "@/components/TrackedLink";
 
+const popularPackageTypes = [
+  { name: "Hemat", desc: "Biaya lebih ramah untuk jamaah" },
+  { name: "Reguler", desc: "Pilihan paling seimbang" },
+  { name: "VIP Gold", desc: "Kenyamanan dan fasilitas premium" },
+  { name: "Plus Turki", desc: "Umrah plus wisata sejarah" },
+  { name: "Plus Dubai", desc: "Umrah dengan city tour modern" },
+  { name: "Plus Mesir", desc: "Religi dan sejarah Islam Mesir" },
+];
+
 export default function Hero() {
   return (
     <section className="relative">
@@ -8,20 +17,12 @@ export default function Hero() {
           <div className="text-black">
             <span className="inline-flex items-center gap-2 rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-700 ring-1 ring-primary-100">
               <span className="inline-flex h-2 w-2 rounded-full bg-primary-500" aria-hidden />
-              Sistem Pakar Rekomendasi Umrah
+              Sistem Rekomendasi Umrah
             </span>
 
             <h1 className="mt-4 text-4xl font-bold leading-tight text-black sm:text-5xl">
               Temukan Paket Umrah <span className="gradient-text">Terbaik</span> untuk Anda
             </h1>
-
-            <p className="mt-3 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.35em] text-black">
-              <span
-                className="inline-flex h-[2px] w-10 rounded-full bg-gradient-to-r from-primary-500 to-primary-300"
-                aria-hidden
-              />
-              Bismillah Menuju Baitullah
-            </p>
 
             <p className="mt-4 text-black">
               Dapatkan rekomendasi paket berdasarkan budget, preferensi kenyamanan hotel, dan minat tur religi Anda.
@@ -62,18 +63,13 @@ export default function Hero() {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-black">Paket Umrah</p>
-                    <p className="text-xs text-black">Reguler | Plus Turki | Plus Dubai</p>
+                    <p className="text-sm font-semibold text-black">Tipe Paket Umrah</p>
+                    <p className="text-xs text-black">6 kategori utama yang tersedia di katalog</p>
                   </div>
                 </div>
 
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                  {[
-                    { name: "Reguler", desc: "Fokus ibadah & hemat" },
-                    { name: "Plus Turki", desc: "Ditambah tur Istanbul" },
-                    { name: "Plus Dubai", desc: "City tour mewah" },
-                    { name: "Private", desc: "Jadwal fleksibel" },
-                  ].map((x) => (
+                  {popularPackageTypes.map((x) => (
                     <div
                       key={x.name}
                       className="rounded-xl border border-black/5 p-3 text-black transition-all hover:-translate-y-0.5 hover:shadow-md"

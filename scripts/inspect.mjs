@@ -11,7 +11,7 @@ const parser = new XMLParser({
 });
 
 async function main() {
-  const filePath = path.join(process.cwd(), "public", "data", "final.owl");
+  const filePath = path.join(process.cwd(), "public", "data", "22april.owl");
   const xml = await readFile(filePath, "utf8");
   const parsed = parser.parse(xml);
 
@@ -25,4 +25,3 @@ main().catch((error) => {
   console.error(error);
   process.exit(1);
 });
-

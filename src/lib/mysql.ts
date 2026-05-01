@@ -1,4 +1,4 @@
-import mysql, { type Pool } from "mysql2/promise";
+import mysql, { type Pool, type PoolConnection } from "mysql2/promise";
 
 declare global {
   var __umrahyukMySqlPool: Pool | undefined;
@@ -15,6 +15,14 @@ export function getMySqlPool(): Pool | null {
     globalThis.__umrahyukMySqlPool = createPool();
   }
   return globalThis.__umrahyukMySqlPool;
+}
+
+export async function getConnection(): Promise<PoolConnection> {
+  const pool = getMySqlPool();
+  if (!pool) {
+    throw new Error("Konfigurasi MySQL belum tersedia.");
+  }
+  return pool.getConnection();
 }
 
 function createPool(): Pool {

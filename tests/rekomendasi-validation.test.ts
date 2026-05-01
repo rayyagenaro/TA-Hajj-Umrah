@@ -6,6 +6,9 @@ import type { FormState } from "../src/app/rekomendasi/types";
 const validForm: FormState = {
   budget: 32_000_000,
   usia: 40,
+  preferJarakHotelMaks: 500,
+  durasiPreferensi: 12,
+  tipePenerbangan: "transit",
   butuhPendampingan: "tidak",
   preferensiHotel: "Standard",
   tipeTransportasi: "Ekonomi",
@@ -31,6 +34,16 @@ test("returns budget error when out of range", () => {
 test("returns usia error when out of range", () => {
   const errors = validateClientForm({ ...validForm, usia: 101 });
   assert.equal(errors.usia, "Usia harus bilangan bulat di rentang 12 - 100.");
+});
+
+test("returns jarak hotel error when out of range", () => {
+  const errors = validateClientForm({ ...validForm, preferJarakHotelMaks: 90 });
+  assert.equal(errors.preferJarakHotelMaks, "Jarak hotel harus bilangan bulat di rentang 100 - 2000 meter.");
+});
+
+test("returns durasi error when out of range", () => {
+  const errors = validateClientForm({ ...validForm, durasiPreferensi: 30 });
+  assert.equal(errors.durasiPreferensi, "Durasi harus bilangan bulat di rentang 7 - 20 hari.");
 });
 
 test("returns nama error when too long", () => {

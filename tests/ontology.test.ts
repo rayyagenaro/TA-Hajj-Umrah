@@ -18,7 +18,7 @@ test("returns blocking recommendation as main result and clears alternatives", (
       id: "R1",
       context: "Umrah",
       recommendation: "UmrahPlusTurki",
-      conditions: [{ kind: "string", property: "destinasi_tambahan", value: "Turki", caseInsensitive: true }],
+      conditions: [{ kind: "string", property: "destinasi_tambahan", operator: "eq", value: "Turki", caseInsensitive: true }],
     },
     {
       id: "R2",
@@ -46,8 +46,8 @@ test("prioritizes higher score and deduplicates package recommendations", () => 
       context: "Umrah",
       recommendation: "UmrahPlusTurki",
       conditions: [
-        { kind: "string", property: "destinasi_tambahan", value: "Turki", caseInsensitive: true },
-        { kind: "string", property: "tipe_transportasi", value: "Bisnis", caseInsensitive: true },
+        { kind: "string", property: "destinasi_tambahan", operator: "eq", value: "Turki", caseInsensitive: true },
+        { kind: "string", property: "tipe_transportasi", operator: "eq", value: "Bisnis", caseInsensitive: true },
       ],
     },
     {
@@ -55,7 +55,7 @@ test("prioritizes higher score and deduplicates package recommendations", () => 
       context: "Umrah",
       recommendation: "UmrahPlusTurki",
       label: "Paket Turki Prioritas",
-      conditions: [{ kind: "string", property: "destinasi_tambahan", value: "Turki", caseInsensitive: true }],
+      conditions: [{ kind: "string", property: "destinasi_tambahan", operator: "eq", value: "Turki", caseInsensitive: true }],
     },
   ];
 
@@ -70,4 +70,28 @@ test("loads ontology rules from OWL data source", async () => {
   const rules = await loadOntologyRules();
   assert.ok(rules.length > 0);
   assert.ok(rules.some((rule) => rule.context === "Umrah"));
+});
+
+test("prefers the matched rule whose duration threshold is closer to the input when base score is equal", () => {
+  const rules: Rule[] = [
+    {
+      id: "R-DUR-12",
+      context: "Umrah",
+      recommendation: "UmrahVIPGold",
+      label: "Durasi 12",
+      conditions: [{ kind: "compare", property: "durasi_preferensi", operator: "gte", value: 12 }],
+    },
+    {
+      id: "R-DUR-10",
+      context: "Umrah",
+      recommendation: "UmrahReguler",
+      label: "Durasi 10",
+      conditions: [{ kind: "compare", property: "durasi_preferensi", operator: "gte", value: 10 }],
+    },
+  ];
+
+  const result = inferRecommendations({ ...baseInput, destinasiTambahan: null, durasiPreferensi: 12 }, rules);
+
+  assert.equal(result.paketUtama?.paket, "UmrahVIPGold");
+  assert.equal(result.paketUtama?.label, "Durasi 12");
 });

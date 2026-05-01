@@ -101,3 +101,18 @@ export async function getRecentRecommendationLogs(limit = 100): Promise<Recommen
   );
   return rows as RecommendationLogRow[];
 }
+
+export async function deleteRecommendationLogById(id: number): Promise<void> {
+  const pool = getMySqlPool();
+  if (!pool) return;
+
+  if (!Number.isInteger(id) || id <= 0) return;
+  await pool.execute("DELETE FROM recommendation_logs WHERE id = ?", [id]);
+}
+
+export async function clearAllRecommendationLogs(): Promise<void> {
+  const pool = getMySqlPool();
+  if (!pool) return;
+
+  await pool.execute("DELETE FROM recommendation_logs");
+}

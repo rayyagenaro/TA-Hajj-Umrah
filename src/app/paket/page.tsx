@@ -3,10 +3,11 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import { IconDiamond, IconPlane, IconWallet } from "@/components/Icons";
 import Reveal from "@/components/Reveal";
 import { type PaketKey, travelPackagesByType } from "@/data/travelPackages";
+import PackageCatalogGrid from "./components/PackageCatalogGrid";
 
 export const metadata = {
   title: "Pilihan Paket Umrah",
-  description: "Katalog dummy pilihan paket Umrah Reguler, Plus Turki, Plus Dubai, dan variasi lainnya.",
+  description: "Katalog pilihan paket Umrah Hemat, Reguler, VIP Gold, Plus Turki, Plus Dubai, dan Plus Mesir.",
 };
 
 const packageMeta: Record<
@@ -21,12 +22,21 @@ const packageMeta: Record<
     short: string;
   }
 > = {
+  UmrahHemat: {
+    title: "Umrah Hemat",
+    short: "Hemat",
+    desc: "Fokus keterjangkauan biaya untuk jamaah dengan prioritas harga ekonomis.",
+    href: "/paket/reguler",
+    badge: "Umrah Hemat",
+    icon: IconWallet,
+    tone: "bg-sky-50 text-sky-700 ring-sky-100",
+  },
   UmrahReguler: {
     title: "Umrah Reguler",
     short: "Reguler",
-    desc: "Paling ekonomis, fokus ibadah, jadwal rutin tiap bulan.",
+    desc: "Paket umum dengan komposisi biaya, fasilitas, dan jadwal yang seimbang.",
     href: "/paket/reguler",
-    badge: "Favorit Jamaah",
+    badge: "Umrah Reguler",
     icon: IconWallet,
     tone: "bg-primary-50 text-primary-700 ring-primary-100",
   },
@@ -35,7 +45,7 @@ const packageMeta: Record<
     short: "Plus Turki",
     desc: "Kombinasi ibadah dan wisata sejarah Islam di Istanbul.",
     href: "/paket/plus",
-    badge: "Paling Seimbang",
+    badge: "Umrah Plus Turki",
     icon: IconDiamond,
     tone: "bg-emerald-50 text-emerald-700 ring-emerald-100",
   },
@@ -44,13 +54,40 @@ const packageMeta: Record<
     short: "Plus Dubai",
     desc: "Opsi premium dengan city tour modern dan fasilitas upgrade.",
     href: "/paket/furoda",
-    badge: "Premium",
+    badge: "Umrah Plus Dubai",
     icon: IconPlane,
     tone: "bg-amber-50 text-amber-700 ring-amber-100",
+  },
+  UmrahVIPGold: {
+    title: "Umrah VIP Gold",
+    short: "VIP Gold",
+    desc: "Paket premium dengan akomodasi unggulan dan kenyamanan layanan lebih tinggi.",
+    href: "/paket/furoda",
+    badge: "Umrah VIP Gold",
+    icon: IconDiamond,
+    tone: "bg-rose-50 text-rose-700 ring-rose-100",
+  },
+  UmrahPlusMesir: {
+    title: "Umrah Plus Mesir",
+    short: "Plus Mesir",
+    desc: "Kombinasi ibadah Umrah dengan wisata religi dan sejarah di Mesir.",
+    href: "/paket/plus",
+    badge: "Umrah Plus Mesir",
+    icon: IconPlane,
+    tone: "bg-cyan-50 text-cyan-700 ring-cyan-100",
   },
 };
 
 const parsePrice = (value: string) => Number(value.replace(/[^\d]/g, ""));
+const orderedPackageKeys: PaketKey[] = [
+  "UmrahHemat",
+  "UmrahReguler",
+  "UmrahVIPGold",
+  "UmrahPlusTurki",
+  "UmrahPlusDubai",
+  "UmrahPlusMesir",
+];
+const unknownMarker = /belum dicantumkan|^-$|#n\/a/i;
 
 const formatPrice = (value: number) =>
   new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(value);
@@ -63,7 +100,47 @@ const extractDurationDays = (value?: string) => {
   return { min: Math.min(...mapped), max: Math.max(...mapped) };
 };
 
-const packageTypes = (Object.keys(travelPackagesByType) as PaketKey[]).map((key) => {
+const summarizePriceRange = (key: PaketKey) => {
+  const prices = travelPackagesByType[key].map((item) => parsePrice(item.price)).filter(Boolean);
+  if (prices.length === 0) return "-";
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+  if (min === max) return formatPrice(min);
+  return `${formatPrice(min)} - ${formatPrice(max)}`;
+};
+
+const summarizeDurationRange = (key: PaketKey) => {
+  const durations = travelPackagesByType[key]
+    .map((item) => extractDurationDays(item.duration))
+    .filter((x): x is { min: number; max: number } => Boolean(x));
+  if (durations.length === 0) return "Sesuai program";
+  const min = Math.min(...durations.map((x) => x.min));
+  const max = Math.max(...durations.map((x) => x.max));
+  return `${min}-${max} hari`;
+};
+
+const summarizeTransport = (key: PaketKey) => {
+  const list = travelPackagesByType[key]
+    .map((item) => item.transport?.trim())
+    .filter((item): item is string => Boolean(item))
+    .filter((item) => !unknownMarker.test(item));
+  if (list.length === 0) return "Tidak dicantumkan";
+  const unique = Array.from(new Set(list));
+  return unique.length <= 2 ? unique.join(" / ") : `${unique.slice(0, 2).join(" / ")} + lainnya`;
+};
+
+const summarizeHotelData = (key: PaketKey) => {
+  const list = travelPackagesByType[key]
+    .map((item) => item.accommodation?.trim())
+    .filter((item): item is string => Boolean(item));
+  if (list.length === 0) return "Tidak dicantumkan";
+  const knownCount = list.filter((item) => !unknownMarker.test(item)).length;
+  if (knownCount === 0) return "Mayoritas belum dicantumkan";
+  if (knownCount === list.length) return "Tersedia di semua paket";
+  return `${knownCount}/${list.length} paket mencantumkan hotel`;
+};
+
+const packageTypes = orderedPackageKeys.map((key) => {
   const list = travelPackagesByType[key];
   const prices = list.map((item) => parsePrice(item.price)).filter(Boolean);
   const durations = list.map((item) => extractDurationDays(item.duration)).filter((x): x is { min: number; max: number } => Boolean(x));
@@ -80,27 +157,29 @@ const packageTypes = (Object.keys(travelPackagesByType) as PaketKey[]).map((key)
   };
 });
 
-const packageCatalog = (Object.keys(travelPackagesByType) as PaketKey[]).flatMap((key) =>
+const packageCatalog = orderedPackageKeys.flatMap((key) =>
   travelPackagesByType[key].map((item) => ({
     key,
     name: item.name,
     provider: item.provider,
     type: packageMeta[key].short,
-    airline: item.transport || "-",
-    hotel: item.accommodation || "-",
+    airline: item.transport || "Belum dicantumkan di sumber",
+    hotel: item.accommodation || "Belum dicantumkan di sumber",
     duration: item.duration || "-",
     price: item.price,
     source: item.source || "-",
     url: item.url,
+    notes: item.notes || "",
+    additionalInfo: item.additionalInfo || "",
   })),
 );
 
-const comparisonRows = [
-  ["Kisaran Harga", "Rp23-38 jt", "Rp36-37 jt", "Rp35-66 jt"],
-  ["Durasi", "9-12 hari", "12 hari", "9-14 hari"],
-  ["Kelas Hotel", "Bintang 3-4", "Bintang 4", "Bintang 4-5"],
-  ["Maskapai", "Mix standard/full service", "Turkish Airlines", "Emirates & premium class"],
-  ["Program Tambahan", "Fokus ibadah", "Tur sejarah Turki", "City tour modern Dubai"],
+const comparisonRows: string[][] = [
+  ["Kisaran Harga", ...orderedPackageKeys.map(summarizePriceRange)],
+  ["Durasi", ...orderedPackageKeys.map(summarizeDurationRange)],
+  ["Ketersediaan Data Hotel", ...orderedPackageKeys.map(summarizeHotelData)],
+  ["Maskapai Dominan", ...orderedPackageKeys.map(summarizeTransport)],
+  ["Fokus Program", ...orderedPackageKeys.map((key) => packageMeta[key].desc)],
 ];
 
 const addons = [
@@ -120,10 +199,7 @@ export default async function PaketPage({ searchParams }: PaketPageProps) {
   const resolvedSearchParams = (await searchParams) ?? undefined;
   const focusCandidate = resolvedSearchParams?.focus;
   const focusKey = isPaketKey(focusCandidate) ? focusCandidate : null;
-  const orderedTypes = focusKey
-    ? [focusKey, ...packageTypes.filter((item) => item.key !== focusKey).map((item) => item.key)]
-    : packageTypes.map((item) => item.key);
-  const visiblePackageTypes = orderedTypes.map((key) => packageTypes.find((item) => item.key === key)!);
+  const visiblePackageTypes = focusKey ? packageTypes.filter((item) => item.key === focusKey) : packageTypes;
   const visibleCatalog = focusKey ? packageCatalog.filter((item) => item.key === focusKey) : packageCatalog;
 
   return (
@@ -136,12 +212,37 @@ export default async function PaketPage({ searchParams }: PaketPageProps) {
           </span>
           <h1 className="mt-3 text-3xl font-bold sm:text-4xl">Pilihan Paket Umrah Lengkap</h1>
           <p className="mt-2 max-w-3xl text-black">
-            Daftar paket di bawah terhubung ke data lokal pada `travelPackages.ts`, jadi isi katalog akan ikut berubah
-            saat data diperbarui.
+            Daftar paket di bawah terhubung ke data lokal dan ditampilkan sesuai detail sumber
+            yang tersedia, <b>terakhir diupdate: 22 April 2026</b>. 
           </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Link
+              href="/paket"
+              className={`inline-flex items-center rounded-full px-3 py-1.5 text-xs font-semibold ring-1 transition ${
+                focusKey === null
+                  ? "bg-primary-600 text-white ring-primary-600"
+                  : "bg-white text-slate-700 ring-slate-200 hover:bg-slate-50"
+              }`}
+            >
+              Semua Jenis
+            </Link>
+            {packageTypes.map((item) => (
+              <Link
+                key={item.key}
+                href={`/paket?focus=${item.key}`}
+                className={`inline-flex items-center rounded-full px-3 py-1.5 text-xs font-semibold ring-1 transition ${
+                  focusKey === item.key 
+                    ? "bg-primary-600 text-white ring-primary-600"
+                    : "bg-white text-slate-700 ring-slate-200 hover:bg-slate-50"
+                }`}
+              >
+                {item.title}
+              </Link>
+            ))}
+          </div>
           {focusKey && (
             <div className="mt-4 inline-flex items-center rounded-xl border border-primary-200 bg-primary-50 px-3 py-2 text-xs font-semibold text-primary-800">
-              Menampilkan paket paling cocok: {packageMeta[focusKey].title}
+              Menampilkan paket tipe: {packageMeta[focusKey].title}
             </div>
           )}
         </div>
@@ -187,42 +288,7 @@ export default async function PaketPage({ searchParams }: PaketPageProps) {
               {visibleCatalog.length} paket
             </span>
           </div>
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {visibleCatalog.map((item) => (
-              <Reveal key={`${item.provider}-${item.name}`}>
-                <article className="flex h-full flex-col rounded-2xl border border-black/5 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-sm font-semibold text-primary-700">{item.type}</p>
-                    <p className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-700">{item.duration}</p>
-                  </div>
-                  <h3 className="mt-2 text-lg font-bold">{item.name}</h3>
-                  <p className="mt-1 text-sm text-black">{item.provider}</p>
-                  <div className="mt-4 space-y-1.5 text-sm text-black">
-                    <p>Maskapai: {item.airline}</p>
-                    <p>Hotel: {item.hotel}</p>
-                    <p>Sumber: {item.source}</p>
-                  </div>
-                  <p className="mt-5 text-lg font-bold text-primary-700">{item.price}</p>
-                  <div className="mt-4 flex gap-2">
-                    <Link
-                      href={item.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center justify-center rounded-xl bg-amber-400 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-amber-300"
-                    >
-                      Kunjungi Provider
-                    </Link>
-                    <Link
-                      href="/rekomendasi"
-                      className="inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold text-primary-700 ring-1 ring-primary-200 transition hover:bg-primary-50"
-                    >
-                      Bandingkan
-                    </Link>
-                  </div>
-                </article>
-              </Reveal>
-            ))}
-          </div>
+          <PackageCatalogGrid items={visibleCatalog} />
         </section>
 
         <section className="mt-12 overflow-hidden rounded-2xl border border-black/5 bg-white">
@@ -231,13 +297,16 @@ export default async function PaketPage({ searchParams }: PaketPageProps) {
             <p className="mt-1 text-sm text-black">Ringkasan cepat untuk bantu jamaah memilih jenis paket yang paling cocok.</p>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-[760px] w-full text-sm">
+            <table className="min-w-[1180px] w-full text-sm">
               <thead className="bg-slate-50 text-left text-slate-700">
                 <tr>
                   <th className="px-4 py-3 font-semibold">Kriteria</th>
+                  <th className="px-4 py-3 font-semibold">Hemat</th>
                   <th className="px-4 py-3 font-semibold">Reguler</th>
+                  <th className="px-4 py-3 font-semibold">VIP Gold</th>
                   <th className="px-4 py-3 font-semibold">Plus Turki</th>
                   <th className="px-4 py-3 font-semibold">Plus Dubai</th>
+                  <th className="px-4 py-3 font-semibold">Plus Mesir</th>
                 </tr>
               </thead>
               <tbody>
@@ -247,6 +316,9 @@ export default async function PaketPage({ searchParams }: PaketPageProps) {
                     <td className="px-4 py-3">{row[1]}</td>
                     <td className="px-4 py-3">{row[2]}</td>
                     <td className="px-4 py-3">{row[3]}</td>
+                    <td className="px-4 py-3">{row[4]}</td>
+                    <td className="px-4 py-3">{row[5]}</td>
+                    <td className="px-4 py-3">{row[6]}</td>
                   </tr>
                 ))}
               </tbody>
@@ -293,10 +365,22 @@ export default async function PaketPage({ searchParams }: PaketPageProps) {
           <h2 className="text-2xl font-bold">FAQ Paket</h2>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             {[
-              ["Apakah ini data asli biro travel?", "Belum. Seluruh item di halaman ini masih dummy untuk kebutuhan demo UI/UX."],
-              ["Bisa tambah jenis paket lain?", "Bisa. Misalnya paket Ramadhan, paket lansia, atau paket furoda khusus."],
-              ["Bagaimana menentukan paket terbaik?", "Prioritaskan budget, kenyamanan hotel, jadwal cuti, dan kebutuhan pendampingan."],
-              ["Apa langkah setelah memilih paket?", "Gunakan halaman rekomendasi, lalu lanjut konsultasi dan verifikasi izin PPIU travel."],
+              [
+                "Apa bedanya paket Hemat, Reguler, VIP Gold, dan paket Plus?",
+                "Hemat fokus ke biaya lebih terjangkau, Reguler lebih seimbang, VIP Gold menonjolkan kenyamanan premium, sedangkan paket Plus menambahkan destinasi seperti Turki, Dubai, atau Mesir.",
+              ],
+              [
+                "Apakah harga dan detail paket di sini selalu final?",
+                "Belum tentu. Data katalog disusun dari sumber paket yang tersedia, jadi harga, hotel, maskapai, dan jadwal bisa berubah. Tetap konfirmasi langsung ke travel sebelum memesan.",
+              ],
+              [
+                "Kenapa fasilitas antar paket terlihat berbeda-beda?",
+                "Karena tiap jenis paket punya fokus yang berbeda. Ada yang menekan biaya, ada yang mengejar hotel lebih dekat, ada juga yang menambah city tour atau program perjalanan lebih panjang.",
+              ],
+              [
+                "Kapan sebaiknya saya pakai halaman rekomendasi?",
+                "Gunakan halaman rekomendasi kalau kamu masih bingung memilih dari banyak tipe paket. Sistem akan membantu menyaring opsi berdasarkan budget, preferensi hotel, penerbangan, usia, dan destinasi tambahan.",
+              ],
             ].map(([q, a]) => (
               <details key={q} className="rounded-2xl border border-black/5 bg-white p-4">
                 <summary className="cursor-pointer font-semibold">{q}</summary>
@@ -311,5 +395,5 @@ export default async function PaketPage({ searchParams }: PaketPageProps) {
 }
 
 function isPaketKey(value: unknown): value is PaketKey {
-  return value === "UmrahReguler" || value === "UmrahPlusTurki" || value === "UmrahPlusDubai";
+  return typeof value === "string" && Object.prototype.hasOwnProperty.call(travelPackagesByType, value);
 }

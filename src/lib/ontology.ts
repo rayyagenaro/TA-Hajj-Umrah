@@ -10,19 +10,20 @@ type NumericProperty =
   | "durasi_preferensi"
   | "prefer_jarak_hotel_maks"
   | "jumlah_jamaah";
-type BooleanProperty = "butuh_pendampingan" | "butuh_private" | "prefer_direct_flight";
+type BooleanProperty = "butuh_pendampingan" | "butuh_private" | "prefer_direct_flight" | "prefer_transit_flight";
 type StringProperty =
   | "preferensi_hotel"
   | "tipe_transportasi"
   | "destinasi_tambahan"
   | "prefer_destinasi"
   | "musim_preferensi";
-type CompareOperator = "gt" | "gte" | "lt" | "lte" | "eq";
+type CompareOperator = "gt" | "gte" | "lt" | "lte" | "eq" | "neq";
+type StringOperator = "eq" | "neq";
 
 type Condition =
   | { kind: "compare"; property: NumericProperty; operator: CompareOperator; value: number }
   | { kind: "boolean"; property: BooleanProperty; value: boolean }
-  | { kind: "string"; property: StringProperty; value: string; caseInsensitive: boolean };
+  | { kind: "string"; property: StringProperty; operator: StringOperator; value: string; caseInsensitive: boolean };
 
 export interface Rule {
   id: string;
@@ -71,7 +72,7 @@ const parser = new XMLParser({
 });
 
 const DATA_DIR = path.join(process.cwd(), "public", "data");
-const ONTOLOGY_FILE = "ontologi.owl";
+const ONTOLOGY_FILE = "22april.owl";
 
 let cachedRules: Rule[] | null = null;
 let cachedTimestamp: number | null = null;
@@ -88,6 +89,9 @@ export async function loadOntologyRules(): Promise<Rule[]> {
   const xml = await readFile(filePath, "utf8");
   const parsed = parser.parse(xml) as UnknownObject;
   const rules = extractRules(parsed);
+  if (rules.length === 0) {
+    throw new Error(`Ontology ${ONTOLOGY_FILE} tidak memiliki DLSafeRule yang terbaca.`);
+  }
   cachedRules = rules;
   cachedTimestamp = fileStat.mtimeMs;
   return rules;
@@ -143,7 +147,7 @@ function convertRule(rawRule: UnknownObject): Rule | null {
       if (isBooleanProperty(property) && typeof literal === "boolean") {
         conditions.push({ kind: "boolean", property, value: literal });
       } else if (isStringProperty(property) && typeof literal === "string") {
-        conditions.push({ kind: "string", property, value: literal, caseInsensitive: true });
+        conditions.push({ kind: "string", property, operator: "eq", value: literal, caseInsensitive: true });
       }
     }
 
@@ -175,8 +179,12 @@ function convertRule(rawRule: UnknownObject): Rule | null {
       }
     } else if (isBooleanProperty(property) && typeof literal === "boolean" && operator === "equal") {
       conditions.push({ kind: "boolean", property, value: literal });
-    } else if (isStringProperty(property) && typeof literal === "string" && operator === "stringEqualIgnoreCase") {
-      conditions.push({ kind: "string", property, value: literal, caseInsensitive: true });
+    } else if (isStringProperty(property) && typeof literal === "string") {
+      if (operator === "stringEqualIgnoreCase" || operator === "equal") {
+        conditions.push({ kind: "string", property, operator: "eq", value: literal, caseInsensitive: true });
+      } else if (operator === "notEqual") {
+        conditions.push({ kind: "string", property, operator: "neq", value: literal, caseInsensitive: true });
+      }
     }
   }
 
@@ -191,7 +199,8 @@ function convertRule(rawRule: UnknownObject): Rule | null {
   });
   if (!recommendationAtom) return null;
 
-  const recommendation = getLocalName(getAttribute(recommendationAtom, "NamedIndividual", "IRI"));
+  const rawRecommendation = getLocalName(getAttribute(recommendationAtom, "NamedIndividual", "IRI"));
+  const recommendation = normalizeRecommendationName(rawRecommendation);
   if (!recommendation) return null;
 
   const id = typeof rawRule["rdf:ID"] === "string" ? rawRule["rdf:ID"] : recommendation;
@@ -211,6 +220,7 @@ export function inferRecommendations(input: PreferenceInput, rules: Rule[]): Inf
   const matches: Array<{
     detail: RecommendationDetail;
     score: number;
+    preferenceScore: number;
     specificity: number;
     ruleId: string;
   }> = [];
@@ -220,6 +230,7 @@ export function inferRecommendations(input: PreferenceInput, rules: Rule[]): Inf
       matches.push({
         detail: { paket: rule.recommendation, label: rule.label, comment: rule.comment },
         score: scoreRule(rule),
+        preferenceScore: scoreMatchedRulePreference(rule, input),
         specificity: rule.conditions.length,
         ruleId: rule.id,
       });
@@ -260,7 +271,12 @@ export function inferRecommendations(input: PreferenceInput, rules: Rule[]): Inf
 }
 
 function isBlockingRecommendation(paket: string): boolean {
-  return paket.startsWith("TidakMendapatRekomendasi") || paket === "UmrahTidakDirekomendasikan";
+  const normalized = normalizeRecommendationName(paket);
+  return (
+    normalized.startsWith("TidakMendapatRekomendasi") ||
+    normalized === "TidakMendapatPaket" ||
+    normalized === "UmrahTidakDirekomendasikan"
+  );
 }
 
 function scoreRule(rule: Rule): number {
@@ -277,12 +293,67 @@ function getConditionWeight(condition: Condition): number {
 }
 
 function compareScoredMatches(
-  a: { score: number; specificity: number; ruleId: string },
-  b: { score: number; specificity: number; ruleId: string },
+  a: { score: number; preferenceScore: number; specificity: number; ruleId: string },
+  b: { score: number; preferenceScore: number; specificity: number; ruleId: string },
 ): number {
   if (a.score !== b.score) return b.score - a.score;
+  if (a.preferenceScore !== b.preferenceScore) return b.preferenceScore - a.preferenceScore;
   if (a.specificity !== b.specificity) return b.specificity - a.specificity;
   return a.ruleId.localeCompare(b.ruleId);
+}
+
+function scoreMatchedRulePreference(rule: Rule, input: PreferenceInput): number {
+  return rule.conditions.reduce((total, condition) => total + scoreConditionPreference(condition, input), 0);
+}
+
+function scoreConditionPreference(condition: Condition, input: PreferenceInput): number {
+  if (condition.kind === "boolean") {
+    return 6;
+  }
+
+  if (condition.kind === "string") {
+    return condition.property === "destinasi_tambahan" || condition.property === "prefer_destinasi" ? 8 : 6;
+  }
+
+  const value = getNumericValue(condition.property, input);
+  if (value === undefined) return 0;
+
+  switch (condition.property) {
+    case "durasi_preferensi":
+      return scoreDurationPreference(condition.operator, value, condition.value);
+    case "budget":
+      return scoreBudgetPreference(condition.operator, value, condition.value);
+    case "prefer_jarak_hotel_maks":
+      return scoreJarakPreference(condition.operator, value, condition.value);
+    case "usia":
+      return Math.max(1, 6 - Math.round(Math.abs(value - condition.value) / 10));
+    default:
+      return 2;
+  }
+}
+
+function scoreDurationPreference(operator: CompareOperator, actual: number, threshold: number): number {
+  const gap = Math.abs(actual - threshold);
+  if (operator === "eq") return Math.max(1, 10 - gap * 2);
+  if (operator === "gte" || operator === "gt") return Math.max(1, 9 - gap * 2);
+  if (operator === "lte" || operator === "lt") return Math.max(1, 9 - gap * 2);
+  return 2;
+}
+
+function scoreBudgetPreference(operator: CompareOperator, actual: number, threshold: number): number {
+  const relativeGap = Math.abs(actual - threshold) / Math.max(threshold, 1);
+  if (operator === "eq") return Math.max(1, 8 - Math.round(relativeGap * 20));
+  if (operator === "gte" || operator === "gt") return Math.max(1, 7 - Math.round(relativeGap * 16));
+  if (operator === "lte" || operator === "lt") return Math.max(1, 7 - Math.round(relativeGap * 16));
+  return 2;
+}
+
+function scoreJarakPreference(operator: CompareOperator, actual: number, threshold: number): number {
+  const gap = Math.abs(actual - threshold);
+  if (operator === "eq") return Math.max(1, 8 - Math.round(gap / 75));
+  if (operator === "gte" || operator === "gt") return Math.max(1, 6 - Math.round(gap / 100));
+  if (operator === "lte" || operator === "lt") return Math.max(1, 8 - Math.round(gap / 100));
+  return 2;
 }
 
 function ruleMatches(rule: Rule, input: PreferenceInput): boolean {
@@ -305,6 +376,8 @@ function evaluateCondition(condition: Condition, input: PreferenceInput): boolea
           return value <= condition.value;
         case "eq":
           return value === condition.value;
+        case "neq":
+          return value !== condition.value;
         default:
           return false;
       }
@@ -317,9 +390,10 @@ function evaluateCondition(condition: Condition, input: PreferenceInput): boolea
     case "string": {
       const value = getStringValue(condition.property, input);
       if (!value) return false;
-      return condition.caseInsensitive
+      const isEqual = condition.caseInsensitive
         ? value.localeCompare(condition.value, undefined, { sensitivity: "accent" }) === 0
         : value === condition.value;
+      return condition.operator === "neq" ? !isEqual : isEqual;
     }
     default:
       return false;
@@ -351,6 +425,11 @@ function getBooleanValue(property: BooleanProperty, input: PreferenceInput): boo
       return input.butuhPrivate;
     case "prefer_direct_flight":
       return input.preferDirectFlight;
+    case "prefer_transit_flight":
+      if (typeof input.preferDirectFlight === "boolean") {
+        return !input.preferDirectFlight;
+      }
+      return input.tipeTransportasi ? input.tipeTransportasi === "Ekonomi" : undefined;
     default:
       return undefined;
   }
@@ -363,9 +442,9 @@ function getStringValue(property: StringProperty, input: PreferenceInput): strin
     case "tipe_transportasi":
       return input.tipeTransportasi ?? undefined;
     case "destinasi_tambahan":
-      return input.destinasiTambahan ?? undefined;
+      return input.preferDestinasi ?? input.destinasiTambahan ?? "None";
     case "prefer_destinasi":
-      return input.preferDestinasi ?? input.destinasiTambahan ?? undefined;
+      return input.preferDestinasi ?? input.destinasiTambahan ?? "None";
     case "musim_preferensi":
       return input.musimPreferensi ?? undefined;
     default:
@@ -385,6 +464,8 @@ function mapOperator(operator: string): CompareOperator | null {
       return "lte";
     case "equal":
       return "eq";
+    case "notEqual":
+      return "neq";
     default:
       return null;
   }
@@ -393,22 +474,34 @@ function mapOperator(operator: string): CompareOperator | null {
 function mapDataProperty(localName: string): StringProperty | NumericProperty | BooleanProperty | null {
   switch (localName) {
     case "budget":
+    case "preferensi_budget":
+      return "budget";
     case "usia":
+    case "usia_jamaah":
+      return "usia";
     case "durasi_preferensi":
+    case "preferensi_durasi":
+      return "durasi_preferensi";
     case "prefer_jarak_hotel_maks":
+    case "preferensi_jarak_hotel":
+      return "prefer_jarak_hotel_maks";
     case "jumlah_jamaah":
-      return localName;
+      return "jumlah_jamaah";
     case "butuh_pendampingan":
       return "butuh_pendampingan";
     case "butuh_private":
       return "butuh_private";
     case "prefer_direct_flight":
+    case "preferensi_tipe_pesawat_direct":
       return "prefer_direct_flight";
+    case "preferensi_tipe_pesawat_transit":
+      return "prefer_transit_flight";
     case "preferensi_hotel":
       return "preferensi_hotel";
     case "tipe_transportasi":
       return "tipe_transportasi";
     case "destinasi_tambahan":
+    case "preferensi_destinasi_tambahan":
       return "destinasi_tambahan";
     case "prefer_destinasi":
       return "prefer_destinasi";
@@ -521,7 +614,12 @@ function isNumericProperty(property: unknown): property is NumericProperty {
 }
 
 function isBooleanProperty(property: unknown): property is BooleanProperty {
-  return property === "butuh_pendampingan" || property === "butuh_private" || property === "prefer_direct_flight";
+  return (
+    property === "butuh_pendampingan" ||
+    property === "butuh_private" ||
+    property === "prefer_direct_flight" ||
+    property === "prefer_transit_flight"
+  );
 }
 
 function isStringProperty(property: unknown): property is StringProperty {
@@ -564,4 +662,11 @@ function getSubjectVariable(body: UnknownObject): string | null {
     if (variables.length > 0) return variables[0];
   }
   return null;
+}
+
+function normalizeRecommendationName(name: string): string {
+  if (!name) return "";
+  const withoutSuffix = name.endsWith("_Ind") ? name.slice(0, -4) : name;
+  if (withoutSuffix === "TidakMendapatPaket") return "TidakMendapatRekomendasiUmrah";
+  return withoutSuffix;
 }

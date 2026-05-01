@@ -99,8 +99,12 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Gagal memproses rekomendasi", error);
+    const detail = error instanceof Error ? error.message : "unknown_error";
+    const message = process.env.NODE_ENV === "development"
+      ? `Terjadi kesalahan saat memproses rekomendasi: ${detail}`
+      : "Terjadi kesalahan saat memproses rekomendasi.";
     return NextResponse.json(
-      { message: "Terjadi kesalahan saat memproses rekomendasi." },
+      { message },
       { status: 500 },
     );
   }
@@ -217,7 +221,7 @@ function validatePayload(payload: RawPayload): ValidationResult {
     preferensiHotel: preferensiHotel!,
     tipeTransportasi: tipeTransportasi!,
     destinasiTambahan,
-    nama,
+    nama: nama!,
   };
 
   return { ok: true, input };

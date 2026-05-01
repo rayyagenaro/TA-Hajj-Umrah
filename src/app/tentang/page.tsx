@@ -1,5 +1,4 @@
 import Reveal from "@/components/Reveal";
-import FlowDiagram from "@/components/FlowDiagram";
 import { IconDiamond, IconKaaba, IconPlane, IconWallet } from "@/components/Icons";
 import TrackedLink from "@/components/TrackedLink";
 
@@ -11,36 +10,72 @@ export const metadata = {
 const criteria = [
   {
     title: "Budget",
-    desc: "Sistem memetakan anggaran ke range paket agar rekomendasi tetap realistis untuk jamaah.",
+    desc: "Sistem memetakan budget ke paket Hemat, Reguler, VIP, atau paket Plus yang paling realistis.",
     icon: IconWallet,
     tone: "bg-primary-50 text-primary-700 ring-primary-100",
   },
   {
-    title: "Kenyamanan Hotel",
-    desc: "Preferensi hotel membantu membedakan opsi standar, premium, dan kelas mewah.",
+    title: "Usia Jamaah",
+    desc: "Usia digunakan sebagai pertimbangan kenyamanan dan prioritas layanan pada paket tertentu.",
+    icon: IconKaaba,
+    tone: "bg-violet-50 text-violet-700 ring-violet-100",
+  },
+  {
+    title: "Preferensi Durasi",
+    desc: "Durasi perjalanan membantu menyaring paket yang terlalu pendek atau terlalu panjang.",
     icon: IconDiamond,
     tone: "bg-emerald-50 text-emerald-700 ring-emerald-100",
   },
   {
-    title: "Destinasi Tambahan",
-    desc: "Pilihan Turki atau Dubai memberi bobot ekstra ke paket plus yang paling relevan.",
+    title: "Tipe Penerbangan",
+    desc: "Pilihan direct/transit dipakai untuk menyesuaikan paket dari sisi kenyamanan perjalanan.",
     icon: IconPlane,
+    tone: "bg-sky-50 text-sky-700 ring-sky-100",
+  },
+  {
+    title: "Jarak Hotel",
+    desc: "Preferensi jarak hotel ke masjid membantu menentukan paket dengan akses yang lebih nyaman.",
+    icon: IconDiamond,
     tone: "bg-amber-50 text-amber-700 ring-amber-100",
+  },
+  {
+    title: "Destinasi Tambahan",
+    desc: "Pilihan Turki, Dubai, atau Mesir dipakai untuk memetakan paket Plus sesuai minat user.",
+    icon: IconPlane,
+    tone: "bg-cyan-50 text-cyan-700 ring-cyan-100",
   },
 ];
 
 const packageSummary = [
   {
+    name: "Umrah Hemat",
+    detail: "Untuk budget rendah dan kebutuhan paket ekonomis.",
+    tone: "bg-sky-50 text-sky-700 ring-sky-100",
+  },
+  {
     name: "Umrah Reguler",
-    detail: "Fokus ibadah, biaya lebih hemat, durasi 9-12 hari.",
+    detail: "Opsi seimbang untuk mayoritas jamaah dengan fasilitas standar.",
+    tone: "bg-primary-50 text-primary-700 ring-primary-100",
+  },
+  {
+    name: "Umrah VIP Gold",
+    detail: "Paket premium untuk kebutuhan kenyamanan yang lebih tinggi.",
+    tone: "bg-rose-50 text-rose-700 ring-rose-100",
   },
   {
     name: "Umrah Plus Turki",
-    detail: "Kombinasi ibadah dan tur sejarah Islam di Istanbul/Bursa.",
+    detail: "Umrah dengan tambahan wisata sejarah Islam di Turki.",
+    tone: "bg-emerald-50 text-emerald-700 ring-emerald-100",
   },
   {
     name: "Umrah Plus Dubai",
-    detail: "Pilihan modern dengan city tour dan opsi pengalaman premium.",
+    detail: "Umrah dengan tambahan city tour modern di Dubai.",
+    tone: "bg-amber-50 text-amber-700 ring-amber-100",
+  },
+  {
+    name: "Umrah Plus Mesir",
+    detail: "Umrah dengan tambahan wisata religi dan sejarah di Mesir.",
+    tone: "bg-cyan-50 text-cyan-700 ring-cyan-100",
   },
 ];
 
@@ -64,7 +99,7 @@ export default function TentangPage() {
                   <IconKaaba className="h-3.5 w-3.5" />
                   Tentang UmrahYuk
                 </span>
-                <h1 className="mt-3 text-3xl font-bold sm:text-4xl">Sistem Pakar Rekomendasi Paket Umrah</h1>
+                <h1 className="mt-3 text-3xl font-bold sm:text-4xl">Sistem Rekomendasi Paket Umrah</h1>
                 <p className="mt-2 text-sm text-white/90 sm:text-base">
                   UmrahYuk membantu jamaah menyaring pilihan paket berdasarkan kebutuhan nyata. Sistem membaca aturan
                   ontologi lalu memetakan ke rekomendasi utama dan alternatif yang relevan.
@@ -86,7 +121,7 @@ export default function TentangPage() {
           <Reveal>
             <section className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <h2 className="text-2xl font-bold">Kriteria yang Dipertimbangkan</h2>
-              <p className="mt-1 text-sm text-black">Tiga komponen inti yang jadi basis pemetaan aturan rekomendasi.</p>
+              <p className="mt-1 text-sm text-black">Enam komponen inti yang dipakai sistem untuk memetakan rekomendasi.</p>
               <div className="mt-5 grid gap-4">
                 {criteria.map((item) => {
                   const Icon = item.icon;
@@ -114,12 +149,12 @@ export default function TentangPage() {
           <Reveal>
             <section className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <h2 className="text-2xl font-bold">Output Rekomendasi</h2>
-              <p className="mt-1 text-sm text-black">Sistem mengembalikan paket utama + opsi cadangan.</p>
-              <div className="mt-5 grid gap-3">
+              <p className="mt-1 text-sm text-black">Sistem mengembalikan paket utama beserta opsi cadangan yang tersedia.</p>
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 {packageSummary.map((item, index) => (
                   <article key={item.name} className="rounded-2xl border border-black/5 bg-white p-4 ring-1 ring-black/5">
-                    <span className="inline-flex rounded-full bg-primary-100 px-2.5 py-1 text-xs font-semibold text-primary-700">
-                      Prioritas {index + 1}
+                    <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${item.tone}`}>
+                      Jenis {index + 1}
                     </span>
                     <h3 className="mt-2 text-base font-bold">{item.name}</h3>
                     <p className="mt-1 text-sm text-slate-700">{item.detail}</p>
@@ -130,38 +165,35 @@ export default function TentangPage() {
           </Reveal>
         </div>
 
-        <Reveal>
-          <section className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm sm:p-7">
-            <h2 className="text-2xl font-bold">Alur Sistem</h2>
-            <p className="mt-1 text-sm text-black">Gambaran ringkas proses dari input user hingga rekomendasi.</p>
-            <div className="mt-4">
-              <FlowDiagram />
-            </div>
-          </section>
-        </Reveal>
-
         <div className="grid gap-6 lg:grid-cols-2">
           <Reveal>
             <section className="rounded-3xl border border-black/5 bg-white p-6 shadow-sm">
               <h2 className="text-2xl font-bold">Pseudocode Penilaian</h2>
               <pre className="mt-4 overflow-x-auto rounded-xl bg-slate-900 p-4 text-xs text-slate-100">
-                <code>{`s = { Reguler: 0, PlusTurki: 0, PlusDubai: 0 }
+                <code>{`if budget < 25jt:
+  return TidakMendapatPaket
 
-if budget == hemat: s.Reguler += 2
-if budget == sedang: s.PlusTurki += 2; s.Reguler += 1
-if budget == tinggi: s.PlusDubai += 2; s.PlusTurki += 1
+if destinasi in [Turki, Dubai, Mesir] and budget >= 35jt:
+  return UmrahPlusDestinasi
 
-if hotel == standar: s.Reguler += 2
-if hotel == premium: s.PlusTurki += 1; s.PlusDubai += 2
-if hotel == mewah: s.PlusDubai += 2
+if destinasi != None and 30jt <= budget < 35jt:
+  return UmrahReguler
 
-if destinasi == Turki: s.PlusTurki += 3
-if destinasi == Dubai: s.PlusDubai += 3
+if destinasi == None and budget < 30jt:
+  return UmrahHemat
 
-rekomendasi = argmax(s)`}</code>
+if destinasi == None and 30jt <= budget < 35jt:
+  return UmrahReguler
+
+if destinasi == None and budget >= 35jt:
+  return UmrahVIPGold
+
+// Multi-rule tambahan:
+// usia, durasi, direct/transit, dan jarak hotel
+// dipakai untuk memperkuat prioritas paket.`}</code>
               </pre>
               <p className="mt-3 text-sm text-slate-700">
-                Bobot aturan dapat disesuaikan untuk kebijakan travel, profil jamaah, dan evaluasi pakar.
+                Logika final dijalankan melalui aturan ontologi + SWRL. Pseudocode ini adalah gambaran ringkas alur keputusan.
               </p>
             </section>
           </Reveal>
@@ -171,7 +203,7 @@ rekomendasi = argmax(s)`}</code>
               <h2 className="text-2xl font-bold">Batasan & Rencana Pengembangan</h2>
               <div className="mt-4 space-y-3">
                 <div className="rounded-2xl border border-amber-100 bg-amber-50/80 p-4 text-sm text-amber-900">
-                  Versi saat ini adalah prototipe pembelajaran dan demonstrasi antarmuka sistem pakar.
+                  Versi saat ini adalah prototipe pembelajaran dan demonstrasi antarmuka sistem rekomendasi paket umrah.
                 </div>
                 {roadmap.map((item) => (
                   <div key={item} className="flex items-start gap-3 rounded-2xl border border-black/5 bg-slate-50 px-4 py-3">

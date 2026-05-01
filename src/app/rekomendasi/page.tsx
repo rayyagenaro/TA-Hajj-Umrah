@@ -2,13 +2,12 @@
 
 import type { FormEvent } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import FlowDiagram from "@/components/FlowDiagram";
-import type { PaketKey } from "@/data/travelPackages";
+import type { PaketKey, TravelPackage } from "@/data/travelPackages";
 import { travelPackagesByType } from "@/data/travelPackages";
 import { trackEvent } from "@/lib/analytics";
-import RecommendationFormSection from "./components/RecommendationFormSection";
 import PackageRecommendationModal from "./components/PackageRecommendationModal";
-import RecommendationResultSection from "./components/RecommendationResultSection";
+import { rankPackagesByProfile } from "./profileMatching";
+import RecommendationFormSection from "./components/RecommendationFormSection";
 import { FIELD_ORDER, validateClientForm } from "./validation";
 import type { ApiRecommendation, ApiResponse, EnrichedRecommendation, FieldErrors, FormState, MainTravel } from "./types";
 
@@ -62,6 +61,9 @@ export default function RekomendasiPage() {
   const [form, setForm] = useState<FormState>({
     budget: 32_000_000,
     usia: 40,
+    durasiPreferensi: 12,
+    preferJarakHotelMaks: 500,
+    tipePenerbangan: "transit",
     butuhPendampingan: "tidak",
     preferensiHotel: "Standard",
     tipeTransportasi: "Ekonomi",
@@ -78,18 +80,10 @@ export default function RekomendasiPage() {
   const namaRef = useRef<HTMLInputElement>(null);
   const budgetRef = useRef<HTMLInputElement>(null);
   const usiaRef = useRef<HTMLInputElement>(null);
-  const pendampinganRef = useRef<HTMLInputElement>(null);
-  const hotelRef = useRef<HTMLInputElement>(null);
-  const transportRef = useRef<HTMLInputElement>(null);
+  const durasiRef = useRef<HTMLInputElement>(null);
+  const penerbanganRef = useRef<HTMLInputElement>(null);
+  const jarakRef = useRef<HTMLInputElement>(null);
   const destinasiRef = useRef<HTMLInputElement>(null);
-
-  const paketList = useMemo(() => {
-    if (!result) return [] as ApiRecommendation[];
-    const items: ApiRecommendation[] = [];
-    if (result.paketUtama) items.push(result.paketUtama);
-    items.push(...result.paketAlternatif);
-    return items;
-  }, [result]);
 
   const utamaInfo = enrich(result?.paketUtama ?? null);
   const alternatifInfo = (result?.paketAlternatif ?? [])
@@ -98,27 +92,27 @@ export default function RekomendasiPage() {
   const isNoRecommendation =
     result?.paketUtama?.paket === "TidakMendapatRekomendasiUmrah" ||
     result?.paketUtama?.paket === "UmrahTidakDirekomendasikan";
-
   const utamaTravel = useMemo(() => {
     const utama = result?.paketUtama;
     if (!utama) return null;
     const key = utama.paket;
     if (!isPaketKey(key)) return null;
-    const packages = travelPackagesByType[key]?.slice(0, 4) ?? [];
-    if (packages.length === 0) return null;
+    const allPackages = travelPackagesByType[key] ?? [];
+    if (allPackages.length === 0) return null;
+    const packagesByRule = getRulePackagesByPreference(allPackages, form, 6);
     const meta = paketMetadata[key] ?? { label: formatPaket(key), deskripsi: "" };
-    return { paket: key, label: meta.label, packages } as MainTravel;
-  }, [result?.paketUtama]);
-
+    return { paket: key, label: meta.label, packagesByRule, packagesForMatching: allPackages } as MainTravel;
+  }, [form, result?.paketUtama]);
   const daftarPaketHref = utamaTravel ? `/paket?focus=${utamaTravel.paket}` : (utamaInfo?.href ?? "/paket");
 
   const preferenceSummary = useMemo(
     () => [
+      { label: "Nama", value: form.nama || "-" },
       { label: "Budget", value: formatRupiah(form.budget) },
       { label: "Usia", value: `${form.usia} tahun` },
-      { label: "Pendampingan", value: form.butuhPendampingan === "ya" ? "Butuh" : "Tidak butuh" },
-      { label: "Hotel", value: form.preferensiHotel },
-      { label: "Transportasi", value: form.tipeTransportasi },
+      { label: "Durasi", value: `${form.durasiPreferensi} hari` },
+      { label: "Penerbangan", value: form.tipePenerbangan === "direct" ? "Direct" : "Transit" },
+      { label: "Jarak Hotel", value: `${form.preferJarakHotelMaks} m` },
       { label: "Destinasi", value: form.destinasiTambahan === "none" ? "Tanpa tambahan" : form.destinasiTambahan },
     ],
     [form],
@@ -126,11 +120,12 @@ export default function RekomendasiPage() {
 
   const formProgress = useMemo(() => {
     const checks = [
+      form.nama.trim().length > 0,
       form.budget > 0,
       form.usia > 0,
-      form.butuhPendampingan === "ya" || form.butuhPendampingan === "tidak",
-      Boolean(form.preferensiHotel),
-      Boolean(form.tipeTransportasi),
+      form.durasiPreferensi > 0,
+      form.tipePenerbangan === "direct" || form.tipePenerbangan === "transit",
+      form.preferJarakHotelMaks > 0,
       Boolean(form.destinasiTambahan),
     ];
     const filled = checks.filter(Boolean).length;
@@ -157,13 +152,19 @@ export default function RekomendasiPage() {
     setLoading(true);
     setError(null);
     setFieldErrors({});
+    setShowPackageModal(false);
+    const inferredHotelPreference = mapDistanceToHotelPreference(form.preferJarakHotelMaks);
+    const inferredTransport = mapFlightTypeToTransport(form.tipePenerbangan);
+    const preferDirectFlight = form.tipePenerbangan === "direct";
     trackEvent("rekomendasi_submit", {
       hasName: Boolean(form.nama),
       budget: form.budget,
       usia: form.usia,
-      pendampingan: form.butuhPendampingan,
-      hotel: form.preferensiHotel,
-      transport: form.tipeTransportasi,
+      durasi: form.durasiPreferensi,
+      tipePenerbangan: form.tipePenerbangan,
+      jarakHotel: form.preferJarakHotelMaks,
+      hotel: inferredHotelPreference,
+      transport: inferredTransport,
       destinasi: form.destinasiTambahan,
     });
     try {
@@ -174,9 +175,13 @@ export default function RekomendasiPage() {
           ibadah: "Umrah",
           budget: form.budget,
           usia: form.usia,
-          butuhPendampingan: form.butuhPendampingan === "ya",
-          preferensiHotel: form.preferensiHotel,
-          tipeTransportasi: form.tipeTransportasi,
+          durasiPreferensi: form.durasiPreferensi,
+          butuhPendampingan: false,
+          preferensiHotel: inferredHotelPreference,
+          tipeTransportasi: inferredTransport,
+          preferDirectFlight,
+          preferJarakHotelMaks: form.preferJarakHotelMaks,
+          preferDestinasi: form.destinasiTambahan === "none" ? "None" : form.destinasiTambahan,
           destinasiTambahan: form.destinasiTambahan,
           nama: form.nama,
         }),
@@ -213,7 +218,7 @@ export default function RekomendasiPage() {
         paketUtama: data?.paketUtama ?? null,
         paketAlternatif: Array.isArray(data?.paketAlternatif) ? data.paketAlternatif : [],
       });
-      setShowPackageModal(isPaketKey(data?.paketUtama?.paket ?? ""));
+      setShowPackageModal(Boolean(data?.paketUtama));
       trackEvent("rekomendasi_success", {
         paketUtama: data?.paketUtama?.paket ?? null,
         alternatifCount: Array.isArray(data?.paketAlternatif) ? data.paketAlternatif.length : 0,
@@ -275,7 +280,18 @@ export default function RekomendasiPage() {
         return next;
       });
     }
-    setForm((p) => ({ ...p, [k]: v }));
+    setForm((prev) => {
+      const next = { ...prev, [k]: v };
+
+      if (k === "preferJarakHotelMaks") {
+        next.preferensiHotel = mapDistanceToHotelPreference(v as number);
+      }
+      if (k === "tipePenerbangan") {
+        next.tipeTransportasi = mapFlightTypeToTransport(v as FormState["tipePenerbangan"]);
+      }
+
+      return next;
+    });
   }
 
   function focusFirstFieldError(errors: FieldErrors) {
@@ -291,14 +307,14 @@ export default function RekomendasiPage() {
       case "usia":
         usiaRef.current?.focus();
         break;
-      case "butuhPendampingan":
-        pendampinganRef.current?.focus();
+      case "durasiPreferensi":
+        durasiRef.current?.focus();
         break;
-      case "preferensiHotel":
-        hotelRef.current?.focus();
+      case "tipePenerbangan":
+        penerbanganRef.current?.focus();
         break;
-      case "tipeTransportasi":
-        transportRef.current?.focus();
+      case "preferJarakHotelMaks":
+        jarakRef.current?.focus();
         break;
       case "destinasiTambahan":
         destinasiRef.current?.focus();
@@ -341,14 +357,42 @@ export default function RekomendasiPage() {
             fieldErrors={fieldErrors}
             formProgress={formProgress}
             preferenceSummary={preferenceSummary}
-            refs={{ namaRef, budgetRef, usiaRef, pendampinganRef, hotelRef, transportRef, destinasiRef }}
+            refs={{ namaRef, budgetRef, usiaRef, durasiRef, penerbanganRef, jarakRef, destinasiRef }}
             onUpdateForm={(key, value) => updateForm(key, value)}
           />
 
-          <RecommendationResultSection
+          {error && !loading && (
+            <section className="animate-soft-slide-up rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 shadow-sm">
+              {error}
+            </section>
+          )}
+
+          {!error && !loading && result?.paketUtama && (
+            <section className="animate-soft-slide-up rounded-2xl border border-primary-100 bg-white p-4 shadow-sm shadow-primary-100/60">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold text-black">Hasil siap dilihat di popup</p>
+                  <p className="mt-1 text-xs text-slate-600">
+                    {utamaInfo ? `${utamaInfo.displayName} sudah dihitung.` : "Hasil rekomendasi sudah siap."} Halaman ini tetap
+                    difokuskan ke penjelasan sistem dan logika rekomendasi.
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowPackageModal(true)}
+                    className="inline-flex items-center rounded-xl bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-primary-200/70 transition hover:-translate-y-0.5 hover:bg-primary-700"
+                  >
+                    Buka Popup Hasil
+                  </button>
+                </div>
+              </div>
+            </section>
+          )}
+
+          <PackageRecommendationModal
+            open={showPackageModal}
             nama={form.nama}
-            error={error}
-            loading={loading}
             result={result}
             utamaInfo={utamaInfo}
             alternatifInfo={alternatifInfo}
@@ -357,62 +401,8 @@ export default function RekomendasiPage() {
             utamaTravel={utamaTravel}
             form={form}
             daftarPaketHref={daftarPaketHref}
-            onOpenPackageModal={() => setShowPackageModal(true)}
-          />
-
-          <PackageRecommendationModal
-            open={showPackageModal}
-            utamaTravel={utamaTravel}
-            form={form}
-            daftarPaketHref={daftarPaketHref}
             onClose={() => setShowPackageModal(false)}
           />
-
-          <section id="logika" className="rounded-2xl border border-black/5 bg-white p-5 text-sm shadow-sm sm:p-6">
-            <p className="font-semibold text-black">Logika Berbasis Aturan Ontologi</p>
-            <p className="mt-2 text-xs text-slate-600">
-              Sistem membaca aturan SWRL dari file ontologi RDF/XML, lalu mencocokkan dengan preferensi pengguna.
-            </p>
-            <div className="mt-4 overflow-x-auto">
-              <table className="min-w-[380px] text-left text-xs">
-                <thead className="bg-slate-50 text-black">
-                  <tr>
-                    <th className="py-2 pr-4 pl-2">Paket</th>
-                    <th className="py-2 pr-4">Label Aturan</th>
-                    <th className="py-2 pr-2">Keterangan</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {paketList.length === 0 && (
-                    <tr>
-                      <td colSpan={3} className="py-3 text-center text-slate-500">
-                        Belum ada aturan yang terpenuhi.
-                      </td>
-                    </tr>
-                  )}
-                  {paketList.map((item) => {
-                    const info = enrich(item);
-                    if (!info) return null;
-                    return (
-                      <tr key={item.paket} className="border-t border-black/5 even:bg-slate-50/50">
-                        <td className="py-2 pr-4 pl-2">{info.displayName}</td>
-                        <td className="py-2 pr-4">{item.label ?? "-"}</td>
-                        <td className="py-2 pr-2">{item.comment ?? info.deskripsi}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </section>
-
-          <section className="rounded-2xl border border-black/5 bg-white p-5 shadow-sm sm:p-6">
-            <h3 className="text-lg font-bold">Alur Perhitungan</h3>
-            <p className="mt-1 text-xs text-slate-600">Cara sistem memetakan input ke rekomendasi paket.</p>
-            <div className="mt-4">
-              <FlowDiagram />
-            </div>
-          </section>
         </form>
       </div>
     </div>
@@ -442,6 +432,27 @@ function formatRupiah(value: number) {
     currency: "IDR",
     maximumFractionDigits: 0,
   }).format(value);
+}
+
+function mapDistanceToHotelPreference(distance: number): FormState["preferensiHotel"] {
+  if (distance <= 250) return "Premium";
+  if (distance <= 400) return "Mewah";
+  return "Standard";
+}
+
+function mapFlightTypeToTransport(flightType: FormState["tipePenerbangan"]): FormState["tipeTransportasi"] {
+  return flightType === "direct" ? "Bisnis" : "Ekonomi";
+}
+
+function getRulePackagesByPreference(packages: TravelPackage[], form: FormState, limit: number): TravelPackage[] {
+  const affordable = packages.filter((pkg) => {
+    const parsed = Number.parseInt(pkg.price.replace(/[^\d]/g, ""), 10);
+    return Number.isFinite(parsed) && parsed <= form.budget;
+  });
+
+  if (affordable.length === 0) return [];
+
+  return rankPackagesByProfile(affordable, form, limit).map((pkg) => pkg);
 }
 
 function parseRetryAfterSeconds(value: string | null): number {

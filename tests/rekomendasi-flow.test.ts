@@ -12,6 +12,9 @@ test.beforeEach(() => {
 const baseForm: FormState = {
   budget: 32_000_000,
   usia: 40,
+  preferJarakHotelMaks: 500,
+  durasiPreferensi: 12,
+  tipePenerbangan: "transit",
   butuhPendampingan: "tidak",
   preferensiHotel: "Standard",
   tipeTransportasi: "Ekonomi",
@@ -36,6 +39,8 @@ test("valid flow: passes client validation and receives recommendation from API"
       butuhPendampingan: baseForm.butuhPendampingan === "ya",
       preferensiHotel: baseForm.preferensiHotel,
       tipeTransportasi: baseForm.tipeTransportasi,
+      preferJarakHotelMaks: baseForm.preferJarakHotelMaks,
+      durasiPreferensi: baseForm.durasiPreferensi,
       destinasiTambahan: baseForm.destinasiTambahan,
       nama: baseForm.nama,
     }),
