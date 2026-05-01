@@ -14,6 +14,8 @@
     "test:inference:json": "tsx scripts/test-inference.ts --json"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.10.2",
+    "@supabase/supabase-js": "^2.105.1",
     "fast-xml-parser": "^5.2.5",
     "mysql2": "^3.20.0",
     "next": "15.5.2",

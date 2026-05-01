@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
 
     const rules = await loadOntologyRules();
     const hasil = inferRecommendations(input, rules);
-    void saveRecommendationLog({
+    await saveRecommendationLog({
       input,
       result: hasil,
       clientIp,

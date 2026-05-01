@@ -1,7 +1,9 @@
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ConfirmSubmitButton from "@/components/ConfirmSubmitButton";
-import { isMySqlConfigured } from "@/lib/mysql";
-import { getRecentRecommendationLogs } from "@/lib/recommendationLogRepository";
+import {
+  getRecentRecommendationLogs,
+  isRecommendationLogsConfigured,
+} from "@/lib/recommendationLogRepository";
 import { clearAllLogsAction, deleteSingleLogAction } from "./actions";
 
 export const metadata = {
@@ -12,7 +14,7 @@ export const metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function AdminLogsPage() {
-  const dbConfigured = isMySqlConfigured();
+  const dbConfigured = isRecommendationLogsConfigured();
 
   let logs = [] as Awaited<ReturnType<typeof getRecentRecommendationLogs>>;
   let loadError: string | null = null;
@@ -51,13 +53,14 @@ export default async function AdminLogsPage() {
 
         {!dbConfigured && (
           <section className="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
-            MySQL belum dikonfigurasi. Isi <code>.env.local</code> dengan kredensial MySQL agar halaman ini bisa memuat data.
+            Supabase belum dikonfigurasi. Isi environment variable <code>SUPABASE_URL</code> dan{" "}
+            <code>SUPABASE_SERVICE_ROLE_KEY</code> agar halaman ini bisa memuat data.
           </section>
         )}
 
         {dbConfigured && loadError && (
           <section className="rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-700">
-            Gagal mengambil data logs dari MySQL: {loadError}
+            Gagal mengambil data logs dari Supabase: {loadError}
           </section>
         )}
 
