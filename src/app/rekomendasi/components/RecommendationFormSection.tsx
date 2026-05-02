@@ -92,7 +92,7 @@ export default function RecommendationFormSection({
               max={250_000_000}
               step={500_000}
               value={form.budget}
-              onChange={(e) => onUpdateForm("budget", Number(e.target.value))}
+              onChange={(e) => onUpdateForm("budget", parseNumberInput(e.target.value))}
               disabled={controlsDisabled}
               aria-invalid={Boolean(fieldErrors.budget)}
               aria-describedby={fieldErrors.budget ? "error-budget" : undefined}
@@ -117,7 +117,7 @@ export default function RecommendationFormSection({
               min={12}
               max={100}
               value={form.usia}
-              onChange={(e) => onUpdateForm("usia", Number(e.target.value))}
+              onChange={(e) => onUpdateForm("usia", parseNumberInput(e.target.value))}
               disabled={controlsDisabled}
               aria-invalid={Boolean(fieldErrors.usia)}
               aria-describedby={fieldErrors.usia ? "error-usia" : undefined}
@@ -142,7 +142,7 @@ export default function RecommendationFormSection({
               max={20}
               step={1}
               value={form.durasiPreferensi}
-              onChange={(e) => onUpdateForm("durasiPreferensi", Number(e.target.value))}
+              onChange={(e) => onUpdateForm("durasiPreferensi", parseNumberInput(e.target.value))}
               disabled={controlsDisabled}
               aria-invalid={Boolean(fieldErrors.durasiPreferensi)}
               aria-describedby={fieldErrors.durasiPreferensi ? "error-durasi" : undefined}
@@ -202,7 +202,7 @@ export default function RecommendationFormSection({
               max={2000}
               step={50}
               value={form.preferJarakHotelMaks}
-              onChange={(e) => onUpdateForm("preferJarakHotelMaks", Number(e.target.value))}
+              onChange={(e) => onUpdateForm("preferJarakHotelMaks", parseNumberInput(e.target.value))}
               disabled={controlsDisabled}
               aria-invalid={Boolean(fieldErrors.preferJarakHotelMaks)}
               aria-describedby={fieldErrors.preferJarakHotelMaks ? "error-jarak" : undefined}
@@ -294,4 +294,8 @@ export default function RecommendationFormSection({
       </aside>
     </section>
   );
+}
+
+function parseNumberInput(value: string): number | "" {
+  return value === "" ? "" : Number(value);
 }

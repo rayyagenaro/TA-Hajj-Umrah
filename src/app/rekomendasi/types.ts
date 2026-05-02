@@ -1,10 +1,12 @@
 import type { PaketKey, TravelPackage } from "@/data/travelPackages";
 
+export type NumericInputValue = number | "";
+
 export type FormState = {
-  budget: number;
-  usia: number;
-  durasiPreferensi: number;
-  preferJarakHotelMaks: number;
+  budget: NumericInputValue;
+  usia: NumericInputValue;
+  durasiPreferensi: NumericInputValue;
+  preferJarakHotelMaks: NumericInputValue;
   tipePenerbangan: "direct" | "transit";
   butuhPendampingan: "ya" | "tidak";
   preferensiHotel: "Standard" | "Mewah" | "Premium";

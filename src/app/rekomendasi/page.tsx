@@ -108,11 +108,11 @@ export default function RekomendasiPage() {
   const preferenceSummary = useMemo(
     () => [
       { label: "Nama", value: form.nama || "-" },
-      { label: "Budget", value: formatRupiah(form.budget) },
-      { label: "Usia", value: `${form.usia} tahun` },
-      { label: "Durasi", value: `${form.durasiPreferensi} hari` },
+      { label: "Budget", value: formatRupiahInput(form.budget) },
+      { label: "Usia", value: formatNumberInput(form.usia, "tahun") },
+      { label: "Durasi", value: formatNumberInput(form.durasiPreferensi, "hari") },
       { label: "Penerbangan", value: form.tipePenerbangan === "direct" ? "Direct" : "Transit" },
-      { label: "Jarak Hotel", value: `${form.preferJarakHotelMaks} m` },
+      { label: "Jarak Hotel", value: formatNumberInput(form.preferJarakHotelMaks, "m") },
       { label: "Destinasi", value: form.destinasiTambahan === "none" ? "Tanpa tambahan" : form.destinasiTambahan },
     ],
     [form],
@@ -121,11 +121,11 @@ export default function RekomendasiPage() {
   const formProgress = useMemo(() => {
     const checks = [
       form.nama.trim().length > 0,
-      form.budget > 0,
-      form.usia > 0,
-      form.durasiPreferensi > 0,
+      hasPositiveNumber(form.budget),
+      hasPositiveNumber(form.usia),
+      hasPositiveNumber(form.durasiPreferensi),
       form.tipePenerbangan === "direct" || form.tipePenerbangan === "transit",
-      form.preferJarakHotelMaks > 0,
+      hasPositiveNumber(form.preferJarakHotelMaks),
       Boolean(form.destinasiTambahan),
     ];
     const filled = checks.filter(Boolean).length;
@@ -153,16 +153,20 @@ export default function RekomendasiPage() {
     setError(null);
     setFieldErrors({});
     setShowPackageModal(false);
-    const inferredHotelPreference = mapDistanceToHotelPreference(form.preferJarakHotelMaks);
+    const budget = toRequiredNumber(form.budget);
+    const usia = toRequiredNumber(form.usia);
+    const durasiPreferensi = toRequiredNumber(form.durasiPreferensi);
+    const preferJarakHotelMaks = toRequiredNumber(form.preferJarakHotelMaks);
+    const inferredHotelPreference = mapDistanceToHotelPreference(preferJarakHotelMaks);
     const inferredTransport = mapFlightTypeToTransport(form.tipePenerbangan);
     const preferDirectFlight = form.tipePenerbangan === "direct";
     trackEvent("rekomendasi_submit", {
       hasName: Boolean(form.nama),
-      budget: form.budget,
-      usia: form.usia,
-      durasi: form.durasiPreferensi,
+      budget,
+      usia,
+      durasi: durasiPreferensi,
       tipePenerbangan: form.tipePenerbangan,
-      jarakHotel: form.preferJarakHotelMaks,
+      jarakHotel: preferJarakHotelMaks,
       hotel: inferredHotelPreference,
       transport: inferredTransport,
       destinasi: form.destinasiTambahan,
@@ -173,14 +177,14 @@ export default function RekomendasiPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ibadah: "Umrah",
-          budget: form.budget,
-          usia: form.usia,
-          durasiPreferensi: form.durasiPreferensi,
+          budget,
+          usia,
+          durasiPreferensi,
           butuhPendampingan: false,
           preferensiHotel: inferredHotelPreference,
           tipeTransportasi: inferredTransport,
           preferDirectFlight,
-          preferJarakHotelMaks: form.preferJarakHotelMaks,
+          preferJarakHotelMaks,
           preferDestinasi: form.destinasiTambahan === "none" ? "None" : form.destinasiTambahan,
           destinasiTambahan: form.destinasiTambahan,
           nama: form.nama,
@@ -283,8 +287,8 @@ export default function RekomendasiPage() {
     setForm((prev) => {
       const next = { ...prev, [k]: v };
 
-      if (k === "preferJarakHotelMaks") {
-        next.preferensiHotel = mapDistanceToHotelPreference(v as number);
+      if (k === "preferJarakHotelMaks" && typeof v === "number") {
+        next.preferensiHotel = mapDistanceToHotelPreference(v);
       }
       if (k === "tipePenerbangan") {
         next.tipeTransportasi = mapFlightTypeToTransport(v as FormState["tipePenerbangan"]);
@@ -434,6 +438,22 @@ function formatRupiah(value: number) {
   }).format(value);
 }
 
+function formatRupiahInput(value: number | "") {
+  return typeof value === "number" ? formatRupiah(value) : "-";
+}
+
+function formatNumberInput(value: number | "", suffix: string) {
+  return typeof value === "number" ? `${value} ${suffix}` : "-";
+}
+
+function hasPositiveNumber(value: number | "") {
+  return typeof value === "number" && value > 0;
+}
+
+function toRequiredNumber(value: number | "") {
+  return typeof value === "number" ? value : 0;
+}
+
 function mapDistanceToHotelPreference(distance: number): FormState["preferensiHotel"] {
   if (distance <= 250) return "Premium";
   if (distance <= 400) return "Mewah";
@@ -445,9 +465,10 @@ function mapFlightTypeToTransport(flightType: FormState["tipePenerbangan"]): For
 }
 
 function getRulePackagesByPreference(packages: TravelPackage[], form: FormState, limit: number): TravelPackage[] {
+  const budget = toRequiredNumber(form.budget);
   const affordable = packages.filter((pkg) => {
     const parsed = Number.parseInt(pkg.price.replace(/[^\d]/g, ""), 10);
-    return Number.isFinite(parsed) && parsed <= form.budget;
+    return Number.isFinite(parsed) && parsed <= budget;
   });
 
   if (affordable.length === 0) return [];

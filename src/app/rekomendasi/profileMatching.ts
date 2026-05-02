@@ -13,6 +13,7 @@ export type ProfileScoreBreakdown = {
 export type ScoredPackage = TravelPackage & { score: ProfileScoreBreakdown };
 
 export function rankPackagesByProfile(packages: TravelPackage[], form: FormState, limit = 4): ScoredPackage[] {
+  const budget = numericValue(form.budget);
   return [...packages]
     .map((pkg) => ({
       ...pkg,
@@ -20,14 +21,14 @@ export function rankPackagesByProfile(packages: TravelPackage[], form: FormState
       parsedBudget: extractRupiah(pkg.price),
     }))
     .sort((a, b) => {
-      const aOver = a.parsedBudget > form.budget;
-      const bOver = b.parsedBudget > form.budget;
+      const aOver = a.parsedBudget > budget;
+      const bOver = b.parsedBudget > budget;
       if (aOver !== bOver) return aOver ? 1 : -1;
       if (a.score.total !== b.score.total) return b.score.total - a.score.total;
       if (a.score.durasi !== b.score.durasi) return b.score.durasi - a.score.durasi;
 
-      const aGap = Math.abs(form.budget - a.parsedBudget);
-      const bGap = Math.abs(form.budget - b.parsedBudget);
+      const aGap = Math.abs(budget - a.parsedBudget);
+      const bGap = Math.abs(budget - b.parsedBudget);
       return aGap - bGap;
     })
     .slice(0, limit);
@@ -35,15 +36,19 @@ export function rankPackagesByProfile(packages: TravelPackage[], form: FormState
 
 export function getProfileScoreBreakdown(pkg: TravelPackage, form: FormState): ProfileScoreBreakdown {
   const budget = extractRupiah(pkg.price);
+  const formBudget = numericValue(form.budget);
+  const preferredDistance = numericValue(form.preferJarakHotelMaks);
+  const preferredDuration = numericValue(form.durasiPreferensi);
+  const usia = numericValue(form.usia);
   const budgetScore =
     budget <= 0
       ? 50
-      : budget <= form.budget
-        ? Math.max(60, 100 - Math.round((Math.abs(form.budget - budget) / Math.max(form.budget, 1)) * 52))
-        : Math.max(0, 65 - Math.round(((budget - form.budget) / Math.max(form.budget, 1)) * 200));
+      : budget <= formBudget
+        ? Math.max(60, 100 - Math.round((Math.abs(formBudget - budget) / Math.max(formBudget, 1)) * 52))
+        : Math.max(0, 65 - Math.round(((budget - formBudget) / Math.max(formBudget, 1)) * 200));
 
   const hotelDistanceMeters = extractHotelDistanceMeters(pkg);
-  const distanceScore = getDistanceScore(hotelDistanceMeters, form.preferJarakHotelMaks);
+  const distanceScore = getDistanceScore(hotelDistanceMeters, preferredDistance);
 
   const inferredFlightType = inferFlightType(pkg.transport);
   const transportScore =
@@ -54,9 +59,9 @@ export function getProfileScoreBreakdown(pkg: TravelPackage, form: FormState): P
         : 70;
 
   const packageDurationRange = extractPackageDurationRange(pkg.duration);
-  const durationScore = getDurationScore(packageDurationRange, form.durasiPreferensi);
+  const durationScore = getDurationScore(packageDurationRange, preferredDuration);
 
-  const usiaScore = form.usia >= 55 ? 90 : 100;
+  const usiaScore = usia >= 55 ? 90 : 100;
   const total = Math.round(
     budgetScore * 0.34 +
       distanceScore * 0.24 +
@@ -172,4 +177,8 @@ function getDurationScore(durationRange: { min: number; max: number } | null, pr
 
 function clampScore(value: number): number {
   return Math.max(0, Math.min(100, value));
+}
+
+function numericValue(value: number | ""): number {
+  return typeof value === "number" ? value : 0;
 }

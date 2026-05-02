@@ -3,7 +3,7 @@ import { IconDiamond, IconKaaba, IconPlane, IconWallet } from "@/components/Icon
 import TrackedLink from "@/components/TrackedLink";
 
 export const metadata = {
-  title: "Tentang Sistem Pakar",
+  title: "Tentang Sistem Rekomendasi Paket Umrah - UmrahYuk",
   description: "Penjelasan metode rekomendasi paket Umrah di UmrahYuk.",
 };
 

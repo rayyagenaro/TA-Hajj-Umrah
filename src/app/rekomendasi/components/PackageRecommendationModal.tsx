@@ -143,38 +143,41 @@ function extractMinHotelDistance(accommodation?: string): string | null {
 function PackageCard({ pkg, budget, selected, onSelect, variant, index }: { pkg: TravelPackage; budget: number; selected: boolean; onSelect: () => void; variant: "ontologi" | "matching"; index: number }) {
   const isOverBudget = parsePackagePrice(pkg.price) > budget;
   const hotelDistance = extractMinHotelDistance(pkg.accommodation);
+  const hasProviderUrl = isUsableUrl(pkg.url);
 
   return (
     <article
       className={[
-        "animate-soft-slide-up rounded-2xl border p-4 opacity-0 transition duration-300 hover:-translate-y-1 hover:shadow-lg",
+        "animate-soft-slide-up flex h-full flex-col rounded-2xl border p-4 opacity-0 transition duration-300 hover:-translate-y-1 hover:shadow-lg",
         selected ? "border-primary-300 bg-primary-50/50 shadow-md shadow-primary-100/70" : "border-black/10 bg-white",
       ].join(" ")}
       style={{ animationDelay: `${Math.min(index, 5) * 55 + 120}ms` }}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <h4 className="text-sm font-semibold text-slate-900">{pkg.name}</h4>
-          <p className="mt-1 text-xs font-medium text-slate-600">{pkg.provider}</p>
+      <div className="flex flex-1 flex-col">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h4 className="text-sm font-semibold text-slate-900">{pkg.name}</h4>
+            <p className="mt-1 text-xs font-medium text-slate-600">{pkg.provider}</p>
+          </div>
+          <div className="text-right">
+            <p className="text-sm font-semibold text-primary-700">{pkg.price}</p>
+            {hasProfileScore(pkg) && variant === "matching" && <p className="mt-1 text-[11px] font-semibold text-emerald-700">Skor {pkg.score.total}%</p>}
+          </div>
         </div>
-        <div className="text-right">
-          <p className="text-sm font-semibold text-primary-700">{pkg.price}</p>
-          {hasProfileScore(pkg) && variant === "matching" && <p className="mt-1 text-[11px] font-semibold text-emerald-700">Skor {pkg.score.total}%</p>}
+
+        <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
+          <span className="rounded-full bg-slate-100 px-2.5 py-1 text-slate-700">{pkg.duration ?? "Durasi menyesuaikan program"}</span>
+          <span className={["rounded-full px-2.5 py-1 font-semibold", isOverBudget ? "bg-amber-100 text-amber-900" : "bg-emerald-100 text-emerald-700"].join(" ")}>{isOverBudget ? "Budget kurang" : "Sesuai budget"}</span>
+          {hotelDistance && <span className="rounded-full bg-blue-100 px-2.5 py-1 text-blue-700 font-semibold">Jarak hotel: {hotelDistance}</span>}
         </div>
       </div>
 
-      <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
-        <span className="rounded-full bg-slate-100 px-2.5 py-1 text-slate-700">{pkg.duration ?? "Durasi menyesuaikan program"}</span>
-        <span className={["rounded-full px-2.5 py-1 font-semibold", isOverBudget ? "bg-amber-100 text-amber-900" : "bg-emerald-100 text-emerald-700"].join(" ")}>{isOverBudget ? "Budget kurang" : "Sesuai budget"}</span>
-        {hotelDistance && <span className="rounded-full bg-blue-100 px-2.5 py-1 text-blue-700 font-semibold">Jarak hotel: {hotelDistance}</span>}
-      </div>
-
-      <div className="mt-4 flex flex-wrap gap-2">
-        <button type="button" onClick={onSelect} className="inline-flex items-center rounded-lg bg-primary-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:-translate-y-0.5 hover:bg-primary-700">
+      <div className={["mt-4 grid gap-2", hasProviderUrl ? "grid-cols-2" : "grid-cols-1"].join(" ")}>
+        <button type="button" onClick={onSelect} className="inline-flex min-h-9 w-full items-center justify-center rounded-lg bg-primary-600 px-3 py-1.5 text-center text-xs font-semibold leading-tight text-white transition hover:-translate-y-0.5 hover:bg-primary-700">
           {selected ? "Tutup detail" : "Lihat detail"}
         </button>
-        {isUsableUrl(pkg.url) && (
-          <a href={pkg.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center rounded-lg border border-primary-200 px-3 py-1.5 text-xs font-semibold text-primary-700 transition hover:-translate-y-0.5 hover:bg-primary-50">
+        {hasProviderUrl && (
+          <a href={pkg.url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-9 w-full items-center justify-center rounded-lg border border-primary-200 px-3 py-1.5 text-center text-xs font-semibold leading-tight text-primary-700 transition hover:-translate-y-0.5 hover:bg-primary-50">
             Kunjungi provider
           </a>
         )}
@@ -209,8 +212,8 @@ export default function PackageRecommendationModal({ open, nama, result, utamaIn
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <button type="button" aria-label="Tutup popup hasil rekomendasi" className="animate-backdrop-fade absolute inset-0 bg-slate-900/55 backdrop-blur-[2px]" onClick={onClose} />
 
-      <div role="dialog" aria-modal="true" aria-label="Hasil rekomendasi paket" className="animate-popup-rise relative z-10 max-h-[90vh] w-full max-w-5xl overflow-hidden rounded-3xl border border-black/10 bg-white shadow-2xl shadow-slate-900/25">
-        <div className="relative overflow-hidden border-b border-black/5 bg-slate-50 px-5 py-4 sm:px-6">
+      <div role="dialog" aria-modal="true" aria-label="Hasil rekomendasi paket" className="animate-popup-rise relative z-10 flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-black/10 bg-white shadow-2xl shadow-slate-900/25">
+        <div className="relative shrink-0 overflow-hidden border-b border-black/5 bg-slate-50 px-5 py-4 sm:px-6">
           <span className="animate-shimmer-sweep pointer-events-none absolute inset-y-0 left-0 w-full overflow-hidden" />
           <div className="flex items-start justify-between gap-4">
             <div className="animate-soft-slide-up">
@@ -229,7 +232,7 @@ export default function PackageRecommendationModal({ open, nama, result, utamaIn
           </div>
         </div>
 
-        <div className="max-h-[calc(90vh-88px)] overflow-y-auto px-5 py-5 sm:px-6">
+        <div className="flex-1 overflow-y-auto px-5 py-5 sm:px-6">
           <div
             className={["animate-soft-slide-up stagger-2 rounded-2xl border px-4 py-4 opacity-0", isNoRecommendation ? "border-amber-200 bg-gradient-to-br from-amber-50 via-white to-orange-50" : "border-primary-100 bg-gradient-to-br from-primary-50 via-white to-cyan-50"].join(" ")}
           >
@@ -319,7 +322,7 @@ export default function PackageRecommendationModal({ open, nama, result, utamaIn
                       const key = `${activeTab}-${pkg.provider}-${pkg.name}-${pkg.price}-${pkg.url}-${index}`;
                       const selected = selectedPackage?.provider === pkg.provider && selectedPackage?.name === pkg.name && selectedPackage?.price === pkg.price;
 
-                      return <PackageCard key={key} pkg={pkg} budget={form.budget} selected={selected} onSelect={() => setSelectedPackage(selected ? null : pkg)} variant={activeTab} index={index} />;
+                      return <PackageCard key={key} pkg={pkg} budget={numericValue(form.budget)} selected={selected} onSelect={() => setSelectedPackage(selected ? null : pkg)} variant={activeTab} index={index} />;
                     })}
                   </div>
 
@@ -370,14 +373,14 @@ export default function PackageRecommendationModal({ open, nama, result, utamaIn
             </>
           )}
 
-          <div className="mt-6 flex flex-wrap items-center gap-2 border-t border-black/5 pt-4">
+          <div className="mt-6 grid gap-2 border-t border-black/5 pt-4 sm:grid-cols-2 sm:items-center">
             {utamaInfo.href && (
-              <Link href={utamaInfo.href} onClick={onClose} className="inline-flex items-center rounded-xl bg-primary-600 px-4 py-2 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-primary-700">
+              <Link href={utamaInfo.href} onClick={onClose} className="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-primary-600 px-4 py-2 text-center text-sm font-semibold leading-tight text-white transition hover:-translate-y-0.5 hover:bg-primary-700">
                 Lihat Detail Paket
               </Link>
             )}
             {utamaTravel && (
-              <Link href={daftarPaketHref} onClick={onClose} className="inline-flex items-center rounded-xl border border-primary-200 px-4 py-2 text-sm font-semibold text-primary-700 transition hover:-translate-y-0.5 hover:bg-primary-50">
+              <Link href={daftarPaketHref} onClick={onClose} className="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-primary-200 px-4 py-2 text-center text-sm font-semibold leading-tight text-primary-700 transition hover:-translate-y-0.5 hover:bg-primary-50">
                 Lihat Selengkapnya
               </Link>
             )}
@@ -417,18 +420,20 @@ function InfoList({ title, items, tone }: { title: string; items: string[]; tone
 }
 
 function buildRecommendationExplanation({ form, result, utamaInfo, isNoRecommendation }: { form: FormState; result: ApiResponse | null; utamaInfo: EnrichedRecommendation | null; isNoRecommendation: boolean }): ExplanationContent {
-  const budgetLabel = formatRupiah(form.budget);
+  const budget = numericValue(form.budget);
+  const preferredDistance = numericValue(form.preferJarakHotelMaks);
+  const budgetLabel = formatRupiah(budget);
   const selectedDestination = formatDestination(form.destinasiTambahan);
   const packageName = utamaInfo?.displayName ?? "paket ini";
   const suggestions = new Set<string>();
   const reasons: string[] = [];
-  const minBudgetGap = Math.max(0, MIN_UMRAH_BUDGET - form.budget);
-  const plusBudgetGap = Math.max(0, MIN_PLUS_DESTINATION_BUDGET - form.budget);
+  const minBudgetGap = Math.max(0, MIN_UMRAH_BUDGET - budget);
+  const plusBudgetGap = Math.max(0, MIN_PLUS_DESTINATION_BUDGET - budget);
   const destinationMismatch = form.destinasiTambahan !== "none" && !matchesSelectedDestination(form.destinasiTambahan, result?.paketUtama?.paket);
   const extraConstraintNotes = collectConstraintNotes(form);
 
   if (isNoRecommendation) {
-    if (form.budget < MIN_UMRAH_BUDGET) {
+    if (budget < MIN_UMRAH_BUDGET) {
       reasons.push(`Budget Anda saat ini ${budgetLabel}. Untuk mulai masuk ke rekomendasi Umrah, budget aman minimumnya sekitar ${formatRupiah(MIN_UMRAH_BUDGET)}.`);
       reasons.push(`Jadi, Anda masih kurang sekitar ${formatRupiah(minBudgetGap)}.`);
       suggestions.add(`Naikkan budget minimal ke ${formatRupiah(MIN_UMRAH_BUDGET)}`);
@@ -443,7 +448,7 @@ function buildRecommendationExplanation({ form, result, utamaInfo, isNoRecommend
     if (form.tipePenerbangan === "direct") {
       suggestions.add("Coba pilih penerbangan transit");
     }
-    if (form.preferJarakHotelMaks <= 300) {
+    if (preferredDistance <= 300) {
       suggestions.add("Longgarkan batas jarak hotel");
     }
 
@@ -481,7 +486,7 @@ function buildRecommendationExplanation({ form, result, utamaInfo, isNoRecommend
     if (form.tipePenerbangan === "direct") {
       suggestions.add("Coba pilih penerbangan transit");
     }
-    if (form.preferJarakHotelMaks <= 300) {
+    if (preferredDistance <= 300) {
       suggestions.add("Coba longgarkan batas jarak hotel");
     }
   }
@@ -519,17 +524,19 @@ function buildFallbackReason(form: FormState, paket: string | undefined, package
 
 function collectConstraintNotes(form: FormState) {
   const notes: string[] = [];
+  const preferredDistance = numericValue(form.preferJarakHotelMaks);
+  const preferredDuration = numericValue(form.durasiPreferensi);
 
-  if (form.preferJarakHotelMaks <= 300) {
-    notes.push(`Anda memilih jarak hotel cukup dekat, maksimal ${form.preferJarakHotelMaks} meter, jadi pilihan paket otomatis lebih sempit.`);
+  if (preferredDistance <= 300) {
+    notes.push(`Anda memilih jarak hotel cukup dekat, maksimal ${preferredDistance} meter, jadi pilihan paket otomatis lebih sempit.`);
   }
 
   if (form.tipePenerbangan === "direct") {
     notes.push("Anda memilih penerbangan direct, jadi jumlah paket yang cocok juga ikut berkurang.");
   }
 
-  if (form.durasiPreferensi < 9 || form.durasiPreferensi > 13) {
-    notes.push(`Anda memilih durasi ${form.durasiPreferensi} hari, sehingga sistem mencari paket yang lebih spesifik dari biasanya.`);
+  if (preferredDuration < 9 || preferredDuration > 13) {
+    notes.push(`Anda memilih durasi ${preferredDuration} hari, sehingga sistem mencari paket yang lebih spesifik dari biasanya.`);
   }
 
   return notes;
@@ -545,6 +552,10 @@ function matchesSelectedDestination(destinasi: FormState["destinasiTambahan"], p
 
 function formatDestination(destinasi: FormState["destinasiTambahan"]) {
   return destinasi === "none" ? "tanpa tambahan" : destinasi;
+}
+
+function numericValue(value: number | ""): number {
+  return typeof value === "number" ? value : 0;
 }
 
 function formatRupiah(value: number) {

@@ -162,24 +162,26 @@ export default function PackageCatalogGrid({ items }: PackageCatalogGridProps) {
       <div ref={gridRef} className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {visibleItems.map((item) => (
           <Reveal key={`${item.key}-${item.provider}-${item.name}-${item.url}`}>
-            <article className="flex h-full flex-col rounded-2xl border border-black/5 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-sm font-semibold text-primary-700">{item.type}</p>
-                <p className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-700">{item.duration}</p>
-              </div>
-              <h3 className="mt-2 text-lg font-bold">{item.name}</h3>
-              <p className="mt-1 text-sm text-black">{item.provider}</p>
-              <div className="mt-4 space-y-1.5 text-sm text-black">
-                <p>Maskapai: {item.airline}</p>
-                <p>Hotel: {item.hotel}</p>
-                <p>Sumber: {item.source}</p>
+            <article className="flex h-full min-h-[25rem] flex-col rounded-2xl border border-black/5 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+              <div className="flex flex-1 flex-col">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-semibold text-primary-700">{item.type}</p>
+                  <p className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-700">{item.duration}</p>
+                </div>
+                <h3 className="mt-2 text-lg font-bold">{item.name}</h3>
+                <p className="mt-1 text-sm text-black">{item.provider}</p>
+                <div className="mt-4 space-y-1.5 text-sm text-black">
+                  <p>Maskapai: {item.airline}</p>
+                  <p>Hotel: {item.hotel}</p>
+                  <p>Sumber: {item.source}</p>
+                </div>
               </div>
               <p className="mt-5 text-lg font-bold text-primary-700">{item.price}</p>
-              <div className="mt-4 flex items-start gap-2">
+              <div className="mt-4 grid grid-cols-2 gap-2">
                 <button
                   type="button"
                   onClick={() => setSelectedPackage(item)}
-                  className="inline-flex flex-1 items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold text-primary-700 ring-1 ring-primary-200 transition hover:bg-primary-50"
+                  className="inline-flex min-h-11 w-full items-center justify-center rounded-xl px-3 py-2 text-center text-sm font-semibold leading-tight text-primary-700 ring-1 ring-primary-200 transition hover:bg-primary-50"
                 >
                   Lihat Detail Paket
                 </button>
@@ -187,7 +189,7 @@ export default function PackageCatalogGrid({ items }: PackageCatalogGridProps) {
                   href={item.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex shrink-0 items-center justify-center rounded-xl bg-amber-400 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-amber-300"
+                  className="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-amber-400 px-3 py-2 text-center text-sm font-semibold leading-tight text-slate-900 transition hover:bg-amber-300"
                 >
                   Kunjungi Provider
                 </Link>
