@@ -112,13 +112,7 @@ function isUsableUrl(url?: string) {
 }
 
 function hasProfileScore(pkg: TravelPackage): pkg is ScoredPackage {
-  return (
-    "score" in pkg &&
-    typeof pkg.score === "object" &&
-    pkg.score !== null &&
-    "total" in pkg.score &&
-    typeof pkg.score.total === "number"
-  );
+  return "score" in pkg && typeof pkg.score === "object" && pkg.score !== null && "total" in pkg.score && typeof pkg.score.total === "number";
 }
 
 function extractMinHotelDistance(accommodation?: string): string | null {
@@ -173,11 +167,20 @@ function PackageCard({ pkg, budget, selected, onSelect, variant, index }: { pkg:
       </div>
 
       <div className={["mt-4 grid gap-2", hasProviderUrl ? "grid-cols-2" : "grid-cols-1"].join(" ")}>
-        <button type="button" onClick={onSelect} className="inline-flex min-h-9 w-full items-center justify-center rounded-lg bg-primary-600 px-3 py-1.5 text-center text-xs font-semibold leading-tight text-white transition hover:-translate-y-0.5 hover:bg-primary-700">
+        <button
+          type="button"
+          onClick={onSelect}
+          className="inline-flex min-h-9 w-full items-center justify-center rounded-lg bg-primary-600 px-3 py-1.5 text-center text-xs font-semibold leading-tight text-white transition hover:-translate-y-0.5 hover:bg-primary-700"
+        >
           {selected ? "Tutup detail" : "Lihat detail"}
         </button>
         {hasProviderUrl && (
-          <a href={pkg.url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-9 w-full items-center justify-center rounded-lg border border-primary-200 px-3 py-1.5 text-center text-xs font-semibold leading-tight text-primary-700 transition hover:-translate-y-0.5 hover:bg-primary-50">
+          <a
+            href={pkg.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-9 w-full items-center justify-center rounded-lg border border-primary-200 px-3 py-1.5 text-center text-xs font-semibold leading-tight text-primary-700 transition hover:-translate-y-0.5 hover:bg-primary-50"
+          >
             Kunjungi provider
           </a>
         )}
@@ -212,7 +215,12 @@ export default function PackageRecommendationModal({ open, nama, result, utamaIn
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <button type="button" aria-label="Tutup popup hasil rekomendasi" className="animate-backdrop-fade absolute inset-0 bg-slate-900/55 backdrop-blur-[2px]" onClick={onClose} />
 
-      <div role="dialog" aria-modal="true" aria-label="Hasil rekomendasi paket" className="animate-popup-rise relative z-10 flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-black/10 bg-white shadow-2xl shadow-slate-900/25">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Hasil rekomendasi paket"
+        className="animate-popup-rise relative z-10 flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-black/10 bg-white shadow-2xl shadow-slate-900/25"
+      >
         <div className="relative shrink-0 overflow-hidden border-b border-black/5 bg-slate-50 px-5 py-4 sm:px-6">
           <span className="animate-shimmer-sweep pointer-events-none absolute inset-y-0 left-0 w-full overflow-hidden" />
           <div className="flex items-start justify-between gap-4">
@@ -234,7 +242,10 @@ export default function PackageRecommendationModal({ open, nama, result, utamaIn
 
         <div className="flex-1 overflow-y-auto px-5 py-5 sm:px-6">
           <div
-            className={["animate-soft-slide-up stagger-2 rounded-2xl border px-4 py-4 opacity-0", isNoRecommendation ? "border-amber-200 bg-gradient-to-br from-amber-50 via-white to-orange-50" : "border-primary-100 bg-gradient-to-br from-primary-50 via-white to-cyan-50"].join(" ")}
+            className={[
+              "animate-soft-slide-up stagger-2 rounded-2xl border px-4 py-4 opacity-0",
+              isNoRecommendation ? "border-amber-200 bg-gradient-to-br from-amber-50 via-white to-orange-50" : "border-primary-100 bg-gradient-to-br from-primary-50 via-white to-cyan-50",
+            ].join(" ")}
           >
             <span className={["inline-flex rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide", isNoRecommendation ? "bg-amber-100 text-amber-900" : "bg-primary-100 text-primary-700"].join(" ")}>
               {explanation.badge}
@@ -334,7 +345,11 @@ export default function PackageRecommendationModal({ open, nama, result, utamaIn
                           <h4 className="mt-1 text-xl font-bold text-slate-900">{selectedPackage.name}</h4>
                           <p className="mt-1 text-sm text-slate-600">{selectedPackage.provider}</p>
                         </div>
-                        <button type="button" onClick={() => setSelectedPackage(null)} className="inline-flex rounded-lg border border-primary-200 px-3 py-1.5 text-xs font-semibold text-primary-700 transition hover:-translate-y-0.5 hover:bg-white">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedPackage(null)}
+                          className="inline-flex rounded-lg border border-primary-200 px-3 py-1.5 text-xs font-semibold text-primary-700 transition hover:-translate-y-0.5 hover:bg-white"
+                        >
                           Tutup detail
                         </button>
                       </div>
@@ -372,19 +387,6 @@ export default function PackageRecommendationModal({ open, nama, result, utamaIn
               )}
             </>
           )}
-
-          {/* <div className="mt-6 grid gap-2 border-t border-black/5 pt-4 sm:grid-cols-2 sm:items-center">
-            {utamaInfo.href && (
-              <Link href={utamaInfo.href} onClick={onClose} className="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-primary-600 px-4 py-2 text-center text-sm font-semibold leading-tight text-white transition hover:-translate-y-0.5 hover:bg-primary-700">
-                Lihat Detail Paket
-              </Link>
-            )}
-            {utamaTravel && (
-              <Link href={daftarPaketHref} onClick={onClose} className="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-primary-200 px-4 py-2 text-center text-sm font-semibold leading-tight text-primary-700 transition hover:-translate-y-0.5 hover:bg-primary-50">
-                Lihat Selengkapnya
-              </Link>
-            )}
-          </div> */}
         </div>
       </div>
     </div>
