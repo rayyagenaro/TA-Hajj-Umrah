@@ -373,7 +373,7 @@ export default function PackageRecommendationModal({ open, nama, result, utamaIn
             </>
           )}
 
-          <div className="mt-6 grid gap-2 border-t border-black/5 pt-4 sm:grid-cols-2 sm:items-center">
+          {/* <div className="mt-6 grid gap-2 border-t border-black/5 pt-4 sm:grid-cols-2 sm:items-center">
             {utamaInfo.href && (
               <Link href={utamaInfo.href} onClick={onClose} className="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-primary-600 px-4 py-2 text-center text-sm font-semibold leading-tight text-white transition hover:-translate-y-0.5 hover:bg-primary-700">
                 Lihat Detail Paket
@@ -384,7 +384,7 @@ export default function PackageRecommendationModal({ open, nama, result, utamaIn
                 Lihat Selengkapnya
               </Link>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
